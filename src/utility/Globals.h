@@ -45,13 +45,6 @@
 #define ENDTIME 20.0
 #define STEPS (int) (ENDTIME/DT+1)
 
-/* Files for data storage */
-#define FILENAME "/Users/rbrothers/Desktop/School/Graduate/thesis/Simulation/sdfast/examples/MATLAB_SDFAST/rimless_robot/rot_free_rot/data/animate.dat"
-#define TQU_FILENAME "/Users/rbrothers/Desktop/School/Graduate/thesis/Simulation/sdfast/examples/MATLAB_SDFAST/rimless_robot/rot_free_rot/data/state.dat"
-#define DYNAMICS_FILENAME "/Users/rbrothers/Desktop/School/Graduate/thesis/Simulation/sdfast/examples/MATLAB_SDFAST/rimless_robot/rot_free_rot/data/control.dat"
-#define SPEED_FILENAME "/Users/rbrothers/Desktop/School/Graduate/thesis/Simulation/sdfast/examples/MATLAB_SDFAST/rimless_robot/rot_free_rot/data/speed.dat"
-#define DATA_FORMAT "%2.4e %2.4e %2.4e %2.4e %2.4e %2.4e %2.4e"
-
 /* state variable containing system information */
 extern double t, state[NSTATE], dstate[NSTATE];
 
