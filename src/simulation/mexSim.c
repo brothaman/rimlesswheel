@@ -45,6 +45,8 @@ void mexFunction(
 		int n_output_parameters,      mxArray * output_arguments[],
 		int n_input_parameters, const mxArray * input_arguments[]) 
 {
+	/* so as not to redefine iterators */
+	int i, j;
 	/* matlabs input and output variables */
 	double *tin, *state_in, *dstate_in;
 	double *tout, *state_out, *dstate_out;
@@ -93,7 +95,7 @@ void mexFunction(
 	t = tin[0];
 	cpy_vecd( NSTATE, state_in,  state);
 	cpy_vecd( NSTATE,dstate_in, dstate);
-	for (int i=0; i<NU; i++)
+	for (i=0; i<NU; i++)
 		lock[i] = 0;
 	flag = t>0 ? 0:1;
 
@@ -146,15 +148,15 @@ void mexFunction(
 				break;
 		}
 	/* load feet and body position */
-	for (int i = 0; i<3; i++)
+	for (i = 0; i<3; i++)
 		aniStates[i] = body_position[0][i];
 
-	for (int i = 0; i<3; i++)
+	for (i = 0; i<3; i++)
 		aniStates[i+3] = body_position[1][i];
 
 	/* left foot positions */
-	for (int i = 0; i<(int)(FEET/2); i++) {
-		for (int j = 0; j<3; j++) {
+	for (i = 0; i<(int)(FEET/2); i++) {
+		for (j = 0; j<3; j++) {
 			aniStates[6*(i+1)+j] 							= lwf_position[i][j];
 			aniStates[6*(i+1)+j+3] 							= lwf_position[i+FEET/2][j];
 			aniStates[6*(i+1+FEET/2)+j] 			= rwf_position[i][j];

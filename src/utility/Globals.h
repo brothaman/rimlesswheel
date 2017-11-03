@@ -1,7 +1,6 @@
 #ifndef Globals_h
 #define Globals_h
 #include <math.h>
-#include "helper.h"
 #include "mex.h"
 
 /* sdfast specifics - emulating the set up from the matlab example */
