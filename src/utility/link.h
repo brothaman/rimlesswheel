@@ -8,7 +8,8 @@ class LINK {
 	public:
 		// Constructors
 		LINK();
-		LINK(char * _name, float startPoint[3], float endPoint[3], char * shape);
+		LINK(char * name, float body_center[3], float body_dimensions[3]);
+		LINK(char * name, float startPoint[3], float endPoint[3], char * shape);
 		LINK(float startPoint[3], float endPoint[3], char * shape);
 		LINK(float startPoint[3], float endPoint[3]);
 		LINK(LINK &link);

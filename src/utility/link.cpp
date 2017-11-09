@@ -27,6 +27,30 @@ LINK::LINK() {
 	this->_geometry = (char *)malloc(8);
 	this->_geometry = "capsule";
 }
+LINK::LINK( char * name, float body_center[3], float body_dimensions[3]) {
+	// copy the string name into the name value
+	this -> _name = (char *)malloc( strlen(name) +1);
+	strcpy(this->_name, name);
+
+	// copy body positional data
+	this->center[0] = body_center[0];
+	this->center[1] = body_center[1];
+	this->center[2] = body_center[2];
+
+	// copy body dimensional data
+	this->length = body_dimensions[0];
+	this->width  = body_dimensions[1];
+	this->depth  = body_dimensions[2];
+}
+
+
+
+/* 
+ *
+ * Will be getting rid of the constructors using the start and end points
+ *
+ *
+ */
 
 LINK::LINK( char * name, float startPoint[3], float endPoint[3], char * shape) {
 	// copy the string name into the name value
