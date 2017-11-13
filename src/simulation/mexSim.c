@@ -54,6 +54,19 @@ void mexFunction(
 
   double errest;
 	double directional_cosine[3][3], angles[3], * bodyAngles;
+	double bodydim[3][3];
+
+	// set the body dimensions
+	bodydim[0][0] = BODY_WIDTH;
+	bodydim[0][1] = BODY_LENGTH;
+	bodydim[0][2] = BODY_DEPTH;
+	bodydim[1][0] = SPOKE_RADIUS;
+	bodydim[1][1] = RADIUS;
+	bodydim[1][2] = 0;
+	bodydim[2][0] = SPOKE_RADIUS;
+	bodydim[2][1] = RADIUS;
+	bodydim[2][2] = 0;
+
 	/* add the ncessar values for the animation values 
 	 *
 	 * anistates with be composed of:
@@ -65,23 +78,28 @@ void mexFunction(
 	 * [15-17]	-> right wheel euler angles
 	 *
 	 */
-	double * aniStates;
+	double * aniStates, * tempdarr;
+	mxArray * tempcell, * Cellin;
 
-	int lock[NU], fcnt, err, flag;
+	int lock[NU], fcnt, err, flag, cellsize;
 
 	// get pointers to the inputs from matlab
 	tin       = mxGetPr(input_arguments[0]);
 	state_in  = mxGetPr(input_arguments[1]);
 	dstate_in = mxGetPr(input_arguments[2]);
 	Torques   = mxGetPr(input_arguments[3]);
-    
+	Cellin		= input_arguments[4];
+
+	// get details about the information coming in
+	cellsize = mxGetNumberOfElements(Cellin);
+
 	// reserve memory for output
 	output_arguments[0] = mxCreateDoubleMatrix(1,2,mxREAL);
 	output_arguments[1] = mxCreateDoubleMatrix(1,NSTATE,mxREAL);
 	output_arguments[2] = mxCreateDoubleMatrix(1,NSTATE,mxREAL);
 	output_arguments[3] = mxCreateDoubleMatrix(1,NA,mxREAL);
 	output_arguments[4] = mxCreateDoubleMatrix(1,3,mxREAL);
-	output_arguments[5] = mxCreateDoubleMatrix(6,FEET+1,mxREAL);
+	output_arguments[5] = mxCreateCellMatrix(cellsize+NBOD,1); // extend the incoming cell array
 	
 	// create pointers to output
 	tout				= (double *)mxGetPr(output_arguments[0]);
@@ -89,7 +107,11 @@ void mexFunction(
 	dstate_out	= (double *)mxGetPr(output_arguments[2]);
 	rxn_torques	= (double *)mxGetPr(output_arguments[3]);
 	bodyAngles	= (double *)mxGetPr(output_arguments[4]);
-	aniStates		= (double *)mxGetPr(output_arguments[5]);
+
+	// copy incoming cell array data in to new cell
+	for ( i=0; i<cellsize; i++) {
+		mxSetCell( output_arguments[5], i, mxDuplicateArray( mxGetCell( Cellin, i)));
+	}
 
 	// initializr local variables - load state variable before initialization call
 	t = tin[0];
@@ -147,21 +169,18 @@ void mexFunction(
 				mexPrintf("Initial Velocities Error: sdinitvel returned undefined error\n");
 				break;
 		}
-	/* load feet and body position */
-	for (i = 0; i<3; i++)
-		aniStates[i] = body_position[0][i];
-
-	for (i = 0; i<3; i++)
-		aniStates[i+3] = body_position[1][i];
-
-	/* left foot positions */
-	for (i = 0; i<(int)(FEET/2); i++) {
-		for (j = 0; j<3; j++) {
-			aniStates[6*(i+1)+j] 							= lwf_position[i][j];
-			aniStates[6*(i+1)+j+3] 							= lwf_position[i+FEET/2][j];
-			aniStates[6*(i+1+FEET/2)+j] 			= rwf_position[i][j];
-			aniStates[6*(i+1+FEET/2)+j+3] 			= rwf_position[i+FEET/2][j];
-		}
+	/* build array for data storage */
+	double centerloc[3] = {0,0,0}, dc[3][3];
+	tempcell = mxCreateDoubleMatrix( 1, 3+3+3, mxREAL);
+	tempdarr = (double *)mxGetPr(tempcell);
+	for ( i=0; i<NBOD; i++) {
+		sdpos( i, centerloc, &tempdarr[0]);
+		sdorient(i,dc);
+		sddc2ang(dc, &tempdarr[3], &tempdarr[4], &tempdarr[5]);
+		tempdarr[6] = bodydim[i][0];
+		tempdarr[7] = bodydim[i][1];
+		tempdarr[8] = bodydim[i][2];
+		mxSetCell( output_arguments[5], cellsize+i, mxDuplicateArray( tempcell));
 	}
 	/* determine the body angle between the ground */
 	getBodyAngle(bodyAngles);
