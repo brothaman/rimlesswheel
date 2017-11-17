@@ -79,7 +79,7 @@ void mexFunction(
 	output_arguments[0] = mxCreateDoubleMatrix(1,2,mxREAL);
 	output_arguments[1] = mxCreateDoubleMatrix(1,NSTATE,mxREAL);
 	output_arguments[2] = mxCreateDoubleMatrix(1,NSTATE,mxREAL);
-	output_arguments[3] = mxCreateDoubleMatrix(1,NA,mxREAL);
+	output_arguments[3] = mxCreateDoubleMatrix(1,NAc,mxREAL);
 	output_arguments[4] = mxCreateDoubleMatrix(1,3,mxREAL);
 	output_arguments[5] = mxCreateDoubleMatrix(6,FEET+1,mxREAL);
 	
@@ -171,14 +171,14 @@ void mexFunction(
 	tout[1] = tin[1];
 	cpy_vecd(NSTATE,  state,  state_out);
 	cpy_vecd(NSTATE, dstate, dstate_out);
-	cpy_vecd(NA, Torques, rxn_torques);
+	cpy_vecd(NAc, Torques, rxn_torques);
 
 
 	// clean up
 }
 
 void sduforce(double t, double q[NQ], double u[NU]) {
-	for( int i=0; i<NA; i++) 
+	for( int i=0; i<NAc; i++) 
 	{
 		sdhinget(i+1, 0, Torques[i]);
 	}
