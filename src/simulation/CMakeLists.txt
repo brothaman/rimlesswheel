@@ -24,7 +24,7 @@ octave_add_oct (
 	${SIMULATIONSRC}
 	${SDSRC}
 	${MEXSRC}
-	EXTENSION " -o mexsim.mex"
+	EXTENSION " -o ${CMAKE_SOURCE_DIR}/bin/mexsim.mex"
 	)
 
 target_link_libraries ( mexsim

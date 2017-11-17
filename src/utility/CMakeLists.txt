@@ -1,4 +1,4 @@
-find_package ( ARMADILLO REQUIRED)
+find_package ( Armadillo REQUIRED)
 
 set (CMAKE_CXX_FLAGS "-std=c++14")
 file ( GLOB LINK_SRC

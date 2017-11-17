@@ -8,41 +8,40 @@ class LINK {
 	public:
 		// Constructors
 		LINK();
-		LINK(char * name, float body_center[3], float body_dimensions[3]);
-		LINK(char * name, float startPoint[3], float endPoint[3], char * shape);
-		LINK(float startPoint[3], float endPoint[3], char * shape);
-		LINK(float startPoint[3], float endPoint[3]);
+		LINK(
+				char * name, 
+				char * geometry, 
+				float center[3], 
+				float orientation[3], 
+				float dimension[3]
+				);
+		LINK( float body_center[3]);
 		LINK(LINK &link);
 
 		// void getters
-		void getStartPoint( float p[3]);
-		void getStartPoint( arma::fmat p);
-		void getEndPoint( float p[3]);
-		void getEndPoint( arma::fmat p);
 		void getName( char * name);
-		void getGeometry( char * shape);
-		void getOrientation( float R[12]);
-		void getOrientation( arma::fmat p);
+		void getGeometry( char * geometry);
+		void getCenter(float r[3]);
+		void getDimensions(float r[3]);
+		void getOrientation(float r[12]);
 
 		// setters
-		void setStartPoint( const float p[3]);
-		void setEndPoint( const float p[3]);
 		void setName( const char * name);
+		void setGeometry( const char * shape);
 		void setOrientation( const float e[3]);
 		void setOrientation( const float phi, const float theta, const float psi);
-		void setGeometry( const char * shape);
-
-		void orientation(float thetax, float thetay, float thetaz);
+		void setDimensions(const float dims[3]);
 
 	private:
 		// private data members
 		char * _name;
 		char * _geometry;
-		float _0[3];		// the zeroth point of the link
-		float _1[3];		// the end point of the link
+
 		// info necessary for drawstuff
 		float center[3];
-		float _length;
+		float length;
+		float width;
+		float depth;
 		float _R[9];
 
 		// private functional members

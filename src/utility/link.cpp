@@ -8,29 +8,41 @@
 LINK::LINK() {
 	// set the name to a standard value
 	this->_name = (char *)malloc(5);
-	this->_name = "link";
+	strcpy(this->_name, "link");
 
 	// copy the starting and ending points
-	this->_0[0] = 0;
-	this->_0[1] = 0;
-	this->_0[2] = 0;
+	this->center[0] = 0;
+	this->center[1] = 0;
+	this->center[2] = 0;
 
-	this->_1[0] = 0;
-	this->_1[1] = 0;
-	this->_1[2] = 0;
+	this->length = 0;
+	this->width = 0;
+	this->depth = 0;
 
 	// initialize the orientation vector
 	for (int i=0; i<9; i++)
 		this->_R[i] = 0;
+	this->_R[0] = this->_R[4] = this->_R[8] = 1;
 
 	// set the geometry name
 	this->_geometry = (char *)malloc(8);
 	this->_geometry = "capsule";
 }
-LINK::LINK( char * name, float body_center[3], float body_dimensions[3]) {
+LINK::LINK( 
+		char * name,
+		char * geometry,
+		float body_center[3],
+		float body_dimension[3],
+		float orientation[3]
+		) 
+{
 	// copy the string name into the name value
 	this -> _name = (char *)malloc( strlen(name) +1);
 	strcpy(this->_name, name);
+
+	// copy the string geometry into the data member
+	this->_geometry = (char *)malloc(strlen(geometry)+1);
+	strcpy(this->_geometry, geometry);
 
 	// copy body positional data
 	this->center[0] = body_center[0];
@@ -38,87 +50,12 @@ LINK::LINK( char * name, float body_center[3], float body_dimensions[3]) {
 	this->center[2] = body_center[2];
 
 	// copy body dimensional data
-	this->length = body_dimensions[0];
-	this->width  = body_dimensions[1];
-	this->depth  = body_dimensions[2];
-}
+	this->length = body_dimension[0];
+	this->width  = body_dimension[1];
+	this->depth  = body_dimension[2];
 
-
-
-/* 
- *
- * Will be getting rid of the constructors using the start and end points
- *
- *
- */
-
-LINK::LINK( char * name, float startPoint[3], float endPoint[3], char * shape) {
-	// copy the string name into the name value
-	this -> _name = (char *)malloc( strlen(name) +1);
-	strcpy(this->_name, name);
-
-	// copy the starting and ending points
-	this->_0[0] = startPoint[0];
-	this->_0[1] = startPoint[1];
-	this->_0[2] = startPoint[2];
-
-	this->_1[0] = endPoint[0];
-	this->_1[1] = endPoint[1];
-	this->_1[2] = endPoint[2];
-	// fill the vectors with data
-
-	// initialize the orientation vector
-	for (int i=0; i<9; i++)
-		this->_R[i] = 0;
-
-	// copy the string shape into the private geometry
-	this -> _geometry = (char *)malloc( strlen(shape) +1);
-	strcpy(this->_geometry, shape);
-}
-
-LINK::LINK( float startPoint[3], float endPoint[3], char * shape) {
-	// set the name to a standard value
-	this->_name = (char *)malloc(5);
-	this->_name = "link";
-
-	// copy the starting and ending points
-	this->_0[0] = startPoint[0];
-	this->_0[1] = startPoint[1];
-	this->_0[2] = startPoint[2];
-
-	this->_1[0] = endPoint[0];
-	this->_1[1] = endPoint[1];
-	this->_1[2] = endPoint[2];
-	// initialize the orientation vector
-	for (int i=0; i<9; i++)
-		this->_R[i] = 0;
-
-	// copy the string shape into the private geometry
-	this -> _geometry = (char *)malloc( strlen(shape) +1);
-	strcpy(this->_geometry, shape);
-}
-
-LINK::LINK( float startPoint[3], float endPoint[3]) {
-	// set the name to a standard value
-	this->_name = (char *)malloc(5);
-	this->_name = "link";
-
-	// copy the starting and ending points
-	this->_0[0] = startPoint[0];
-	this->_0[1] = startPoint[1];
-	this->_0[2] = startPoint[2];
-
-	this->_1[0] = endPoint[0];
-	this->_1[1] = endPoint[1];
-	this->_1[2] = endPoint[2];
-	
-	// initialize the orientation vector
-	for (int i=0; i<9; i++)
-		this->_R[i] = 0;
-
-	// set the geometry name
-	this->_geometry = (char *)malloc(8);
-	this->_geometry = "capsule";
+	// set the orientation using provided euler angles
+	LINK::setOrientation( orientation);
 }
 
 LINK::LINK(LINK &link) {
@@ -132,58 +69,50 @@ LINK::LINK(LINK &link) {
  *
  *                   FUNCTION MEMBERS 
  *********************************************************/
-void LINK::calculateOrientation(arma::Mat<float> &R) {
-}
-
-// void getters
-void LINK::getStartPoint( float p[3]) {
-	p[0] = this->_0[0];
-	p[1] = this->_0[1];
-	p[2] = this->_0[2];
-}
-void LINK::getStartPoint( arma::fmat p) {
-	p = arma::fmat(this->_0,3,1);
-}
-void LINK::getEndPoint( float p[3]) {
-	p[0] = this->_1[0];
-	p[1] = this->_1[1];
-	p[2] = this->_1[2];
-}
-void LINK::getEndPoint( arma::fmat p) {
-	p = arma::fmat(this->_1,3,1);
-}
 void LINK::getName( char * name) {
-	int sz = strlen(this -> _name);
-	name = new char[sz +1];
 	strcpy(name, this->_name);
 }
-void LINK::getGeometry( char * shape) {
-	int sz = strlen(this -> _geometry);
-	shape = (char *)malloc(sz+1);
-	shape = strcpy(shape, this->_geometry);
-}
-void LINK::getOrientation( float R[12]) {
-	R[3]=R[7]=R[11] = 0;
-	R[0] = this->_R[0]; R[1] = this->_R[1]; R[2] = this->_R[2];
-	R[4] = this->_R[3]; R[5] = this->_R[4]; R[6] = this->_R[5];
-	R[8] = this->_R[6]; R[9] = this->_R[7]; R[10]= this->_R[8];
+
+void LINK::getGeometry( char * geometry) {
+	strcpy(geometry, this->_geometry);
 }
 
-void LINK::getOrientation( arma::fmat p) {
-	p = arma::fmat(this->_R,3,3);
+void LINK::getCenter(float r[3]) {
+	r[0] = this->center[0];
+	r[1] = this->center[1];
+	r[2] = this->center[2];
+}
+void LINK::getDimensions(float r[3]) {
+	r[0] = this->length;
+	r[1] = this->width;
+	r[2] = this->depth;
+}
+void LINK::getOrientation(float r[12]) {
+	r[0] = this->_R[0];
+	r[1] = this->_R[1];
+	r[2] = this->_R[2];
+	r[3] = 0;
+
+	r[4] = this->_R[3];
+	r[5] = this->_R[4];
+	r[6] = this->_R[5];
+	r[7] = 0;
+
+	r[8] = this->_R[6];
+	r[9] = this->_R[7];
+	r[10] = this->_R[8];
+	r[11] = 0;
 }
 
-// setters
-void LINK::setStartPoint( const float p[3]){
-	for (int i=0; i<3; i++) 
-		this->_0[i] = p[i];
-}
-void LINK::setEndPoint( const float p[3]){
-	for( int i=0; i<3; i++)
-		this->_1[i] = p[i];
-}
+/* SETTERS
+ *
+ * 
+ *
+ * SETTERS */
+
 void LINK::setName( const char * name){
-	
+	this->_name = (char *)malloc( sizeof(char)*strlen(name)+1);
+	strcpy(this->_name, name);
 }
 void LINK::setOrientation( const float e[3]) {
 	arma::Mat<float> R = euler_to_rotation( e);
@@ -194,7 +123,10 @@ void LINK::setOrientation( const float phi, const float theta, const float psi) 
 	arma::Mat<float> R = euler_to_rotation( e);
 	cpyfvec(R.memptr(), this->_R, 9);
 }
-void LINK::setGeometry( const char * shape){}
+void LINK::setGeometry( const char * shape){
+	this->_geometry = (char *)malloc( sizeof(char)*strlen(shape)+1);
+	strcpy(this->_geometry, shape);
+}
 
 /* NON MEMBER FUNCTION
  *
@@ -270,10 +202,6 @@ void skewSym(arma::Mat<float> &v, arma::Mat<float> &R) {
 	R(2,1) =  v(0);
 }
 
-void LINK::orientation(float thetax, float thetay, float thetaz) {
-	//this->_R = rotx(thetax) * roty(thetay) * rotz(thetaz);
-}
-
 void rodrigues_2pt_rot( 
 		const arma::Mat<float> k[3], const arma::Mat<float> v[3], arma::Mat<float> &R) {
 	arma::Mat<float> K(3,3,arma::fill::zeros);
@@ -282,22 +210,34 @@ void rodrigues_2pt_rot(
 
 arma::Mat<float> euler_to_rotation(const float euler_angles[3]) {
 	// psi
-	float cs = cosf(euler_angles[2]);
-	float ss = sinf(euler_angles[2]);
+	float cpsi = std::cos(euler_angles[2]);
+	float spsi = std::sin(euler_angles[2]);
 
 	// theta
-	float ct = cosf(euler_angles[1]);
-	float st = sinf(euler_angles[1]);
+	float cthe = std::cos(euler_angles[1]);
+	float sthe = std::sin(euler_angles[1]);
 
 	// phi
-	float cp = cosf(euler_angles[0]);
-	float sp = sinf(euler_angles[0]);
+	float cphi = std::cos(euler_angles[0]);
+	float sphi = std::sin(euler_angles[0]);
 
+/*	// DEBUG out put all the information coming in or going out
+	std::cout << std::cos(0) << ", " << std::sin(0) << std::endl;
+	std::cout << euler_angles[0] << ", " << euler_angles[1] << ", " << euler_angles[2] << std::endl;
+	std::cout << cpsi << ", " << spsi << std::endl;
+	std::cout << cpsi << ", " << spsi << std::endl;
+
+	std::cout << cthe << ", " << sthe << std::endl;
+	std::cout << cthe << ", " << sthe << std::endl;
+
+	std::cout << cphi << ", " << sphi << std::endl;
+	std::cout << cphi << ", " << sphi << std::endl;
+*/
 	// rotation matrix ref: http://mathworld.wolfram.com/EulerAngles.html
 	arma::fmat R = {
-		{ cs*cp - ct*sp*ss, cp*st + ct*cp*ss, ss*st},
-		{-ss*cp - ct*sp*cs,-ss*cp + ct*cp*cs, cs*st},
-		{ st*sp,-st*cp, ct}
+		{ cpsi*cphi - cthe*sphi*spsi, cpsi*sthe + cthe*cphi*spsi, spsi*sthe},
+		{-spsi*cphi - cthe*sphi*cpsi,-spsi*sphi + cthe*cphi*cpsi, cpsi*sthe},
+		{ sthe*sphi, -sthe*cphi, cthe}
 	};
 
 	return R;

@@ -1,12 +1,11 @@
 #ifndef Globals_h
 #define Globals_h
 #include <math.h>
-#include "mex.h"
 
 /* sdfast specifics - emulating the set up from the matlab example */
 #define NQ 9	/* number of state position variables */
 #define NU 8	/* number of state velocity variables */
-#define NA 2	/* number of actuators */
+#define NAc 2	/* number of actuators */
 #define NSTATE (NQ+NU)
 #define NUSERC 9	/* lagging and leading feet of each wheel and body */
 #define NBOD 3
