@@ -9,8 +9,8 @@ class LINK {
 		// Constructors
 		LINK();
 		LINK(
-				char * name, 
-				char * geometry, 
+				char name[40], 
+				char geometry[40], 
 				float center[3], 
 				float orientation[3], 
 				float dimension[3]
@@ -19,23 +19,23 @@ class LINK {
 		LINK(LINK &link);
 
 		// void getters
-		void getName( char * name);
-		void getGeometry( char * geometry);
+		void getName( char name[40]);
+		void getGeometry( char geometry[40]);
 		void getCenter(float r[3]);
 		void getDimensions(float r[3]);
 		void getOrientation(float r[12]);
 
 		// setters
-		void setName( const char * name);
-		void setGeometry( const char * shape);
+		void setName( const char name[40]);
+		void setGeometry( const char shape[40]);
 		void setOrientation( const float e[3]);
 		void setOrientation( const float phi, const float theta, const float psi);
 		void setDimensions(const float dims[3]);
 
 	private:
 		// private data members
-		char * _name;
-		char * _geometry;
+		char _name[40];
+		char _geometry[40];
 
 		// info necessary for drawstuff
 		float center[3];

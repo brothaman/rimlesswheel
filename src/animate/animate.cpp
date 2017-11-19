@@ -64,6 +64,7 @@ static void read_data(char * fname)
 	 */
 	int file_length;
 	float p[3];
+	char str[40];
 	std::streampos size;
 	std::fstream inputFile(fname, std::ios::in|std::ios::binary);
 
@@ -73,10 +74,19 @@ static void read_data(char * fname)
 		sz = (unsigned int)inputFile.tellg()/sizeof(LINK);
 		inputFile.seekg(std::ios::beg);
 
+		std::cout << sz << std::endl;
 		links = new LINK[sz];
 		for (int i=0; i<sz; i++)
 			inputFile.read( reinterpret_cast<char *>( &links[i]), sizeof(LINK) );
 		
+		links[8].getName(str);
+		std::cout << "Before getCenter()" << std::endl;
+		links[8].getCenter(p);
+		std::cout << "After getCenter() attempting to print out variables " << std::endl;
+		std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+		links[8].getDimensions(p);
+		std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+
 	} else{
 		std::cout << "FILE NOT FOUND" << std::endl;
 	}
@@ -148,11 +158,13 @@ static void display (int pause)
 		float center[3];
 		float dims[3];
 		float orientation[12];
+		std::cout << "before calling stored data" << std::endl;
 		links[i].getName(name);
 		links[i].getGeometry(name);
 		links[i].getCenter(center);
 		links[i].getDimensions(dims);
 	 	links[i].getOrientation(orientation);
+		std::cout << "after calling stored data" << std::endl;
 		if ( strcmp(geometry, "box")==0 ) {
 			dsDrawBox(
 					center,
@@ -193,7 +205,6 @@ static void display (int pause)
 int main (int argc, char **argv)
 {
 	// read the data from the file
-	std::fstream inputFile ("datFile.dat", std::ios::in | std::ios::binary);
 	read_data("datFile.dat");
 
 		dsFunctions fn;

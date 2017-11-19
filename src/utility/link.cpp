@@ -7,7 +7,6 @@
  */
 LINK::LINK() {
 	// set the name to a standard value
-	this->_name = (char *)malloc(5);
 	strcpy(this->_name, "link");
 
 	// copy the starting and ending points
@@ -25,23 +24,22 @@ LINK::LINK() {
 	this->_R[0] = this->_R[4] = this->_R[8] = 1;
 
 	// set the geometry name
-	this->_geometry = (char *)malloc(8);
-	this->_geometry = "capsule";
+//	this->_geometry = (char *)malloc(8);
+	strcpy(this->_geometry,"capsule");
 }
 LINK::LINK( 
-		char * name,
-		char * geometry,
+		char name[40],
+		char geometry[40],
 		float body_center[3],
-		float body_dimension[3],
-		float orientation[3]
+		float orientation[3],
+		float body_dimension[3]
 		) 
 {
 	// copy the string name into the name value
-	this -> _name = (char *)malloc( strlen(name) +1);
 	strcpy(this->_name, name);
 
 	// copy the string geometry into the data member
-	this->_geometry = (char *)malloc(strlen(geometry)+1);
+//	this->_geometry = (char *)malloc(strlen(geometry)+1);
 	strcpy(this->_geometry, geometry);
 
 	// copy body positional data
@@ -69,11 +67,14 @@ LINK::LINK(LINK &link) {
  *
  *                   FUNCTION MEMBERS 
  *********************************************************/
-void LINK::getName( char * name) {
+void LINK::getName( char name[40]) {
+	std::cout << this->_name << std::endl;
+//	name = (char *)malloc( sizeof(char)*(strlen(this->_name)+1));
 	strcpy(name, this->_name);
 }
 
-void LINK::getGeometry( char * geometry) {
+void LINK::getGeometry( char geometry[40]) {
+//	geometry = (char *)malloc( sizeof(char)*strlen(this->_geometry));
 	strcpy(geometry, this->_geometry);
 }
 
@@ -110,8 +111,8 @@ void LINK::getOrientation(float r[12]) {
  *
  * SETTERS */
 
-void LINK::setName( const char * name){
-	this->_name = (char *)malloc( sizeof(char)*strlen(name)+1);
+void LINK::setName( const char name[40]){
+//	this->_name = (char *)malloc( sizeof(char)*strlen(name)+1);
 	strcpy(this->_name, name);
 }
 void LINK::setOrientation( const float e[3]) {
@@ -123,8 +124,8 @@ void LINK::setOrientation( const float phi, const float theta, const float psi) 
 	arma::Mat<float> R = euler_to_rotation( e);
 	cpyfvec(R.memptr(), this->_R, 9);
 }
-void LINK::setGeometry( const char * shape){
-	this->_geometry = (char *)malloc( sizeof(char)*strlen(shape)+1);
+void LINK::setGeometry( const char shape[40]){
+//	this->_geometry = (char *)malloc( sizeof(char)*strlen(shape)+1);
 	strcpy(this->_geometry, shape);
 }
 
