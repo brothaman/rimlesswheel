@@ -49,7 +49,7 @@ float translate = 0.0f;
 double normal_speed = 0;//(STEPS*1e6)168.0*1e6/TOTAL_TIME;
 double slomo = 0;//2e8/180;
 double videospeed = normal_speed;
-int view = 0;
+int view = 2;
 LINK * links;
 unsigned int sz;
 
@@ -79,13 +79,13 @@ static void read_data(char * fname)
 		for (int i=0; i<sz; i++)
 			inputFile.read( reinterpret_cast<char *>( &links[i]), sizeof(LINK) );
 		
-		links[8].getName(str);
-		std::cout << "Before getCenter()" << std::endl;
-		links[8].getCenter(p);
-		std::cout << "After getCenter() attempting to print out variables " << std::endl;
-		std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
-		links[8].getDimensions(p);
-		std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+//		links[8].getName(str);
+//		std::cout << "Before getCenter()" << std::endl;
+//		links[8].getCenter(p);
+//		std::cout << "After getCenter() attempting to print out variables " << std::endl;
+//		std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+//		links[8].getDimensions(p);
+//		std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
 
 	} else{
 		std::cout << "FILE NOT FOUND" << std::endl;
@@ -100,7 +100,7 @@ static void start()
     switch (view) {
         case 0: // front
             xyz[0] = 0.0f;
-            xyz[1] = 15.0f;
+            xyz[1] = 2.0f;
             xyz[2] = translate+0.5f;
             hpr[0] = -90.0f;
             hpr[1] = 0.0f;
@@ -153,18 +153,17 @@ static void display (int pause)
 {
 	double length;
 	for (int i=0; i<sz; i++) {
-		char name[40];
-		char geometry[40];
-		float center[3];
-		float dims[3];
-		float orientation[12];
-		std::cout << "before calling stored data" << std::endl;
+		char name[40], geometry[40];
+		float center[3], dims[3], orientation[12];
+
+		// load information from links
 		links[i].getName(name);
-		links[i].getGeometry(name);
+		links[i].getGeometry(geometry);
 		links[i].getCenter(center);
 		links[i].getDimensions(dims);
 	 	links[i].getOrientation(orientation);
-		std::cout << "after calling stored data" << std::endl;
+
+		// draw the right stuff
 		if ( strcmp(geometry, "box")==0 ) {
 			dsDrawBox(
 					center,
@@ -216,11 +215,10 @@ int main (int argc, char **argv)
     fn.command = &command;
     fn.stop = 0;
 #ifdef WIN32
-    fn.path_to_textures = strcat(CWD,"drawstuff-windows/textures");
+    fn.path_to_textures = strcat(CWD,"/../drawstuff-windows/textures");
 #else
-    fn.path_to_textures = strcat(CWD,"/drawstuff/textures");
+    fn.path_to_textures = strcat(CWD,"/../lib/drawstuff/textures");
 #endif
-    fn.path_to_textures = "/Users/rbrothers/Desktop/School/Graduate/thesis/Simulation/sdfast/lib/drawstuff/textures";
     
     // do display
     dsSimulationLoop( argc, argv, /* command line arguments */

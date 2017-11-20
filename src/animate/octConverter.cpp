@@ -102,19 +102,23 @@ void store_link( std::fstream &outputFile, float * v, char * name, int &j) {
 void store_link( LINK *link, float * v, char * name, int &j) {
 	// incoming v array has [(1x3 position) (1x3 rotation) (1x3 dimension)]
 	int a = (strcmp(name, "body")==0) ? 0:1;
-
+	char str1[40], str2[40];
 	std::cout << "made it here " << j << std::endl;
 	switch (a) {
 		case 0 :
 			// store information for body
-			link[j] = LINK("BODY", "box", &v[0], &v[3], &v[6]);
+			strcpy(str1, "BODY");
+			strcpy(str2, "box");
+			link[j] = LINK(str1, str2, &v[0], &v[3], &v[6]);
 			j++;
 			break;
 		case 1:
 			// store information
 			for (int i=0; i<FEET/2; i++) {
 				v[3] += 2*PI/FEET*i;
-				link[j] = LINK("SPOKE", "pill",  &v[0], &v[3], &v[6]);
+				strcpy(str1, "SPOKE");
+				strcpy(str2, "pill");
+				link[j] = LINK(str1, str2, &v[0], &v[3], &v[6]);
 				j++;
 			}
 		default:

@@ -68,7 +68,6 @@ LINK::LINK(LINK &link) {
  *                   FUNCTION MEMBERS 
  *********************************************************/
 void LINK::getName( char name[40]) {
-	std::cout << this->_name << std::endl;
 //	name = (char *)malloc( sizeof(char)*(strlen(this->_name)+1));
 	strcpy(name, this->_name);
 }

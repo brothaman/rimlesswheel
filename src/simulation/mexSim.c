@@ -57,13 +57,13 @@ void mexFunction(
 	double bodydim[3][3];
 
 	// set the body dimensions
-	bodydim[0][0] = BODY_LENGTH;
-	bodydim[0][1] = BODY_WIDTH;
-	bodydim[0][2] = BODY_DEPTH;
-	bodydim[1][0] = RADIUS;
+	bodydim[0][0] = BODY_WIDTH;
+	bodydim[0][1] = BODY_DEPTH;
+	bodydim[0][2] = BODY_LENGTH;
+	bodydim[1][0] = 2*RADIUS;
 	bodydim[1][1] = SPOKE_RADIUS;
 	bodydim[1][2] = 0;
-	bodydim[2][0] = RADIUS;
+	bodydim[2][0] = 2*RADIUS;
 	bodydim[2][1] = SPOKE_RADIUS;
 	bodydim[2][2] = 0;
 
