@@ -49,7 +49,7 @@ float translate = 0.0f;
 double normal_speed = 0;//(STEPS*1e6)168.0*1e6/TOTAL_TIME;
 double slomo = 0;//2e8/180;
 double videospeed = normal_speed;
-int view = 2;
+int view = 5;
 LINK * links;
 unsigned int sz;
 
@@ -132,6 +132,12 @@ static void start()
             break;
             
         default:
+            xyz[0] = -6.0f;
+            xyz[1] = 0.0f;
+            xyz[2] = -0.5f;
+            hpr[0] = 0.0f;
+            hpr[1] = 0.0f;
+            hpr[2] = 0.0f;
             break;
     }
     dsSetViewpoint (xyz,hpr);
