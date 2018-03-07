@@ -1,0 +1,1024 @@
+# Created by Octave 4.2.1, Wed Mar 07 01:23:34 2018 CST <rbrothers@Roberts-MacBook-Air.local>
+# name: phidot_
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 44
+[  0   ]
+[      ]
+[  0   ]
+[      ]
+[phidot]
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 28
+Matrix([[0], [0], [phidot]])
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 79
+MutableDenseMatrix([[Integer(0)], [Integer(0)], [Symbol('phidot', real=True)]])
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 3 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 46
+⎡0 ⎤
+⎢  ⎥
+⎢0 ⎥
+⎢  ⎥
+⎣φ̇⎦
+
+
+
+
+
+
+
+# name: phidoubledot_
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1430
+       /                                   2                          2                   2                               2                   2                             3            2                        3            2                      2             2         
+-l2*m2*\-2*I1*g*sin(phi) + 2*I1*l1*thetadot *sin(phi + theta) - 3*g*l1 *m1*sin(phi) + g*l1 *m1*sin(phi + 2*theta) - 3*g*l1 *m2*sin(phi) + g*l1 *m2*sin(phi + 2*theta) + 2*l1 *m1*thetadot *sin(phi + theta) + 2*l1 *m2*thetadot *sin(phi + theta) + l1 *l2*m2*phidot *sin(2*ph
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                                    2             2             2          2   2             2   2   2    2                    2   2   2                                                                      
+                                                                                   2*I1*I2 + 2*I1*l2 *m2 + 2*I2*l1 *m1 + 2*I2*l1 *m2 + 2*l1 *l2 *m1*m2 - 2*l1 *l2 *m2 *cos (phi + theta) + 2*l1 *l2 *m2                                                                       
+
+            \ 
+i + 2*theta)/ 
+--------------
+              
+              
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 449
+-l2*m2*(-2*I1*g*sin(phi) + 2*I1*l1*thetadot**2*sin(phi + theta) - 3*g*l1**2*m1*sin(phi) + g*l1**2*m1*sin(phi + 2*theta) - 3*g*l1**2*m2*sin(phi) + g*l1**2*m2*sin(phi + 2*theta) + 2*l1**3*m1*thetadot**2*sin(phi + theta) + 2*l1**3*m2*thetadot**2*sin(phi + theta) + l1**2*l2*m2*phidot**2*sin(2*phi + 2*theta))/(2*I1*I2 + 2*I1*l2**2*m2 + 2*I2*l1**2*m1 + 2*I2*l1**2*m2 + 2*l1**2*l2**2*m1*m2 - 2*l1**2*l2**2*m2**2*cos(phi + theta)**2 + 2*l1**2*l2**2*m2**2)
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 2599
+Mul(Integer(-1), Symbol('l2', real=True), Symbol('m2', real=True), Pow(Add(Mul(Integer(2), Symbol('I1', real=True), Symbol('I2', real=True)), Mul(Integer(2), Symbol('I1', real=True), Pow(Symbol('l2', real=True), Integer(2)), Symbol('m2', real=True)), Mul(Integer(2), Symbol('I2', real=True), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m1', real=True)), Mul(Integer(2), Symbol('I2', real=True), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m2', real=True)), Mul(Integer(2), Pow(Symbol('l1', real=True), Integer(2)), Pow(Symbol('l2', real=True), Integer(2)), Symbol('m1', real=True), Symbol('m2', real=True)), Mul(Integer(-1), Integer(2), Pow(Symbol('l1', real=True), Integer(2)), Pow(Symbol('l2', real=True), Integer(2)), Pow(Symbol('m2', real=True), Integer(2)), Pow(cos(Add(Symbol('phi', real=True), Symbol('theta', real=True))), Integer(2))), Mul(Integer(2), Pow(Symbol('l1', real=True), Integer(2)), Pow(Symbol('l2', real=True), Integer(2)), Pow(Symbol('m2', real=True), Integer(2)))), Integer(-1)), Add(Mul(Integer(-1), Integer(2), Symbol('I1', real=True), Symbol('g', real=True), sin(Symbol('phi', real=True))), Mul(Integer(2), Symbol('I1', real=True), Symbol('l1', real=True), Pow(Symbol('thetadot', real=True), Integer(2)), sin(Add(Symbol('phi', real=True), Symbol('theta', real=True)))), Mul(Integer(-1), Integer(3), Symbol('g', real=True), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m1', real=True), sin(Symbol('phi', real=True))), Mul(Symbol('g', real=True), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m1', real=True), sin(Add(Symbol('phi', real=True), Mul(Integer(2), Symbol('theta', real=True))))), Mul(Integer(-1), Integer(3), Symbol('g', real=True), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m2', real=True), sin(Symbol('phi', real=True))), Mul(Symbol('g', real=True), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m2', real=True), sin(Add(Symbol('phi', real=True), Mul(Integer(2), Symbol('theta', real=True))))), Mul(Integer(2), Pow(Symbol('l1', real=True), Integer(3)), Symbol('m1', real=True), Pow(Symbol('thetadot', real=True), Integer(2)), sin(Add(Symbol('phi', real=True), Symbol('theta', real=True)))), Mul(Integer(2), Pow(Symbol('l1', real=True), Integer(3)), Symbol('m2', real=True), Pow(Symbol('thetadot', real=True), Integer(2)), sin(Add(Symbol('phi', real=True), Symbol('theta', real=True)))), Mul(Pow(Symbol('l1', real=True), Integer(2)), Symbol('l2', real=True), Symbol('m2', real=True), Pow(Symbol('phidot', real=True), Integer(2)), sin(Add(Mul(Integer(2), Symbol('phi', real=True)), Mul(Integer(2), Symbol('theta', real=True)))))))
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1781
+       ⎛                           2                    2                 2                         2                 2                       3      2                  3      2                2         2               ⎞ 
+-l₂⋅m₂⋅⎝-2⋅I₁⋅g⋅sin(φ) + 2⋅I₁⋅l₁⋅θ̇ ⋅sin(φ + θ) - 3⋅g⋅l₁ ⋅m₁⋅sin(φ) + g⋅l₁ ⋅m₁⋅sin(φ + 2⋅θ) - 3⋅g⋅l₁ ⋅m₂⋅sin(φ) + g⋅l₁ ⋅m₂⋅sin(φ + 2⋅θ) + 2⋅l₁ ⋅m₁⋅θ̇ ⋅sin(φ + θ) + 2⋅l₁ ⋅m₂⋅θ̇ ⋅sin(φ + θ) + l₁ ⋅l₂⋅m₂⋅φ̇ ⋅sin(2⋅φ + 2⋅θ)⎠ 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                       2             2             2          2   2             2   2   2    2              2   2   2                                                       
+                                                      2⋅I₁⋅I₂ + 2⋅I₁⋅l₂ ⋅m₂ + 2⋅I₂⋅l₁ ⋅m₁ + 2⋅I₂⋅l₁ ⋅m₂ + 2⋅l₁ ⋅l₂ ⋅m₁⋅m₂ - 2⋅l₁ ⋅l₂ ⋅m₂ ⋅cos (φ + θ) + 2⋅l₁ ⋅l₂ ⋅m₂                                                        
+
+
+
+
+
+
+
+# name: thetadot_
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 54
+[   0    ]
+[        ]
+[   0    ]
+[        ]
+[thetadot]
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 30
+Matrix([[0], [0], [thetadot]])
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 81
+MutableDenseMatrix([[Integer(0)], [Integer(0)], [Symbol('thetadot', real=True)]])
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 3 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 46
+⎡0 ⎤
+⎢  ⎥
+⎢0 ⎥
+⎢  ⎥
+⎣θ̇⎦
+
+
+
+
+
+
+
+# name: thetadoubledot_
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1264
+    /                                                               2                          2                          2   2                  2   2                           2   2         2                            3   2       2                 \ 
+-l1*\2*I2*g*m1*sin(theta) + 2*I2*g*m2*sin(theta) + 2*I2*l2*m2*phidot *sin(phi + theta) + 2*g*l2 *m1*m2*sin(theta) + 3*g*l2 *m2 *sin(theta) - g*l2 *m2 *sin(2*phi + theta) + l1*l2 *m2 *thetadot *sin(2*phi + 2*theta) + 2*l2 *m2 *phidot *sin(phi + theta)/ 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                    2             2             2          2   2             2   2   2    2                    2   2   2                                                                    
+                                                                   2*I1*I2 + 2*I1*l2 *m2 + 2*I2*l1 *m1 + 2*I2*l1 *m2 + 2*l1 *l2 *m1*m2 - 2*l1 *l2 *m2 *cos (phi + theta) + 2*l1 *l2 *m2                                                                     
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 419
+-l1*(2*I2*g*m1*sin(theta) + 2*I2*g*m2*sin(theta) + 2*I2*l2*m2*phidot**2*sin(phi + theta) + 2*g*l2**2*m1*m2*sin(theta) + 3*g*l2**2*m2**2*sin(theta) - g*l2**2*m2**2*sin(2*phi + theta) + l1*l2**2*m2**2*thetadot**2*sin(2*phi + 2*theta) + 2*l2**3*m2**2*phidot**2*sin(phi + theta))/(2*I1*I2 + 2*I1*l2**2*m2 + 2*I2*l1**2*m1 + 2*I2*l1**2*m2 + 2*l1**2*l2**2*m1*m2 - 2*l1**2*l2**2*m2**2*cos(phi + theta)**2 + 2*l1**2*l2**2*m2**2)
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 2446
+Mul(Integer(-1), Symbol('l1', real=True), Pow(Add(Mul(Integer(2), Symbol('I1', real=True), Symbol('I2', real=True)), Mul(Integer(2), Symbol('I1', real=True), Pow(Symbol('l2', real=True), Integer(2)), Symbol('m2', real=True)), Mul(Integer(2), Symbol('I2', real=True), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m1', real=True)), Mul(Integer(2), Symbol('I2', real=True), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m2', real=True)), Mul(Integer(2), Pow(Symbol('l1', real=True), Integer(2)), Pow(Symbol('l2', real=True), Integer(2)), Symbol('m1', real=True), Symbol('m2', real=True)), Mul(Integer(-1), Integer(2), Pow(Symbol('l1', real=True), Integer(2)), Pow(Symbol('l2', real=True), Integer(2)), Pow(Symbol('m2', real=True), Integer(2)), Pow(cos(Add(Symbol('phi', real=True), Symbol('theta', real=True))), Integer(2))), Mul(Integer(2), Pow(Symbol('l1', real=True), Integer(2)), Pow(Symbol('l2', real=True), Integer(2)), Pow(Symbol('m2', real=True), Integer(2)))), Integer(-1)), Add(Mul(Integer(2), Symbol('I2', real=True), Symbol('g', real=True), Symbol('m1', real=True), sin(Symbol('theta', real=True))), Mul(Integer(2), Symbol('I2', real=True), Symbol('g', real=True), Symbol('m2', real=True), sin(Symbol('theta', real=True))), Mul(Integer(2), Symbol('I2', real=True), Symbol('l2', real=True), Symbol('m2', real=True), Pow(Symbol('phidot', real=True), Integer(2)), sin(Add(Symbol('phi', real=True), Symbol('theta', real=True)))), Mul(Integer(2), Symbol('g', real=True), Pow(Symbol('l2', real=True), Integer(2)), Symbol('m1', real=True), Symbol('m2', real=True), sin(Symbol('theta', real=True))), Mul(Integer(3), Symbol('g', real=True), Pow(Symbol('l2', real=True), Integer(2)), Pow(Symbol('m2', real=True), Integer(2)), sin(Symbol('theta', real=True))), Mul(Integer(-1), Symbol('g', real=True), Pow(Symbol('l2', real=True), Integer(2)), Pow(Symbol('m2', real=True), Integer(2)), sin(Add(Mul(Integer(2), Symbol('phi', real=True)), Symbol('theta', real=True)))), Mul(Symbol('l1', real=True), Pow(Symbol('l2', real=True), Integer(2)), Pow(Symbol('m2', real=True), Integer(2)), Pow(Symbol('thetadot', real=True), Integer(2)), sin(Add(Mul(Integer(2), Symbol('phi', real=True)), Mul(Integer(2), Symbol('theta', real=True))))), Mul(Integer(2), Pow(Symbol('l2', real=True), Integer(3)), Pow(Symbol('m2', real=True), Integer(2)), Pow(Symbol('phidot', real=True), Integer(2)), sin(Add(Symbol('phi', real=True), Symbol('theta', real=True))))))
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1618
+    ⎛                                                   2                    2                      2   2              2   2                     2   2   2                      3   2   2           ⎞ 
+-l₁⋅⎝2⋅I₂⋅g⋅m₁⋅sin(θ) + 2⋅I₂⋅g⋅m₂⋅sin(θ) + 2⋅I₂⋅l₂⋅m₂⋅φ̇ ⋅sin(φ + θ) + 2⋅g⋅l₂ ⋅m₁⋅m₂⋅sin(θ) + 3⋅g⋅l₂ ⋅m₂ ⋅sin(θ) - g⋅l₂ ⋅m₂ ⋅sin(2⋅φ + θ) + l₁⋅l₂ ⋅m₂ ⋅θ̇ ⋅sin(2⋅φ + 2⋅θ) + 2⋅l₂ ⋅m₂ ⋅φ̇ ⋅sin(φ + θ)⎠ 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                            2             2             2          2   2             2   2   2    2              2   2   2                                            
+                                           2⋅I₁⋅I₂ + 2⋅I₁⋅l₂ ⋅m₂ + 2⋅I₂⋅l₁ ⋅m₁ + 2⋅I₂⋅l₁ ⋅m₂ + 2⋅l₁ ⋅l₂ ⋅m₁⋅m₂ - 2⋅l₁ ⋅l₂ ⋅m₂ ⋅cos (φ + θ) + 2⋅l₁ ⋅l₂ ⋅m₂                                             
+
+
+
+
+
+
+
+# name: phi
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 3
+phi
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 3
+phi
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 24
+Symbol('phi', real=True)
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 2
+φ
+
+
+
+
+
+
+
+# name: phidot
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 6
+phidot
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 6
+phidot
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 27
+Symbol('phidot', real=True)
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 4
+φ̇
+
+
+
+
+
+
+
+# name: phiddot
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 7
+phiddot
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 7
+phiddot
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 28
+Symbol('phiddot', real=True)
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 4
+φ̈
+
+
+
+
+
+
+
+# name: theta
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 5
+theta
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 5
+theta
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 26
+Symbol('theta', real=True)
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 2
+θ
+
+
+
+
+
+
+
+# name: thetadot
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 8
+thetadot
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 8
+thetadot
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 29
+Symbol('thetadot', real=True)
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 4
+θ̇
+
+
+
+
+
+
+
+# name: thetaddot
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 9
+thetaddot
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 9
+thetaddot
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 30
+Symbol('thetaddot', real=True)
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 4
+θ̈
+
+
+
+
+
+
+
+# name: L
+# type: class
+# classname: sym
+# length: 6
+# name: ascii
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1023
+           2            2                                                                                                                 2            2      /                                             2                                                2\
+I1*thetadot    I2*phidot                                                                                                                l1 *m1*thetadot    m2*\(l1*thetadot*sin(theta) + l2*phidot*sin(phi))  + (l1*thetadot*cos(theta) - l2*phidot*cos(phi)) /
+------------ + ---------- + g*m1*(l1*sin(gamma) + l1*cos(theta)) + g*m2*(l1*sin(gamma) + l1*cos(theta) + l2*sin(gamma) - l2*cos(phi)) + ---------------- + ----------------------------------------------------------------------------------------------------
+     2             2                                                                                                                           2                                                            2                                                  
+
+
+
+
+
+# name: extra
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 0
+# columns: 0
+
+
+
+
+
+# name: flat
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 275
+I1*thetadot**2/2 + I2*phidot**2/2 + g*m1*(l1*sin(gamma) + l1*cos(theta)) + g*m2*(l1*sin(gamma) + l1*cos(theta) + l2*sin(gamma) - l2*cos(phi)) + l1**2*m1*thetadot**2/2 + m2*((l1*thetadot*sin(theta) + l2*phidot*sin(phi))**2 + (l1*thetadot*cos(theta) - l2*phidot*cos(phi))**2)/2
+
+
+
+
+
+# name: pickle
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1308
+Add(Mul(Rational(1, 2), Symbol('I1', real=True), Pow(Symbol('thetadot', real=True), Integer(2))), Mul(Rational(1, 2), Symbol('I2', real=True), Pow(Symbol('phidot', real=True), Integer(2))), Mul(Symbol('g', real=True), Symbol('m1', real=True), Add(Mul(Symbol('l1', real=True), sin(Symbol('gamma', real=True))), Mul(Symbol('l1', real=True), cos(Symbol('theta', real=True))))), Mul(Symbol('g', real=True), Symbol('m2', real=True), Add(Mul(Symbol('l1', real=True), sin(Symbol('gamma', real=True))), Mul(Symbol('l1', real=True), cos(Symbol('theta', real=True))), Mul(Symbol('l2', real=True), sin(Symbol('gamma', real=True))), Mul(Integer(-1), Symbol('l2', real=True), cos(Symbol('phi', real=True))))), Mul(Rational(1, 2), Pow(Symbol('l1', real=True), Integer(2)), Symbol('m1', real=True), Pow(Symbol('thetadot', real=True), Integer(2))), Mul(Rational(1, 2), Symbol('m2', real=True), Add(Pow(Add(Mul(Symbol('l1', real=True), Symbol('thetadot', real=True), sin(Symbol('theta', real=True))), Mul(Symbol('l2', real=True), Symbol('phidot', real=True), sin(Symbol('phi', real=True)))), Integer(2)), Pow(Add(Mul(Symbol('l1', real=True), Symbol('thetadot', real=True), cos(Symbol('theta', real=True))), Mul(Integer(-1), Symbol('l2', real=True), Symbol('phidot', real=True), cos(Symbol('phi', real=True)))), Integer(2)))))
+
+
+
+
+
+# name: size
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: matrix
+# rows: 1
+# columns: 2
+ 1 1
+
+
+
+
+
+# name: unicode
+# type: cell
+# rows: 1
+# columns: 1
+# name: <cell-element>
+# type: sq_string
+# elements: 1
+# length: 1035
+     2        2                                                                                           2      2      ⎛                             2                                2⎞
+I₁⋅θ̇    I₂⋅φ̇                                                                                          l₁ ⋅m₁⋅θ̇    m₂⋅⎝(l₁⋅θ̇⋅sin(θ) + l₂⋅φ̇⋅sin(φ))  + (l₁⋅θ̇⋅cos(θ) - l₂⋅φ̇⋅cos(φ)) ⎠
+────── + ────── + g⋅m₁⋅(l₁⋅sin(γ) + l₁⋅cos(θ)) + g⋅m₂⋅(l₁⋅sin(γ) + l₁⋅cos(θ) + l₂⋅sin(γ) - l₂⋅cos(φ)) + ────────── + ────────────────────────────────────────────────────────────────────
+  2        2                                                                                                2                                         2                                  
+
+
+
+
+
+
+
