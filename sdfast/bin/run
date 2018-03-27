@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# generate the animation data file
+octave rimlessrobot.m
+
+# animate the data
+./animate
