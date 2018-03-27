@@ -14,7 +14,7 @@ L1 = 0.5;% m
 L2 = 0.2;% m
 i1 = M1*L1^2/2;
 i2 = M2*L2^2/3;
-G = 9.81;% m/s^2
+G = -9.81;% m/s^2
 
 % substitue all the system's constant variables
 syms I1 I2 m1 m2 l1 l2 g theta thetadot phi phidot x1 x2 x3 x4 gamma real
@@ -48,7 +48,7 @@ xdot = @(t,x) ...
 	phidoubledot_(x(1),x(2),x(3),x(4))
 ];
 % use ODE45 to cycle through some movement
-init_cons = [pi,0,pi-5*pi/180,0];
+init_cons = [5*pi/180,0,45*pi/180,0];
 tspan = [0 5];
 [T,Y] = ode45(xdot, tspan, init_cons);
 
@@ -64,9 +64,32 @@ legend('show')
 dlmwrite('../data/jointdata.txt', Y)
 
 % sum the kinetic and potential energy at each step
+L = vpa(...
+	subs(...
+		L, ...
+		[I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot, gamma], ...
+		[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4,0]));
+L = str2func(strcat('@(x1,x2,x3,x4) ',ccode(L)));
+P = vpa(...
+	subs(...
+		P, ...
+		[I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot, gamma], ...
+		[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4,0]));
+P = str2func(strcat('@(x1,x2,x3,x4) ',ccode(P)));
+K = vpa(...
+	subs(...
+		K, ...
+		[I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot, gamma], ...
+		[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4,0]));
+K = str2func(strcat('@(x1,x2,x3,x4) ',ccode(K)));
 for i = 1:length(Y)
-	y(i) = vpa(subs(L, [I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot, gamma], [i1,i2,M1,M2,L1,L2,G,Y(i,1),Y(i,2),Y(i,3),Y(i,4),0]));
+	 E(i) = L(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
+	KE(i) = K(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
+	PE(i) = P(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
 end
 
 fig2 = figure;
-plot(T,y)
+hold on
+plot(T, E,'DisplayName','Energy')
+plot(T,KE,'DisplayName', 'Kinetic Energy')
+plot(T,PE,'DisplayName', 'Potential Energy')
