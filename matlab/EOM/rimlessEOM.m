@@ -1,4 +1,4 @@
-% pkg load symbolic
+%pkg load symbolic
 
 % load the lagrangian
 stiffLagrangian

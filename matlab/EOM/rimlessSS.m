@@ -26,8 +26,8 @@ phidoubledot_   = subs(phidoubledot_  ,...
 	[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4]);
 
 pow = @(x,y) x^y;
-thetadoubledot_ = str2func(strcat('@(x1,x2,x3,x4)',ccode(vpa(thetadoubledot_))));
-phidoubledot_ = str2func(strcat('@(x1,x2,x3,x4)',ccode(vpa(phidoubledot_))));
+thetadoubledot_ = str2func(strcat('@(x1,x2,x3,x4)',char(vpa(thetadoubledot_))));
+phidoubledot_ = str2func(strcat('@(x1,x2,x3,x4)',char(vpa(phidoubledot_))));
 % generat3 the state space equations
 %{
 	x1 = theta
@@ -52,13 +52,13 @@ init_cons = [5*pi/180,0,45*pi/180,0];
 tspan = [0 5];
 [T,Y] = ode45(xdot, tspan, init_cons);
 
-% visualization
+%% visualization
 fig = figure;
 hold on
 plot(T,Y(:,1),'DisplayName','angle \theta')
-plot(T,Y(:,2),'DisplayName','angle $\dot\theta$')
+plot(T,Y(:,2),'DisplayName','angle \theta_{dot}')
 plot(T,Y(:,3),'DisplayName','angle \phi')
-plot(T,Y(:,4),'DisplayName','angle $\dot\phi$')
+plot(T,Y(:,4),'DisplayName','angle \phi_{dot}')
 
 legend('show')
 dlmwrite('../data/jointdata.txt', Y)
@@ -69,19 +69,19 @@ L = vpa(...
 		L, ...
 		[I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot, gamma], ...
 		[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4,0]));
-L = str2func(strcat('@(x1,x2,x3,x4) ',ccode(L)));
+L = str2func(strcat('@(x1,x2,x3,x4) ',char(L)));
 P = vpa(...
 	subs(...
 		P, ...
 		[I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot, gamma], ...
 		[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4,0]));
-P = str2func(strcat('@(x1,x2,x3,x4) ',ccode(P)));
+P = str2func(strcat('@(x1,x2,x3,x4) ',char(P)));
 K = vpa(...
 	subs(...
 		K, ...
 		[I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot, gamma], ...
 		[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4,0]));
-K = str2func(strcat('@(x1,x2,x3,x4) ',ccode(K)));
+K = str2func(strcat('@(x1,x2,x3,x4) ',char(K)));
 for i = 1:length(Y)
 	 E(i) = L(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
 	KE(i) = K(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
