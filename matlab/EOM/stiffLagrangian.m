@@ -22,7 +22,9 @@ KEm = I1*thetadot^2/2;
 PEM = m2*g*h2;
 KEM = m2/2*norm(cross(thetadot_,l1_) + cross(phidot_, l2_))^2 + I2*phidot^2/2;
 
-% Lagrangian is the combination of Poential Energy - Kinetic Energy https://en.wikipedia.org/wiki/Lagrangian_mechanics
+% Lagrangian is the combination of 
+% Poential Energy - Kinetic Energy 
+% https://en.wikipedia.org/wiki/Lagrangian_mechanics
 K = KEm+KEM;
 P = PEm+PEM;
 L = K+P;

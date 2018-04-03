@@ -18,12 +18,14 @@ G = -9.81;% m/s^2
 
 % substitue all the system's constant variables
 syms I1 I2 m1 m2 l1 l2 g theta thetadot phi phidot x1 x2 x3 x4 gamma real
+thetadoubledot__ = thetadoubledot_;
+phidoubledot__ = phidoubledot_;
 thetadoubledot_ = subs(thetadoubledot_,...
 	[I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot],...
-	[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4]);
+	[i1,i2,M1,M2,L1,L2,G,x1,    x2,       x3,  x4]);
 phidoubledot_   = subs(phidoubledot_  ,...
 	[I1,I2,m1,m2,l1,l2,g,theta, thetadot, phi, phidot], ...
-	[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4]);
+	[i1,i2,M1,M2,L1,L2,G,x1,    x2,       x3,  x4]);
 
 pow = @(x,y) x^y;
 thetadoubledot_ = str2func(strcat('@(x1,x2,x3,x4)',char(vpa(thetadoubledot_))));
@@ -83,13 +85,14 @@ K = vpa(...
 		[i1,i2,M1,M2,L1,L2,G,x1,x2,x3,x4,0]));
 K = str2func(strcat('@(x1,x2,x3,x4) ',char(K)));
 for i = 1:length(Y)
-	 E(i) = L(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
+% 	 E(i) = L(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
 	KE(i) = K(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
 	PE(i) = P(Y(i,1),Y(i,2),Y(i,3),Y(i,4));
+    E(i) = KE(i) + PE(i);
 end
 
 fig2 = figure;
 hold on
 plot(T, E,'DisplayName','Energy')
-plot(T,KE,'DisplayName', 'Kinetic Energy')
-plot(T,PE,'DisplayName', 'Potential Energy')
+% plot(T,KE,'DisplayName', 'Kinetic Energy')
+% plot(T,PE,'DisplayName', 'Potential Energy')

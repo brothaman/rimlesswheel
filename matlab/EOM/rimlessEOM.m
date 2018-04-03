@@ -37,13 +37,13 @@ qdoubledot = M\(-V - G)
 dLdt = diff(L,theta);
 dLdtd = diff(L, thetadot);
 ddtdLdtd = ddt(dLdtd, x_xdot);
-EOM1 = simplify(dLdt - ddtdLdtd);
+EOM1 = (dLdt - ddtdLdtd);
 
 % as a function of phi
 dLdphi = diff(L,phi);
 dLdphidot = diff(L, phidot);
 ddtdLdphidot = ddt(dLdphidot, x_xdot);
-EOM2 = simplify(dLdphi - ddtdLdphidot);
+EOM2 = (dLdphi - ddtdLdphidot);
 
 
 % solve and reduce the equations of motion
@@ -51,8 +51,8 @@ phidoubledot = solve(EOM2,phiddot);
 thetadoubledot = solve(EOM1, thetaddot);
 
 % replace phiddot in equation 1 with equation 2 and solve for thetaddot
-thetadoubledot_ = simplify(solve(subs(EOM1,phiddot,phidoubledot), thetaddot));
-phidoubledot_   = simplify(solve(subs(EOM2,thetaddot, thetadoubledot), phiddot));
+thetadoubledot_ = (solve(subs(EOM1,phiddot,phidoubledot), thetaddot));
+phidoubledot_   = (solve(subs(EOM2,thetaddot, thetadoubledot), phiddot));
 
 if exist('l') == 1
 	% as a function of l
@@ -70,3 +70,4 @@ else
  		'phi','phidot','phiddot',...
 		'theta','thetadot','thetaddot','L','P','K');
 end
+
