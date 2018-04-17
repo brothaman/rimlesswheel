@@ -31,10 +31,21 @@ pcm2 = pcm1 + R_theta1*R_theta2*(lcm2*r_cm2);
 h1 = dot(j, pcm1);
 h2 = dot(j, pcm2);
 
-%{
 % velocities of each of the pendulums as a function of thetadot
-v1 = lcm1*thetadot_1;
-v2 = v1 + lcm2*thetadot_2;
+W1 = [
+	0 -thetadot_1 0
+	thetadot_1 0 0
+	0 0 0
+];
+
+W2 = [
+	0 -thetadot_2 0
+	thetadot_2 0 0
+	0 0 0
+];
+
+v1 = W1*R_theta1*(lcm1*r_cm1)
+v2 = v1 + W2*R_theta2*(lcm2*r_cm2)
 
 % make edits here to change from ideal to real pendulum
 I1 = m1*lcm1^2;
@@ -45,6 +56,7 @@ P1 = m1*g*h1;
 P2 = m2*g*h2
 lagrangian = (K1+K2) - (P1+P2);
 
+%{
 %% form the equations of motion
 theta = [
 	theta_1, thetadot_1
