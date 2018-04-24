@@ -66,12 +66,15 @@ theta = [
 dldtheta1 = diff(lagrangian, theta_1);
 dldthetadot1 = diff(lagrangian, thetadot_1);
 ddtdldthetadot1 = ddt(dldthetadot1, theta);
-EOM1 = dldtheta1 - ddtdldthetadot1;
-
+EOM1 = simplify(dldtheta1 - ddtdldthetadot1);
+EOM1 = collect(EOM1, [thetaddot_1, thetaddot_2, sin(theta_1), sin(theta_2)])
+MM = 
+M11 = 
 dldtheta2 = diff(lagrangian, theta_2);
 dldthetadot2 = diff(lagrangian, thetadot_2);
 ddtdldthetadot2 = ddt(dldthetadot2, theta);
-EOM2 = dldtheta2 - ddtdldthetadot2;
+EOM2 = simplify(dldtheta2 - ddtdldthetadot2);
+EOM2 = collect(EOM2, [thetaddot_1, thetaddot_2, sin(theta_1), sin(theta_2)])
 
 
 %{
