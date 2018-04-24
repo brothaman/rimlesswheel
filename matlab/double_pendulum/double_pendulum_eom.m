@@ -3,7 +3,7 @@
 % using ODE45
 clear 
 close all
-addpath('/Users/rbrothers/GitHub/rimlesswheel/matlab/EOM')
+addpath('../EOM')
 syms m1 m2 l1 l2 g theta_1 thetadot_1 thetaddot_1 theta_2 thetadot_2 thetaddot_2 real
 i = [1 0 0]'; j = [0 1 0]'; k = [0 0 1]';
 c1 = cos(theta_1); s1 = sin(theta_1);
@@ -48,15 +48,14 @@ v1 = W1*R_theta1*(lcm1*r_cm1)
 v2 = v1 + W2*R_theta2*(lcm2*r_cm2)
 
 % make edits here to change from ideal to real pendulum
-I1 = m1*lcm1^2;
-I2 = m2*lcm2^2;
-K1 = I1*thetadot_1^2/2;
-K2 = I2*thetadot_2^2/2
+I1 = m1*lcm1^2/12;
+I2 = m2*lcm2^2/12;
+K1 = m1*dot(v1,v1)/2 + I1 * thetadot_1^2;
+K2 = m2*dot(v2,v2)/2 + I2 * thetadot_2^2;
 P1 = m1*g*h1;
-P2 = m2*g*h2
+P2 = m2*g*h2;
 lagrangian = (K1+K2) - (P1+P2);
 
-%{
 %% form the equations of motion
 theta = [
 	theta_1, thetadot_1
@@ -75,6 +74,7 @@ ddtdldthetadot2 = ddt(dldthetadot2, theta);
 EOM2 = dldtheta2 - ddtdldthetadot2;
 
 
+%{
 %% set up the state space equation
 % theta1 = x1, theta2 = x2, thetadot1 = x3, thetadot2 = x4
 syms x1 x2 x3 x4 
