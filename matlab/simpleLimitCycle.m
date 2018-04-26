@@ -4,6 +4,7 @@
 clear 
 close all
 syms m g l I theta thetadot thetaddot real
+addpath('double_pendulum/')
 
 %% generate lagrangian
 lcm = l;
@@ -93,3 +94,9 @@ plot(T, E, 'DisplayName', 'Energy')
 title('Totla Energy of Pendulum')
 xlabel('time')
 ylabel('$$Energy\ E(\theta,\dot\theta)$$','Interpreter','latex')
+
+
+x1s = Length.*sin(Y(:,1));
+y1s = -Length.*cos(Y(:,1));
+points = [x1s(:),y1s(:)];
+animate_pendulum(points,0)

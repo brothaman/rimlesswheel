@@ -116,37 +116,21 @@ D = @(x) [D1(x(1),x(2),x(3),x(4));D2(x(1),x(2),x(3),x(4))];
 x = 1:4;
 xdot(1,x,M,D)
 %xdot_ = @(t,x) M(x(1),x(2),x(3),x(4))\D(x(1),x(2),x(3),x(4))
-%{
-%M11 = simplify(subs(eqn3,{thetaddot_1, thetaddot_2, thetadot_1, thetadot_2, g, m1, m2},{1,0,0,0,0,0,0}))
-x2dot = solve(EOM1, thetaddot_1);
-x2dot = vpa(subs(x2dot,symbolic_variables,physical_variables));
-x2dot = str2func(strcat('@(x1,x2,x3,x4) ',char(x2dot)));
-
-x4dot = solve(EOM2, thetaddot_2);
-x4dot = vpa(subs(x4dot,symbolic_variables,physical_variables));
-x4dot = str2func(strcat('@(x1,x2,x3,x4) ',char(x4dot)));
-x_dot = @(t,x)... 
-	[
-		x(2)
- 		x2dot(x(1),x(2),x(3),x(4))
-		x(4)
-		x4dot(x(1),x(2),x(3),x(4))
-	];
-
-%}
 %% perform the ODE45
 options = odeset('RelTol',1e-12,'AbsTol',1e-18);
 t0 = 0;
 tf = 5;
-x0 = [15*pi/180 0 0 0];
+x0 = [0 0 45*pi/180 0];
 tspan = [t0 tf];
 [T,Y] = ode45(@(t,x)xdot(t,x,M,D), tspan, x0, options);
 %% plots
 % plot of state
 fig1 = figure;
 hold on
-plot(T, Y(:,1), "b-o",'DisplayName','$$\theta$$')
-plot(T, Y(:,2), "r-+",'DisplayName','$$\dot\theta$$')
+plot(T, Y(:,1), "b-o",'DisplayName','$$\theta_1$$')
+plot(T, Y(:,2), "r-+",'DisplayName','$$\dot\theta_1$$')
+plot(T, Y(:,3), "g-o",'DisplayName','$$\theta_2$$')
+plot(T, Y(:,4), "y-+",'DisplayName','$$\dot\theta_2$$')
 xmax = T(Y(:,2)==max(Y(:,2)));
 vline(xmax)
 x_1 = xmax;
@@ -161,34 +145,14 @@ hold off
 leg = legend('show');
 set(leg,'Interpreter','latex')
 
+% get the endpoints of each of the pendulums
+x1s = L1.*sin(Y(:,1));
+x2s = L2.*sin(Y(:,1)+Y(:,3));
+y1s = -L1.*cos(Y(:,1));
+y2s = -L2.*cos(Y(:,1)+Y(:,3));
+points = [x1s(:),y1s(:),x2s(:),y2s(:)];
+animate_pendulum(points,0.001,[-2,2,-2,1])
 %{
-% Plot of Limit Cycle
-fig2 = figure;
-plot(Y(:,1), Y(:,2))
-title("Limit Cycle")
-xlabel("$$\theta$$",'Interpreter','latex')
-ylabel("$$\dot\theta$$",'Interpreter','latex')
-
-% plot of energy
-fig3 = figure;
-L = vpa(subs(lagrangian, symbolic_variables, physical_variables));
-L = str2func(strcat('@(x1,x2,x3,x4) ',char(L)));
-P = vpa(subs(P, symbolic_variables, physical_variables));
-P = str2func(strcat('@(x1,x2,x3,x4) ',char(P)));
-K = vpa(subs(K, symbolic_variables, physical_variables));
-K = str2func(strcat('@(x1,x2,x3,x4) ',char(K)));
-for i = 1:length(T)
-	KE(i) = K(Y(i,1),Y(i,2), Y(i,3), Y(i,4));
-	PE(i) = P(Y(i,1),Y(i,2), Y(i,3), Y(i,4));
-    E(i) = KE(i) + PE(i);
-end
-hold on
-plot(T, E, 'DisplayName', 'Energy')
-% plot(T,PE, 'DisplayName', 'Potential Energy');
-% plot(T,KE, 'DisplayName', 'Kinetic Energy')
-title('Totla Energy of Pendulum')
-xlabel('time')
-ylabel('$$Energy\ E(\theta,\dot\theta)$$','Interpreter','latex')
 %}
 
 function [x] = xdot(t,x,M,D)
