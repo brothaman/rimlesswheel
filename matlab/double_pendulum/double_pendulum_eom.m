@@ -168,6 +168,24 @@ hold off
 leg = legend('show');
 set(leg,'Interpreter','latex')
 
+%% Plot the total Kinetic Energy
+PE = subs(PE,symbolic_variables, physical_variables);
+KE = subs(KE,symbolic_variables, physical_variables);
+PE = str2func(strcat('@(x1,x2,x3,x4)', char(PE)));
+KE = str2func(strcat('@(x1,x2,x3,x4)', char(KE)));
+
+PEs = zeros(length(T),1);
+KEs = zeros(length(T),1);
+
+for i = 1:length(T)
+	PEs(i) = PE(Y(i,1),Y(i,2), Y(i,3),Y(i,4));
+	KEs(i) = KE(Y(i,1),Y(i,2), Y(i,3),Y(i,4));
+end
+fig3 = figure;
+plot(T,PEs-KEs, 'b-o', 'DisplayName', 'Total Kinetic Energy')
+legend('show')
+hold off
+
 %% animate the pendulum
 % get the endpoints of each of the pendulums
 % get equal timesteps
@@ -181,6 +199,7 @@ y2s = y1s-L2.*cos(Y1+Y2);
 points = [x1s(:),y1s(:),x2s(:),y2s(:)];
 animate_pendulum(points,0.001,[-2,2,-2,1])
 
+
 function [x] = xdot(t,x,M,D)
 x_ = M(x)\D(x);
 x = [
@@ -190,3 +209,5 @@ x = [
 	x_(2)
 	];
 end
+
+
