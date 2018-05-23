@@ -1,5 +1,15 @@
-function fig = animated_pendulum(points,pz,dims)
-fig = figure;
+function fig = animated_pendulum(points, varagin)
+%% Input Parsers
+defaultWindow = [ 2, -2, 2, -2];
+defaultFigure = figure;
+defaultPlotOptions = {'Marker','o','MarkerSize','50'};
+
+p = inputParser;
+validNumericArray = @(x) isnumeric(x);
+
+addRequired('PlotLimits', defaultFigure, validNumericArray)
+figure(fig);
+hold on
 sz = size(points);
 n = sz(2)/2;
 len = sz(1);
@@ -30,13 +40,16 @@ for i = 1:len
 		p_ = [ p(2*j-1),p(2*j)];
 		P = [origin(:), p_(:)];
 		PP(j) = line(P(1,:),P(2,:));
+		PPo(j) = line(p_(1), p_(2), 'Marker', 'o','MarkerSize',50);
 	end
 	pause(pz)
 	% delete the last points
 	if(i<len)
 		for j = 1:n
 			delete(PP(j));
+			delete(PPo(j));
 		end
 	end
 end
+hold off
 end
