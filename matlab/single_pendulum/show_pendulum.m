@@ -4,8 +4,8 @@ function [fig, phandle] = show_pendulum(fig, phandle, points)
 		p = points{i}
 		clearfig = true;
 		if (clearfig)
-			for i = 1:length(phandle)
-				delete(phandle(i));
+			for j = 1:length(phandle)
+				delete(phandle(j));
 			end
 		end
 
