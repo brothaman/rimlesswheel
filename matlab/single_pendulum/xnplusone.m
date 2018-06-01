@@ -1,5 +1,6 @@
 function [t,x] = xnplusone(t, x, varargin)
 %% discretized time-invariant single tone pendulum
+	global model
 	defaults.torque = 0.0;
 	defaults.direction = 1;
 	defaults.stepsize = 1e-3;
@@ -16,22 +17,23 @@ function [t,x] = xnplusone(t, x, varargin)
 	addParameter(p, 'AngleResolution', defaults.pres, @(x) isnumeric(x));
 	addParameter(p, 'SpeedResolution', defaults.sres, @(x) isnumeric(x));
 	addParameter(p, 'TorqueResolution', defaults.tres, @(x) isnumeric(x));
-	addParameter(p, 'options', defaults.options)
+	addParameter(p, 'options', defaults.options);
 	parse(p,t,x,varargin{:});
 
-	p.Results
 	% trucate input values
-	x(1) = round(p.Results.x(1),-log10(p.Results.AngleResolution));
+	x(1) = round2pi(p.Results.x(1),-log10(p.Results.AngleResolution));
 	x(2) = round(p.Results.x(2),-log10(p.Results.SpeedResolution));
 	torque = round(p.Results.Torque, -log10(p.Results.TorqueResolution));
 
 	% if model isn't loaded load it
-	if exist('model') == 0
+	if ~isstruct(model)
+		disp('Loading model *')
 		load('lib/model.mat');
+		disp('Model loaded *')
 	end
 
 	% set up the differential equations of motion
-	xdot = @(t,x) [x(2); torque-model.D(x(1),x(2))/model.M(x(1),x(2))];
+	xdot = @(t,x) [x(2); (torque-model.D(x(1),x(2)))/model.M(x(1),x(2))];
 
 	% update current model characteristics 
 	model.t0 = p.Results.t;
@@ -43,4 +45,8 @@ function [t,x] = xnplusone(t, x, varargin)
 	[T,X] = ode45(@(t,x) xdot(t,x), model.tspan, model.initial_conditions, p.Results.options);
 	t = T(end);
 	x = X(end,:);
+end
+
+function [val] = round2pi(val,decimal_places)
+	val = round(val/pi*1*10^decimal_places)/(1*10^decimal_places)*round(pi,decimal_places);
 end

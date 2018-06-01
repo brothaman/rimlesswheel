@@ -1,7 +1,7 @@
 function [fig, phandle] = show_pendulum(fig, phandle, points)
-	figure(fig)
+	figure(fig);
 	for i = 1:length(points)
-		p = points{i}
+		p = points{i};
 		clearfig = true;
 		if (clearfig)
 			for j = 1:length(phandle)
