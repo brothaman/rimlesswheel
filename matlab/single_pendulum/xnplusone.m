@@ -1,7 +1,6 @@
-function [t,x] = xnplusone(t, x, varargin)
+function [t,x] = xnplusone(t, x, Torque, varargin)
 %% discretized time-invariant single tone pendulum
 	global model
-	defaults.torque = 0.0;
 	defaults.direction = 1;
 	defaults.stepsize = 1e-3;
 	defaults.pres = 0.001;
@@ -11,29 +10,23 @@ function [t,x] = xnplusone(t, x, varargin)
 	p = inputParser;
 	addRequired(p, 't', @(x) isnumeric(x));
 	addRequired(p, 'x', @(x) isnumeric(x));
-	addParameter(p, 'Torque', defaults.torque, @(x) isnumeric(x));
+	addRequired(p, 'Torque', @(x) isnumeric(x));
 	addParameter(p, 'StepSize', defaults.stepsize, @(x) isnumeric(x));
 	addParameter(p, 'Direction', defaults.direction, @(x) x==1 || x==0);
 	addParameter(p, 'AngleResolution', defaults.pres, @(x) isnumeric(x));
 	addParameter(p, 'SpeedResolution', defaults.sres, @(x) isnumeric(x));
 	addParameter(p, 'TorqueResolution', defaults.tres, @(x) isnumeric(x));
 	addParameter(p, 'options', defaults.options);
-	parse(p,t,x,varargin{:});
-
-	% trucate input values
-	x(1) = round2pi(p.Results.x(1),-log10(p.Results.AngleResolution));
-	x(2) = round(p.Results.x(2),-log10(p.Results.SpeedResolution));
-	torque = round(p.Results.Torque, -log10(p.Results.TorqueResolution));
+	parse(p,t,x,Torque,varargin{:});
 
 	% if model isn't loaded load it
 	if ~isstruct(model)
 		disp('Loading model *')
 		load('lib/model.mat');
 		disp('Model loaded *')
-	end
-
+    end
 	% set up the differential equations of motion
-	xdot = @(t,x) [x(2); (torque-model.D(x(1),x(2)))/model.M(x(1),x(2))];
+	xdot = @(t,x) [x(2); (-p.Results.Torque-model.D(x(1),x(2)))/model.M(x(1),x(2))];
 
 	% update current model characteristics 
 	model.t0 = p.Results.t;
@@ -45,8 +38,13 @@ function [t,x] = xnplusone(t, x, varargin)
 	[T,X] = ode45(@(t,x) xdot(t,x), model.tspan, model.initial_conditions, p.Results.options);
 	t = T(end);
 	x = X(end,:);
-end
 
-function [val] = round2pi(val,decimal_places)
-	val = round(val/pi*1*10^decimal_places)/(1*10^decimal_places)*round(pi,decimal_places);
+	% map angular values over
+	if(x(1) > 2*pi)
+		x(1) = wrapTo2Pi(x(1));
+	end
+
+	if(x(1) < 0)
+		x(1) = wrapTo2Pi(x(1));
+    end
 end
