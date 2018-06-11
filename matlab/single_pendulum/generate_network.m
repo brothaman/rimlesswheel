@@ -21,8 +21,7 @@ for torque = -10:1:10
         for x2 = all_speeds
             [Xin] = generate_new_state( Xin, Xd, torque, time,...
                 anglerange, speedrange, torquerange);
-            pause
         end
-        pause
     end
 end
+save('lib/cost_network.m', NODES);
