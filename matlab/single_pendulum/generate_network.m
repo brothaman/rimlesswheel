@@ -24,4 +24,4 @@ for x1 = all_angles
         end
     end
 end
-save('lib/cost_network.m', 'NODES');
+save('lib/cost_network.mat', 'NODES');

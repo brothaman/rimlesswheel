@@ -15,7 +15,6 @@ ntorques =20;
 torque = map(torque,torquerange, ntorques);
 %% ------------------ discretizations --------------------------- %%
 
-Xin = round(Xin, 2);
 torque = round(torque, 1);
 [t,X] = xnplusone(0,Xin,torque,'StepSize',time,...
         'AngleResolution', angleresolution,...
