@@ -24,13 +24,4 @@ for x1 = all_angles
         end
     end
 end
-% for torque = -10:1:10
-%     % generate new state
-%     for x1 = all_angles
-%         for x2 = all_speeds
-%             generate_new_state( Xin, Xd, torque, time,...
-%                 anglerange, speedrange, torquerange);
-%         end
-%     end
-% end
 save('lib/cost_network.m', 'NODES');

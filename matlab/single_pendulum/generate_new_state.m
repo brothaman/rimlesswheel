@@ -23,7 +23,6 @@ torque = round(torque, 1);
         'TorqueResolution', torqueresolution);
 [X(1), mnextstate] = map(X(1), anglerange, nangles);
 [X(2), nnextstate] = map(X(2), speedrange, nspeeds);
-X = round(X,2);
 if max( Xin ~= X)
 J = cost(Xd,Xin,X,torque);
     if isempty(NODES{mstate,nstate}.state), NODES{mstate,nstate}.state = Xin; end
