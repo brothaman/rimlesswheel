@@ -1,7 +1,7 @@
 %% network details
 % this script will gather information about the cost network
-global NODES
-load lib/cost_network_v0.2.mat
+global NODES count
+load ../lib/cost_network_v0.4i3.mat
 m = 201;
 n = 101;
 p = 21;
@@ -18,5 +18,7 @@ end
 average_connections_per_node = mean2(nodeconnectionarr);
 percent_validated_nodes = sum(policy_is_set)/num_nodes;
 fig = figure;
-surf(policy_is_set);
-colormap  hsv
+contour(policy_is_set);
+xlabel('angle \theta mapped [0,2\pi] -> [0, 101]','Interpreter','latex')
+ylabel('anglular velocity $\dot{\theta}$ mapped [-6,6] -> [0, 201]','Interpreter','latex')
+title({'Contour plot of nodes that','have a connection to the goal'})

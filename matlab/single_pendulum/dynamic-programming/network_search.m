@@ -14,11 +14,6 @@ for j = 1:101
             % loop and the number of connections to evaluate will grow to
             % an infinite value. in other words im looking to eliminate 1
             % deep cylclic loops.
-%             if ~isempty(p)
-%                 if NODES{m_,n_}.connections{p}(1:2) == [j,k]
-%                     dont = true;
-%                 end
-%             end
             if sum(NODES{j,k}.connections{l}(1:2) == [m_,n_]) == 2
                 p = NODES{m_,n_}.optimal_policy;
                 dont = false;
