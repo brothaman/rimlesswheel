@@ -18,6 +18,11 @@ if length(NODES{mstate, nstate}.optimal_value) == 0
             NODES{mstate, nstate}.connections{i}(1),...
             NODES{mstate, nstate}.connections{i}(2)...
             );
+        if counter > 100
+            value = NAN;
+            policy = [];
+            return
+        end
         if isempty(NODES{mstate, nstate}.optimal_value)
             NODES{mstate, nstate}.optimal_value = value + NODES{mstate, nstate}.connections{i}(4);
             NODES{mstate, nstate}.optimal_policy = [NODES{mstate, nstate}.connections{i}(1:2) policy];
