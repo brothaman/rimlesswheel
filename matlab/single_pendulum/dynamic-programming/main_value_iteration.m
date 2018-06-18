@@ -4,6 +4,7 @@
 % script to initialize value iteration and set the workspace environment
 clear all
 global NODES count
+addpath('../lib')
 load ../lib/cost_network_v0.1.mat 
 m = 51; n = 101; % the goal
 NODES{m,n}.optimal_value = 0;
@@ -12,6 +13,6 @@ i = 1;
 evaluateConnectionTime = [];
 networksearchtime = [];
 count = 0;
-for j = 1:3
+for j = 1:50
     [m,n,connections,i] = value_iteration(connections,n,m,i);
 end
