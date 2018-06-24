@@ -26,7 +26,7 @@ temp = unique(temp,'rows');
 m = [m temp(:,1)'];
 n = [n temp(:,2)'];
 connections = [connections; temp(:,3:end)];    
-count= count +1;
-save('../lib/current_6_12_2018_22_21.mat','connections','m','n','i')
+count = count + 1;
+save(strcat('../lib/current_6_12_2018_22_21_iteration', int2str(count),'.mat'),'connections','m','n','i')
 save(strcat('../lib/cost_network_v0.4i',int2str(count),'.mat'),'NODES')
 end

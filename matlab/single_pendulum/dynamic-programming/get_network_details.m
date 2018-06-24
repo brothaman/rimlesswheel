@@ -1,5 +1,5 @@
 function [number_of_connections, nodes_with_policy_set] = get_network_details(filename, size)
-    netowrk = load(filename);
+    network = load(filename);
     n = size(1);
     m = size(2);
     number_of_connections = zeros(n,m);

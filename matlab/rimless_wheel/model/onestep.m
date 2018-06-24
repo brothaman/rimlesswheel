@@ -1,8 +1,12 @@
 %===================================================================
-function [z,t,thetadotmid,Avg_Velocity,error_flag]=onestep(z0,parms,steps)
+function [z,t,thetadotmid,Avg_Velocity,error_flag]=onestep(z0,parms,steps,varargin)
 %===================================================================
 
-flag = 1;
+if nargin > 3
+    flag = varargin{4};
+else
+    flag = 1;
+end
 if nargin<2
     error('need more inputs to onestep');
 elseif nargin<3
@@ -21,6 +25,7 @@ z_ode = [];
 thetadotmid = z0(1,2);
 for i=1:steps
 
+    % integrate until collision
     [z_temp1,t_temp1] = fn_mid2bhs(z0,parms);
     %thetadotmid(i) = z_temp1(1,2);
     
@@ -38,8 +43,11 @@ for i=1:steps
     xtemp1 = -parms.l*sin(z_temp1(end,1));
     xhtemp1 = -parms.l*sin(z_temp1(:,1)); %x of wheel
     
+    % determine the state after heel strike from the state given at the
+    % time of collision
     zplus = fn_bhs2ahs(z0,parms);
     
+    % integrate from just after heel strike to the next midstance
     [z_temp2,t_temp2] = fn_ahs2mid(zplus,parms);
     
     thetadotmid = [thetadotmid z_temp2(end,2)];
