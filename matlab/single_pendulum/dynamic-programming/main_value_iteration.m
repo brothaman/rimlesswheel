@@ -16,3 +16,4 @@ count = 0;
 for j = 1:50
     [m,n,connections,i] = value_iteration(connections,n,m,i);
 end
+exit()
