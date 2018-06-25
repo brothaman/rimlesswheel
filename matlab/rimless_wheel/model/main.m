@@ -4,14 +4,14 @@ clc
 clear all
 
 parms = get_parms;
-parms.control.alpha = 45*(pi/180); %torso angle
+parms.control.alpha = 25*(pi/180); %torso angle
 
 q = 0;%angle should always be zero
-u = -1;%mid-stance velocity 
+u = 0;%mid-stance velocity 
 z0 = [q u];% [angle rate];
 
-steps = 10;
-[z,t,thetadotmid,Avg_Velocity,error_flag] = onestep(z0,parms,steps);
+steps = 1;
+[z,t,thetadotmid,Avg_Velocity,error_flag] = onestep(z0,parms,steps,0);
 if (error_flag ~= 0) %%0 no failure, 1 = ground penetration, 2 = ground reaction force < 0 
     warning('simulation failed: change initial condition or torso angle');
 end

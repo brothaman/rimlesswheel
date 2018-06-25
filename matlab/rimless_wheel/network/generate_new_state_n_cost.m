@@ -6,12 +6,12 @@ global network
 
 % ------------------------ discretizations ----------------------------- %
 N = 100;
-M = 100;
+M = 10;
 % ------------------------ discretizations ----------------------------- %
 
 
-vmax =  10;
-vmin = -10;
+vmax =  0;
+vmin = -3;
 amax = 90*pi/180;
 amin = 0;
 velocities = vmin:(vmax-vmin)/N:vmax;
@@ -21,30 +21,49 @@ network(:) = {nNode};
 
 % variable necessary for the use of the onestep function
 steps = 1;
-flag = 1;
+flag = 0;
 parms = get_parms();
-
+xd = 1.5;
 % 
 for i = 1:N+1
     for j = 1:M+1
         % set the state information
         z0 = [ 0 velocities(i)];
         parms.control.alpha = actions(j);
-        [z, t] = onestep(z0,parms,steps, flag);
-        [z(2), n] = map(z(2),[vmin vmax],N);
+        [z,t,thetadotmid,Avg_Velocity,error_flag] =...
+            onestep(z0,parms,steps, flag);
+        [z(2), n,] = map(z(2),[vmin vmax],N);
+        
         % now that the new state has been figured out map the out put to
         % the nearest increment and calculate the cost. since time is not
         % held static time will also be used to generate a cost. 
-        J = cost(z,z0,actions(j),t);
-        network{i}.state = v(i);
-        network{i}.connections{end+1} = [n actions(j) J];
-        
+        if (z(2) == z0(2) || error_flag)
+            continue;
+        end
+        J = cost(z(2),z0(2),xd,actions(j),t(end));
+        % if state isnt set set it
+        if isempty(network{i}.state)
+            network{i}.state = velocities(i);
+        end
+        connection = [n actions(j) J];
+        % if the connection doesnt exist make it
+        if isempty(network{i}.connections)
+            % this is inplace to reduce unneccessary iterations if this
+            % werent here there would be upto N unnecessary for loops
+            network{i}.connections{end+1} = connection;
+        else
+            conn = getconnection(network{i}.connections, connection);
+            if conn
+                network{i}.connections{conn} = connection;
+            end
+        end
     end
 end
-% 
+
 d = datestr(datetime('today'));
 d = strrep(d,'-','_');
-save(strcat('../lib/costnetwork_',d,'.mat'), network);
+save(strcat('../lib/costnetwork_xd_equal_',num2str(xd),'_',d,'.mat'),...
+    'network');
 end
 
 function [J] = cost(x,xminus1,xd,a,t)
@@ -54,10 +73,10 @@ deltaX = (xd-x).^2 - (xd - xminus1).^2;
 Qabs = 1;
 Qdelta = 1;
 timescalingfactor = 1;
-Absolute_positional_error = X*Qabs*X';
-Change_in_positional_error = deltaX*Qdelta*abs(deltaX');
+midstance_velocity_cost = (xd-x)*Qabs*(xd-x)';
+midstance_velocity_approach_cost = deltaX*Qdelta*abs(deltaX');
 temporal_cost = timescalingfactor*t^2;
-J = a^2 + Change_in_positional_error + Absolute_positional_error +...
+J = a^2 + midstance_velocity_approach_cost + midstance_velocity_cost +...
     temporal_cost;
 end
 
@@ -66,4 +85,17 @@ steps = 1;
 
 % Generate a new state with the given state and input signal
 [z,t,thetadotmid,Avg_Velocity,error_flag] = onestep(z0,parms,steps);
+end
+
+function [i] = getconnection(existingconnections, newconnection)
+for i = 1:length(existingconnections)
+    if newconnection(1) == existingconnections{i}(1)
+        if newconnection(3) < existingconnections{i}(3)
+            return;
+        end
+        i = 0;
+        return;
+    end
+end
+i = i+1;    
 end

@@ -3,7 +3,7 @@ function [z,t,thetadotmid,Avg_Velocity,error_flag]=onestep(z0,parms,steps,vararg
 %===================================================================
 
 if nargin > 3
-    flag = varargin{4};
+    flag = varargin{1};
 else
     flag = 1;
 end
@@ -96,11 +96,12 @@ for i=1:steps
     
 end
 
-z = z_temp(end,1:2);
-
 if flag==1
    z=z_ode;
    t=t_ode;
+elseif flag == 0
+    z = z_temp(end,:);
+    t = t_temp(end);
 end
 
 
