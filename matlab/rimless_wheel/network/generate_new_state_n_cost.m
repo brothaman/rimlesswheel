@@ -1,14 +1,12 @@
-function [] = generate_new_state_n_cost()
+function [] = generate_new_state_n_cost(xd)
 global network
 % take the given state and control signal input to produce a new state.
 % return the new state and the cost associated with the transition. the top
 % level should add the path to the model and integrator.
-
 % ------------------------ discretizations ----------------------------- %
 N = 100;
-M = 10;
+M = 20;
 % ------------------------ discretizations ----------------------------- %
-
 
 vmax =  0;
 vmin = -3;
@@ -23,7 +21,6 @@ network(:) = {nNode};
 steps = 1;
 flag = 0;
 parms = get_parms();
-xd = 1.5;
 % 
 for i = 1:N+1
     for j = 1:M+1
