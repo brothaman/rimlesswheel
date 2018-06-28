@@ -10,7 +10,8 @@ networksearchtime = [];
 temp = [];
 % ----------------------------------------------------------------------- %
 
-for i = 1:length(conn)
+% conn should be an Nx2 vector storing the state and the connection
+for i = 1:size(conn,1)
     % evaluate connection 
     evaluateConnectionTimer = tic;
     evaluateConnection(conn(i,:));
@@ -18,7 +19,7 @@ for i = 1:length(conn)
     
     % network search and return
     networksearchtimer  = tic;
-    cc = networksearch(conn(i,:));
+    cc = network_search(conn(i,:), length(network));
     networksearchtime(end+1) = toc(networksearchtimer);
     
     % store the new connections to evaluate in an array
@@ -30,12 +31,15 @@ d = strrep(d,'-','_');
 
 % save the data generated
 save(...
-    strcat('../lib/valueiteration_', int2str(count),'_', d,'.mat'),...
-    'temp','conn','evaluateConnectionTime','networksearchtime');
+    strcat('../lib/DEBUGvalueiteration_', int2str(count),'_', d,'.mat'),...
+    'temp','conn','evaluateConnectionTime','networksearchtime','count');
 save(...
-    strcat('../lib/cost_network_v0_iteration',int2str(count),'.mat'),...
-    network);
-% reassign the current array holding the connections 
+    strcat('../lib/DEBUGcost_network_v0_iteration',int2str(count),'.mat'),...
+    'network');
 
+% reassign the current array holding the connections 
+conn = temp;
+
+% increment the count
 count = count + 1;
 end

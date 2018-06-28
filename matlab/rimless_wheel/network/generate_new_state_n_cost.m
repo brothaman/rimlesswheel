@@ -59,7 +59,7 @@ end
 
 d = datestr(datetime('today'));
 d = strrep(d,'-','_');
-save(strcat('../lib/costnetwork_xd_equal_',num2str(xd),'_',d,'.mat'),...
+save(strcat('../lib/DEBUGcostnetwork_xd_equal_',num2str(xd),'_',d,'.mat'),...
     'network');
 end
 
@@ -67,14 +67,21 @@ function [J] = cost(x,xminus1,xd,a,t)
 % accept the time, state and action and treturn the cost for that motion
 % set the gain parameters for the action cost and state error cost
 deltaX = (xd-x).^2 - (xd - xminus1).^2;
-Qabs = 1;
-Qdelta = 1;
-timescalingfactor = 1;
+
+% gain parameters for each type of cost
+Qabs = 5;
+Qdelta = 0.05;
+timescalingfactor = 8;
+
+% calculate the cost
 midstance_velocity_cost = (xd-x)*Qabs*(xd-x)';
 midstance_velocity_approach_cost = deltaX*Qdelta*abs(deltaX');
 temporal_cost = timescalingfactor*t^2;
 J = a^2 + midstance_velocity_approach_cost + midstance_velocity_cost +...
     temporal_cost;
+if J <0
+    return;
+end
 end
 
 function [t,x] = generate_new_state(z0,parms)

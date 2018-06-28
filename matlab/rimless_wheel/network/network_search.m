@@ -10,8 +10,8 @@ for i = 1:N
             else
                 % check to see if the current connection is one of many
                 % contained in the 
-                if network{n_}.connections{...
-                        network{n_}.optimal_policy}(1)==n
+                if network{i}.connections{...
+                        network{i}.optimal_policy}(1)==n_
                     continue;
                 end
                 connections = [ connections; [i l]];
