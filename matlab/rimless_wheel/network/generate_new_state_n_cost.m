@@ -5,7 +5,7 @@ global network
 % level should add the path to the model and integrator.
 % ------------------------ discretizations ----------------------------- %
 N = 100;
-M = 20;
+M = 50;
 % ------------------------ discretizations ----------------------------- %
 
 vmax =  0;
