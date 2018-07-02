@@ -19,7 +19,7 @@ for i = 1:size(conn,1)
     
     % network search and return
     networksearchtimer  = tic;
-    cc = network_search(conn(i,:), length(network));
+    cc = network_search(conn(i,1), length(network));
     networksearchtime(end+1) = toc(networksearchtimer);
     
     % store the new connections to evaluate in an array
