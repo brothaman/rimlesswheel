@@ -2,14 +2,21 @@
 clear all
 close all
 clc
+addpath('../../single_pendulum/lib/')
 
-load ../lib/costnetwork_xd_equal_-1.5_26_Jun_2018.mat
+val = -1.5;
 count = 0;
 N = 100;
 iterations = 1:10;
 
 % set the goal
-[val, goal] = map(-1.5,[-2.76,0],N);
+goals = -2.76:0.1:0;
+[val, goal] = map(val,[-2.76,0],N);
+val = goals(min(abs(val - goals)) == abs(val - goals));
+date = '_02_Jul_2018';
+filename = strcat('../lib/DEBUGcostnetwork_xd_equal_',num2str(val),date,'.mat');
+load(filename)
+
 
 % set the goals optimal value this may be changed if i have enough time to
 % work it in to my day
