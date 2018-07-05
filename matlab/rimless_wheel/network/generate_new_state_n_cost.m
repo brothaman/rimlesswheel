@@ -37,7 +37,7 @@ for i = 1:N+1
         if (z(2) == z0(2) || error_flag)
             continue;
         end
-        J = cost(z(2),z0(2),xd,actions(j),t(end));
+        J = cost(z(2),xd,actions(j),t(end));
         % if state isnt set set it
         if isempty(network{i}.state)
             network{i}.state = velocities(i);
@@ -63,22 +63,27 @@ save(strcat('../lib/DEBUGcostnetwork_xd_equal_',num2str(xd),'_',d,'.mat'),...
     'network');
 end
 
-function [J] = cost(x,xminus1,xd,a,t)
+function [J] = cost(x,xd,a,t)
 % accept the time, state and action and treturn the cost for that motion
 % set the gain parameters for the action cost and state error cost
-deltaX = (xd-x).^2 - (xd - xminus1).^2;
+% deltaX = (xd-x).^2 - (xd - xminus1).^2;
 
 % gain parameters for each type of cost
-Qabs = 5;
-Qdelta = 0.05;
-timescalingfactor = 8;
+velocity_cost_scaling_factor = 9.0160/7.6;
+timescalingfactor = 2.57/2.81;
+input_cost_scaling_factor = 1.288/2.47;
 
 % calculate the cost
-midstance_velocity_cost = (xd-x)*Qabs*(xd-x)';
-midstance_velocity_approach_cost = deltaX*Qdelta*abs(deltaX');
-temporal_cost = timescalingfactor*t^2;
-J = a^2 + midstance_velocity_approach_cost + midstance_velocity_cost +...
-    temporal_cost;
+midstance_velocity_cost = (xd-x)*velocity_cost_scaling_factor*(xd-x)';
+temporal_cost = t*timescalingfactor*t;
+input_cost = a*input_cost_scaling_factor*a;
+% J = a^2 + midstance_velocity_approach_cost + midstance_velocity_cost +...
+%     temporal_cost;
+J = 5/12.88*(input_cost + midstance_velocity_cost + temporal_cost);
+% ______________________________________________________________________
+global time_for_step
+time_for_step(end+1) = t;
+% ______________________________________________________________________
 if J <0
     return;
 end
