@@ -80,7 +80,7 @@ input_cost = a*input_cost_scaling_factor*a;
 % J = a^2 + midstance_velocity_approach_cost + midstance_velocity_cost +...
 %     temporal_cost;
 J = 5/12.88*(input_cost + midstance_velocity_cost + temporal_cost);
-if J <0
+if J > 5
     return;
 end
 end
