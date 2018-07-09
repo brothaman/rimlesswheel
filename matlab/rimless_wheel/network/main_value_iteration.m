@@ -7,13 +7,13 @@ addpath('../../single_pendulum/lib/')
 val = -1.5;
 count = 0;
 N = 100;
-iterations = 1:10;
+iterations = 1:2;
 
 % set the goal
 goals = -2.76:0.1:0;
 [val, goal] = map(val,[-2.76,0],N);
 val = goals(min(abs(val - goals)) == abs(val - goals));
-date = '_02_Jul_2018';
+date = '_04_Jul_2018';
 filename = strcat('../lib/DEBUGcostnetwork_xd_equal_',num2str(val),date,'.mat');
 load(filename)
 
