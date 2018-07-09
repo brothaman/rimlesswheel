@@ -1,7 +1,7 @@
 function network = generate_cost_network(...
     network, torque_range,...
     body_angle_range, velocity_range,...
-    parms, N, M, P)
+    body_angle_rate_range, parms, N, M, P)
 % for each of the possible torques body_angles and velocities calculate and
 % store a cost
 for i = 1:N
@@ -16,8 +16,7 @@ for i = 1:N
                 z0 = [q1 u1 q2 u2];% [angle rate];
                 [z,t,thetadotmid,Avg_Velocity,error_flag] = ...
                     onestep(z0, parms, 1);
-                memoize(network,z,t,thetadotmid,Avg_Velocity,error_flag);
-                update_network_with_connection
+                network = memoize(network,z,t,thetadotmid,Avg_Velocity,error_flag);
             end
         end
     end
@@ -25,7 +24,9 @@ end
 
 end
 
-function network = memoize(network)
+function network = memoize(...
+    network,z,t,thetadotmid,Avg_Velocity,error_flag)
+
 end
 
 function J = cost(z,zd,t)
