@@ -9,7 +9,7 @@ M = 50;
 % ------------------------ discretizations ----------------------------- %
 
 vmax =  0;
-vmin = -3;
+vmin = -2.76;
 amax = 90*pi/180;
 amin = 0;
 velocities = vmin:(vmax-vmin)/N:vmax;
@@ -25,6 +25,8 @@ parms = get_parms();
 for i = 1:N+1
     for j = 1:M+1
         % set the state information
+	% z = [q qdot]  where q should always be equal to zero
+	% and qdot should be equal to the rotational velocity
         z0 = [ 0 velocities(i)];
         parms.control.alpha = actions(j);
         [z,t,thetadotmid,Avg_Velocity,error_flag] =...
