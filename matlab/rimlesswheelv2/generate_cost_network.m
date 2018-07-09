@@ -30,6 +30,8 @@ function network = memoize(...
 end
 
 function J = cost(z,zd,t)
+% the desired state should be one in which the body angle can be anything,
+% the speed is stated and the body angle rate should be zero
 % calculate the cost of the state transition
 err = zd - z;
 

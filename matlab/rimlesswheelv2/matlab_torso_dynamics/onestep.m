@@ -9,6 +9,7 @@ elseif nargin<3
     flag = 0; %send only last state
     steps = 1;
 end
+flag = 0;
 %thetadotmid=zeros(1,steps);
 Avg_Velocity = zeros(1,steps);
 
@@ -93,6 +94,9 @@ z = z_temp(end,1:2);
 if flag==1
    z=z_ode;
    t=t_ode;
+elseif flag == 0
+    z = z_temp(end,:);
+    t = t_temp(end);
 end
 
 

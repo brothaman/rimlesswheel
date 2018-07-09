@@ -29,7 +29,7 @@ for i = 1:N+1
         parms.control.alpha = actions(j);
         [z,t,thetadotmid,Avg_Velocity,error_flag] =...
             onestep(z0,parms,steps, flag);
-        [z(2), n,] = map(z(2),[vmin vmax],N);
+        [z(2), n] = map(z(2),[vmin vmax],N);
         
         % now that the new state has been figured out map the out put to
         % the nearest increment and calculate the cost. since time is not
@@ -68,17 +68,20 @@ function [J] = cost(x,xd,a,t)
 % set the gain parameters for the action cost and state error cost
 % deltaX = (xd-x).^2 - (xd - xminus1).^2;
 
+amax = pi/2;
+xmax = 7.6;
+tmax = 2.81;
 % gain parameters for each type of cost
-velocity_cost_scaling_factor = 9.0160/7.6;
-timescalingfactor = 2.57/2.81;
-input_cost_scaling_factor = 1.288/2.47;
+velocity_cost_scaling_factor = 8.9/xmax;
+timescalingfactor = 1/tmax;
+input_cost_scaling_factor = 0.1/amax;
 
 % calculate the cost
 midstance_velocity_cost = (xd-x)*velocity_cost_scaling_factor*(xd-x)';
 temporal_cost = t*timescalingfactor*t;
 input_cost = a*input_cost_scaling_factor*a;
-% J = a^2 + midstance_velocity_approach_cost + midstance_velocity_cost +...
-%     temporal_cost;
+
+% add the cost for each type and scale it
 J = 5/12.88*(input_cost + midstance_velocity_cost + temporal_cost);
 if J > 5
     return;
