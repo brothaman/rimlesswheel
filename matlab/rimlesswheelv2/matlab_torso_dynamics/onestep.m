@@ -89,7 +89,7 @@ for i=1:steps
     
 end
 
-z = z_temp(end,1:2);
+z = z_temp(end,1:end);
 
 if flag==1
    z=z_ode;

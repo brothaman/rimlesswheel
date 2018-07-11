@@ -1,36 +1,39 @@
 %% Begin by generating the cost network with a predetermined size
 addpath ./matlab_torso_dynamics ../single_pendulum/lib
+warning('off','all')
 N = 100;
 M = 100;
 P = 100;
-torque_range = [0 10];
-velocity_range = [0 2*pi];
+torque_range = [-10 10];
+velocity_range = [-2.76 0];
 body_angle_range = [0 pi/2];
 body_angle_rate_range = [-6 6];
 
 % set up arrays of values
 torque_arr = vecof(torque_range, 20); % N*m
-body_angle_arr = vecof(body_angle_range, N); % possibly going to change
-velocity_arr = vecof(velocity_range, M);
+velocity_arr = vecof(velocity_range, N);
+body_angle_arr = vecof(body_angle_range, M); % possibly going to change
 body_angle_rate_arr = vecof(body_angle_rate_range, P);
 
 % generate the network template
-N = length(body_angle_arr);
-M = length(velocity_arr);
+N = length(velocity_arr);
+M = length(body_angle_arr);
 P = length(body_angle_rate_arr);
 network = network_template(N,M,P);
 parms = get_parms;
-
+xd = [0 -2.76 0 0];
 %% populate the network with cost
+global costs
+costs = zeros(N*M*P,3);
 generate_cost_network(...
     network, torque_arr,...
     body_angle_arr, velocity_arr, body_angle_rate_arr,...
-    parms, N, M, P);
+    parms, N, M, P, xd);
 
 %% extra functions 
 function network = network_template(N,M,P)
 network = cell(N,M,P);
-netowrk(:,:,:) = {nNode};
+network(:,:,:) = {nNode};
 end
 
 function vec = vecof(values,N)
