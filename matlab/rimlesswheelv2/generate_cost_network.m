@@ -35,7 +35,16 @@ for i = 1:N
                     body_angle_arr(i), velocity_arr(j),body_angle_rate_arr(k),...
                     n,m,p,xd);
             end
+            if ~mod(k,10)
+                disp(strcat(int2str(k),' of ',int2str(P),' possible body angle rates'))
+            end
         end
+        if ~mod(j,10)
+            disp(strcat(int2str(j),' of ',int2str(M),' possible body angle rates'))
+        end
+    end
+    if ~mod(i,10)
+        disp(strcat(int2str(i),'s of ',int2str(N),' possible velocities'))
     end
 end
 
@@ -91,8 +100,9 @@ state_cost = err*qerr*err';
 time_cost = t*qt*t;
 input_cost = a*qa*a;
 
-global costs
+global costs count
 costs(count,:) = [state_cost, time_cost, input_cost];
+count = count + 1;
 % sum the cost
 J = state_cost + time_cost + input_cost;
 end

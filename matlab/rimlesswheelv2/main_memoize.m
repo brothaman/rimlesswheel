@@ -1,9 +1,9 @@
 %% Begin by generating the cost network with a predetermined size
 addpath ./matlab_torso_dynamics ../single_pendulum/lib
 warning('off','all')
-N = 100;
-M = 100;
-P = 100;
+N = 40;
+M = 20;
+P = 10;
 torque_range = [-10 10];
 velocity_range = [-2.76 0];
 body_angle_range = [0 pi/2];
@@ -23,13 +23,15 @@ network = network_template(N,M,P);
 parms = get_parms;
 xd = [0 -2.76 0 0];
 %% populate the network with cost
-global costs
-costs = zeros(N*M*P,3);
+global costs count
+costs = zeros(N*M*P*length(torque_range), 3);
+count = 1;
 generate_cost_network(...
     network, torque_arr,...
     body_angle_arr, velocity_arr, body_angle_rate_arr,...
     parms, N, M, P, xd);
-
+save('details.mat','costs')
+exit
 %% extra functions 
 function network = network_template(N,M,P)
 network = cell(N,M,P);

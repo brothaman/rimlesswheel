@@ -77,7 +77,7 @@ for i=1:steps
 
     
     if (parms.ignore_VelocityCondition==0)
-        disp(['Steps = ', num2str(i), '; Velocity = ',num2str(Velocity)]);
+%        disp(['Steps = ', num2str(i), '; Velocity = ',num2str(Velocity)]);
         if (Velocity<0)
             warning('Velocity is less than zero. Modify T2 or launch condition');
         end
