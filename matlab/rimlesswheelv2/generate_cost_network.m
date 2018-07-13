@@ -4,10 +4,12 @@ function network = generate_cost_network(...
     body_angle_rate_arr, parms, N, M, P,xd)
 % for each of the possible torques body_angles and velocities calculate and
 % store a cost
-for i = 1:N
+parfor i = 1:N
     for j = 1:M
         for k = 1:P
             for T = torque_arr
+                warning('off','all')
+                parms = get_parms;
                 parms.control.T2 = T;
                 q1 = 0;%angle should always be zero
                 u1 = velocity_arr(j);%mid-stance velocity 

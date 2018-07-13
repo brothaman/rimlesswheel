@@ -1,14 +1,14 @@
 addpath ./matlab_torso_dynamics ../single_pendulum/lib
-N = 5;
-M = 5;
-P = 5;
+N = 40;
+M = 20;
+P = 15;
 torque_range = [-10 10];
 velocity_range = [-2.76 0];
 body_angle_range = [0 pi/2];
 body_angle_rate_range = [-6 6];
 
 % set up arrays of values
-torque_arr = vecof(torque_range, 2); % N*m
+torque_arr = vecof(torque_range, 20); % N*m
 velocity_arr = vecof(velocity_range, N);
 body_angle_arr = vecof(body_angle_range, M); % possibly going to change
 body_angle_rate_arr = vecof(body_angle_rate_range, P);
@@ -17,7 +17,7 @@ body_angle_rate_arr = vecof(body_angle_rate_range, P);
 N = length(velocity_arr);
 M = length(body_angle_arr);
 P = length(body_angle_rate_arr);
-A = network_template(N,M,P);
+% A = network_template(N,M,P);
 
 % enter the desired state of the system
 zd = [0 -2.76 0 0];
@@ -50,13 +50,20 @@ parfor i = 1:N
                 [z(3), m] = nearest2(z(3), body_angle_arr); 
                 [z(4), p] = nearest2(z(4), body_angle_rate_arr);
                 J = cost(z, zd, T, t);
-                A{i,j,k}.connections = [n m p T J];
+                if isempty(A{i,j,k}.connections)
+                    A{i,j,k}.connections{1} = [n m p T J];
+                else
+                    conn = compare_connections(A{i,j,k}.connections, [n m p T J]);
+                    if conn
+                        A{i,j,k}.connections{conn} = [n m p T J];
+                    end
+                end
             end
         end
     end
 end
 t = toc
-save('parallel_network_test.m','t','A')
+save('parallel_network_test.mat','t','A')
 %% extra functions 
 function J = cost(state, state_plus_one, input_signal, time)
 err = state - state_plus_one;
@@ -88,4 +95,17 @@ function [val, n] = nearest2(val,arr)
 vec = abs(arr - val);
 [val,n] = min(vec);
 val = arr(val == vec);
+end
+
+function n = compare_connections(connections, connection)
+for i = 1:length(connections)
+    if connection(1:3) == connections{i}(1:3)
+        if connection(4) < connections{i}(4)
+            return;
+        else
+            n = 0;
+            return
+        end
+    end
+end
 end
