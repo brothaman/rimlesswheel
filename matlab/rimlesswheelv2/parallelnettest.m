@@ -8,7 +8,7 @@ body_angle_range = [0 pi/2];
 body_angle_rate_range = [-6 6];
 
 % set up arrays of values
-torque_arr = vecof(torque_range, 2); % N*m
+torque_arr = vecof(torque_range, 20); % N*m
 velocity_arr = vecof(velocity_range, N);
 body_angle_arr = vecof(body_angle_range, M); % possibly going to change
 body_angle_rate_arr = vecof(body_angle_rate_range, P);
@@ -98,9 +98,9 @@ val = arr(val == vec);
 end
 
 function n = compare_connections(connections, connection)
-for i = 1:length(connections)
-    if connection(1:3) == connections{i}(1:3)
-        if connection(4) < connections{i}(4)
+for n = 1:length(connections)
+    if connection(1:3) == connections{n}(1:3)
+        if connection(4) < connections{n}(4)
             return;
         else
             n = 0;
