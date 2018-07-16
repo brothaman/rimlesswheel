@@ -1,14 +1,14 @@
 addpath ./matlab_torso_dynamics ../single_pendulum/lib
 N = 40;
 M = 20;
-P = 15;
+P = 16;
 torque_range = [-10 10];
 velocity_range = [-2.76 0];
 body_angle_range = [0 pi/2];
 body_angle_rate_range = [-6 6];
 
 % set up arrays of values
-torque_arr = vecof(torque_range, 20); % N*m
+torque_arr = vecof(torque_range, 2); % N*m
 velocity_arr = vecof(velocity_range, N);
 body_angle_arr = vecof(body_angle_range, M); % possibly going to change
 body_angle_rate_arr = vecof(body_angle_rate_range, P);
@@ -17,12 +17,12 @@ body_angle_rate_arr = vecof(body_angle_rate_range, P);
 N = length(velocity_arr);
 M = length(body_angle_arr);
 P = length(body_angle_rate_arr);
-% A = network_template(N,M,P);
+A = network_template(N,M,P);
 
 % enter the desired state of the system
 zd = [0 -2.76 0 0];
 tic
-parfor i = 1:N
+for i = 1:N
     for j = 1:M
         for k = 1:P
             for T = torque_arr
@@ -30,8 +30,8 @@ parfor i = 1:N
                 parms = get_parms;
                 parms.control.T2 = T;
                 q1 = 0;%angle should always be zero
-                u1 = velocity_arr(j);%mid-stance velocity 
-                q2 = body_angle_arr(i); %parms.control.q2;
+                u1 = velocity_arr(i);%mid-stance velocity 
+                q2 = body_angle_arr(j); %parms.control.q2;
                 u2 = body_angle_rate_arr(k);
                 z0 = [q1 u1 q2 u2];% [angle rate];
                 [z,t,thetadotmid,Avg_Velocity,error_flag] = ...
