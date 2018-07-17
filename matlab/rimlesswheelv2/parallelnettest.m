@@ -1,3 +1,4 @@
+%parpool(8)
 addpath ./matlab_torso_dynamics ../single_pendulum/lib
 N = 40;
 M = 20;
@@ -21,8 +22,10 @@ A = network_template(N,M,P);
 
 % enter the desired state of the system
 zd = [0 -2.76 0 0];
+% highest_cost = [0 0 0];
+
 tic
-for i = 1:N
+parfor i = 1:N
     for j = 1:M
         for k = 1:P
             for T = torque_arr
@@ -47,9 +50,15 @@ for i = 1:N
                     continue;
                 end
                 [z(2), n] = nearest2(z(2), velocity_arr);
-                [z(3), m] = nearest2(z(3), body_angle_arr); 
+                [z(3), m] = nearest2(z(3), body_angle_arr);
                 [z(4), p] = nearest2(z(4), body_angle_rate_arr);
                 J = cost(z, zd, T, t);
+                % individual cost is for debugging purposes
+%                 [J,individual_cost] = cost(z, zd, T, t);
+%                 logical_locations = individual_cost > highest_cost;
+%                 highest_cost(logical_locations) = individual_cost(logical_locations)
+
+
                 if isempty(A{i,j,k}.connections)
                     A{i,j,k}.connections{1} = [n m p T J];
                 else
@@ -62,12 +71,15 @@ for i = 1:N
         end
     end
 end
-t = toc
+t = seconds(toc);
+t.Format = 'hh:mm:ss.SSS';
 save('parallel_network_test.mat','t','A')
-%% extra functions 
-function J = cost(state, state_plus_one, input_signal, time)
+%% extra functions - individual cost is for debugging purposes
+function [J,individual_cost] = cost(state, state_plus_one, input_signal, time)
 err = state - state_plus_one;
 err = err([2 4]);
+err(1) = err(1)/2.76;
+err(2) = err(2)/6;
 
 % gain parameters
 state_error_gain = 1;
@@ -76,12 +88,15 @@ time_gain =1;
 
 % calculate individual cost
 state_cost = dot(err,err)*state_error_gain;
-input_cost = input_signal^2*input_signal_gain;
+input_cost = (input_signal/10)^2*input_signal_gain;
 time_cost  = time^2*time_gain;
+individual_cost = [state_cost, input_cost, time_cost];
 
 % sum the individual cost to produce the total cost J
 J = state_cost + input_cost + time_cost;
 end
+
+
 function network = network_template(N,M,P)
 network = cell(N,M,P);
 network(:,:,:) = {nNode};
