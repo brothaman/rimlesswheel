@@ -1,13 +1,16 @@
 function [] = network_search(network)
 [n,m,p] = size(network);
 id_n_state = state_id_correlation(network);
-a = network{1,2,3}.state
-loc = get_id_from_state(network, id_n_state, a)
-network{1,2,3}.ID
+% a = network{1,2,3}.state
+% loc = get_id_from_state(network, id_n_state, a)
+% network{1,2,3}.ID
 goal = -1.84;
-IDs = get_goal_nodes(id_n_state, goal, [n,m,p])
-for i = 1:length(id_n_state)
-    search_for_connected_nodes(network,i)
+IDs = get_goal_nodes(id_n_state, goal, [n,m,p]);
+for i = 1:10
+    connections{i} = [];
+    for ID = IDs
+        connections{i} = [connections{i} search_for_connected_nodes(network,ID)];
+    end
 end
 id = extract_location(183, m, p);
 search_for_connected_nodes(network,id)
