@@ -1,12 +1,13 @@
 function [] = network_search(network)
 [n,m,p] = size(network);
-id_n_state = state_id_correlation(network);
-% a = network{1,2,3}.state
-% loc = get_id_from_state(network, id_n_state, a)
-% network{1,2,3}.ID
+STEPS = 5;
+% id_n_state = state_id_correlation(network);
+conns = get_state_connections(network)
+connections
 goal = -1.84;
 IDs = get_goal_nodes(id_n_state, goal, [n,m,p]);
-for i = 1:10
+connections = cell(STEPS,1);
+for i = 1:STEPS
     connections{i} = [];
     for ID = IDs
         connections{i} = [connections{i} search_for_connected_nodes(network,ID)];
@@ -16,26 +17,52 @@ id = extract_location(183, m, p);
 search_for_connected_nodes(network,id)
 end
 
+%% convert the network to a N x 3 matrix of states to correlate state and ID
 function nmp3returnmatrix = state_id_correlation(network)
 [n,m,p] = size(network);
+nmp3returnmatrix = zeros(n*m*p,3);
 for i = 1:n
     for j = 1:m
         for k = 1:p
-            nmp3returnmatrix((i-1)*m*p + (j-1)*p + k,:) = network{i,j,k}.state;
+            nmp3returnmatrix((i-1)*m*p + (j-1)*p + k,:) = network{i,j,k}.state(:);
         end
     end
 end
 nmp3returnmatrix = reshape(nmp3returnmatrix,[i*j*k,3]);
 end
 
-function id = get_id_from_state(network, B, state)
+%% convert the network to a N x 3 matrix of states to correlate state and ID
+function conns = get_state_connections(network)
+[n,m,p] = size(network);
+max_cons = 21;
+max_con = 0;
+conns = zeros(n*m*p*max_cons,9);
+for i = 1:n
+    for j = 1:m
+        for k = 1:p
+            len = length(network{i,j,k}.connections);
+            if len > max_con
+                max_con  = len;
+            end
+            for l = 1:max_cons
+                if l <= len
+                    conns((i-1)*m*p*max_cons + (j-1)*p*max_cons + (k-1)*max_cons + l,:) = [i j k l network{i,j,k}.connections{l}];
+                end
+            end
+        end
+    end
+end
+conns = conns(any(conns,2),:);
+end
+
+%% extract state id from a location
+function id = get_id_from_state(B, state, dims)
 if (size(state) ~= [1,3])
     % throw an error
 end
-[n,m,p] = size(network);
-[val,nn] = min(abs(sum(state - B,2)));
+[~,nn] = min(abs(sum(state - B,2)));
 
-id = extract_location(nn, m, p);
+id = extract_location(nn, dims(2), dims(3));
 end
 
 function return_array = get_goal_nodes(B, goal, dims)
@@ -54,7 +81,7 @@ for i = 1:length(single_number_states)
     return_array(i,:) = extract_location(single_number_states(i), m, p);
 end
 end
-
+%% this method returns the <i,j,k> ID that correlates to the given value
 function result = extract_location(val, m, p)
 i = floor(val/(m*p));
 j = floor((val-i*p*m)/(p));
@@ -63,10 +90,12 @@ k = (val-i*p*m - j*p);
 result = [i+1,j+1,k];
 end
 
-function [connections] = search_for_connected_nodes(network,ID)
+%% search the network for nodes connected to the given ID
+function [conns] = search_for_connected_nodes(network,ID)
 % connections should contain [ connected_node_id number_correlating_to_connection]
+max_cons = 20;
 [n,m,p] = size(network);
-connections = [];
+connections = zeros(n,m,p,max_cons,4);
 for i = 1:n
     for j = 1:m
         for k = 1:p
@@ -75,10 +104,22 @@ for i = 1:n
             end
             for l = 1:length(network{i,j,k}.connections)
                 if network{i,j,k}.connections{l}(1:3) == ID
-                    connections(end+1,:) = [ i j k l];
+                    connections(i,j,k,l,:) = [ i j k l];
                 end
             end
         end
     end
 end
+
+conns = zeros(n*m*p*max_cons,4);
+for i = 1:n
+    for j = 1:m
+        for k = 1:p
+            for l = 1:max_cons
+                conns((i-1)*m*p*max_cons + (j-1)*max_cons*p + (k-1)*max_cons + l, :) = connections(i,j,k,l,:);
+            end
+        end
+    end
+end
+conns = conns(any(conns,2),:);
 end
