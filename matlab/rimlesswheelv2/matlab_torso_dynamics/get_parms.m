@@ -11,6 +11,7 @@ parms.g = 10;
 parms.n = 10; %spokes 
 parms.gam = 0.0; %slope
 parms.ignore_VelocityCondition = 0; %detect backward motion
+parms.ode_MATLAB = 0;
 
 
 %parms.control.alpha = 45*(pi/180);%0.5401; %0.54006 %1.33;  %0.57 (%1.3961);
@@ -24,4 +25,4 @@ parms.disturb.height = 0.0*parms.l;
 % parms.control.u2 = 0;
 % parms.control.kp_u1 = 0; 
 % parms.control.u1 = 0;
-parms.control.T2 = 2;
+parms.control.T2 = 3;

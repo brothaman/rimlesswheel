@@ -9,7 +9,6 @@ elseif nargin<3
     flag = 0; %send only last state
     steps = 1;
 end
-flag = 0;
 %thetadotmid=zeros(1,steps);
 Avg_Velocity = zeros(1,steps);
 
@@ -77,7 +76,7 @@ for i=1:steps
 
     
     if (parms.ignore_VelocityCondition==0)
-%        disp(['Steps = ', num2str(i), '; Velocity = ',num2str(Velocity)]);
+        disp(['Steps = ', num2str(i), '; Velocity = ',num2str(Velocity)]);
         if (Velocity<0)
             warning('Velocity is less than zero. Modify T2 or launch condition');
         end
@@ -89,14 +88,11 @@ for i=1:steps
     
 end
 
-z = z_temp(end,1:end);
+z = z_temp(end,1:2);
 
 if flag==1
    z=z_ode;
    t=t_ode;
-elseif flag == 0
-    z = z_temp(end,:);
-    t = t_temp(end);
 end
 
 
@@ -107,9 +103,17 @@ function [zout,tout] = fn_ahs2mid(z0,parms)
 %===================================================================
 t0 = 0;
 dt = 3;
-options=odeset('abstol',1e-9,'reltol',1e-9,'events',@midstance);
 tspan = linspace(t0,t0+dt,500);
-[tout, zout] = ode113(@single_stance,tspan,z0,options,parms);
+if (parms.ode_MATLAB)
+    options=odeset('abstol',1e-9,'reltol',1e-9,'events',@midstance);
+    [tout, zout] = ode113(@single_stance,tspan,z0,options,parms);
+else
+    parms2 = [parms.m1 parms.m2 parms.c parms.w parms.l parms.g parms.I1 parms.I2 parms.n ...
+              parms.gam parms.disturb.height parms.control.T2];
+    options_dop = dopset('AbsTol',1e-9,'RelTol',1e-9,'Events',1,'EventTol',1e-9);
+    %[tout,zout,te,ye,ie,stats] = dop853('single_stance_ahs2mid',tspan,z0,options_dop,parms2'); 
+    [tout,zout,te,ye,ie,stats] = dop853_single_stance_ahs2mid(tspan,z0,options_dop,parms2');
+end
 
 if (nargout==1)
     zout = zout(end,:);
@@ -120,9 +124,18 @@ function [zout,tout] = fn_mid2bhs(z0,parms)
 %===================================================================
 t0 = 0;
 dt = 3;
-options=odeset('abstol',1e-9,'reltol',1e-9,'events',@collision);
+
 tspan = linspace(t0,t0+dt,500);
-[tout, zout] = ode113(@single_stance,tspan,z0,options,parms);
+if (parms.ode_MATLAB)
+    options=odeset('abstol',1e-9,'reltol',1e-9,'events',@collision);
+    [tout, zout] = ode113(@single_stance,tspan,z0,options,parms);
+else
+    parms2 = [parms.m1 parms.m2 parms.c parms.w parms.l parms.g parms.I1 parms.I2 parms.n ...
+              parms.gam parms.disturb.height parms.control.T2];
+    options_dop = dopset('AbsTol',1e-9,'RelTol',1e-9,'Events',1,'EventTol',1e-9);
+    %[tout,zout,te,ye,ie,stats] = dop853('single_stance_mid2bhs',tspan,z0,options_dop,parms2'); 
+    [tout,zout,te,ye,ie,stats] = dop853_single_stance_mid2bhs(tspan,z0,options_dop,parms2');   
+end
 
 if (nargout==1)
     zout = zout(end,:);
@@ -227,6 +240,8 @@ m1 = parms.m1; m2 = parms.m2; %I1 = parms.I1; I2 = parms.I2; n = parms.n;
 l = parms.l; c = parms.c; w = parms.w; g = parms.g; gam = parms.gam;
 
 flag = 0;
+
+%%%%%%%% check ground penetration %%%%%%%
 qmin = min(z(:,1));
 qmax = max(z(:,1));
 if (qmin < (-pi/parms.n)-0.1 || qmax > (pi/parms.n)+0.1)
@@ -234,6 +249,7 @@ if (qmin < (-pi/parms.n)-0.1 || qmax > (pi/parms.n)+0.1)
     flag = 1;
 end
 
+%%%%%%%% check reaction forces %%%%%%%
 Fy = zeros(length(z),1);
 for i=1:length(Fy)
     t = 0;    
@@ -254,3 +270,10 @@ if (Fymin<0)
      flag = 2;
 end
 
+q2_all = z(:,3);
+index1 = isempty(find(q2_all > pi/2,1));
+index2 = isempty(find(q2_all < -pi/2,1));
+if (~index1 || ~index2)
+    warning('robot walk failure imminent: torso beyond horizontal');
+     flag = 3;
+end
