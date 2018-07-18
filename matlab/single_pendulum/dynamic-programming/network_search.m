@@ -1,7 +1,5 @@
 function [connections] = network_search(NODES, m_,n_)
 %% NETWORK_SERCH searches the network to find state with connections to the given state
-n = [];
-m = [];
 connections = [];
 for j = 1:101
     for k = 1:201
@@ -18,13 +16,9 @@ for j = 1:101
                 dont = false;
                 if ~isempty(p)
                     if NODES{m_,n_}.connections{p}(1:2) ~= [j,k]
-                        m(end+1) = j;
-                        n(end+1) = k;
                         connections = [connections ;j k l];
                     end
                 else
-                    m(end+1) = j;
-                    n(end+1) = k;
                     connections = [connections ;j k l];
                 end
             end
