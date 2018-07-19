@@ -1,5 +1,6 @@
-%parpool(8)
 addpath ./matlab_torso_dynamics ../single_pendulum/lib
+% mycluster = parcluster;
+% parpool(24)
 N = 40;
 M = 20;
 P = 16;
@@ -23,6 +24,10 @@ A = network_template(N,M,P);
 % enter the desired state of the system
 zd = [0 -2.76 0 0];
 % highest_cost = [0 0 0];
+outside_bounds = 0;
+more_than_one_connections = 0;
+first_connection = 0;
+conn_arr = zeros(35000,1);
 
 tic
 parfor i = 1:N
@@ -38,15 +43,18 @@ parfor i = 1:N
                 u2 = body_angle_rate_arr(k);
                 z0 = [q1 u1 q2 u2];% [angle rate];
                 [z,t,thetadotmid,Avg_Velocity,error_flag] = ...
-                    onestep(z0, parms, 1);
+                    onestep(z0, parms);
                 A{i,j,k}.ID = [i j k];
                 A{i,j,k}.state = [velocity_arr(i) body_angle_arr(j) body_angle_rate_arr(k)];
-                if z0 ~= z | error_flag 
+                if z0 == z | error_flag
+                    % if the states are equal or the error flag is set skip
+                    % further computation
                     continue;
                 end
                 if (    z(2) > max(velocity_arr) || z(2) < min(velocity_arr) ||...
                         z(3) > max(body_angle_arr) || z(3) < min(body_angle_arr) ||...
                         z(4) > max(body_angle_rate_arr) || z(4) < min(body_angle_rate_arr))
+                    outside_bounds = outside_bounds+1;
                     continue;
                 end
                 [z(2), n] = nearest2(z(2), velocity_arr);
@@ -60,9 +68,12 @@ parfor i = 1:N
 
 
                 if isempty(A{i,j,k}.connections)
+                    first_connection = first_connection +1;
                     A{i,j,k}.connections{1} = [n m p T J];
                 else
+                    more_than_one_connections = more_than_one_connections +1;
                     conn = compare_connections(A{i,j,k}.connections, [n m p T J]);
+                    p = p+1;
                     if conn
                         A{i,j,k}.connections{conn} = [n m p T J];
                     end
@@ -74,6 +85,9 @@ end
 t = seconds(toc);
 t.Format = 'hh:mm:ss.SSS';
 save('parallel_network_test.mat','t','A')
+outside_bounds
+more_than_one_connections
+first_connection
 %% extra functions - individual cost is for debugging purposes
 function [J,individual_cost] = cost(state, state_plus_one, input_signal, time)
 err = state - state_plus_one;
@@ -115,7 +129,7 @@ end
 function n = compare_connections(connections, connection)
 for n = 1:length(connections)
     if connection(1:3) == connections{n}(1:3)
-        if connection(4) < connections{n}(4)
+        if connection(5) < connections{n}(5)
             return;
         else
             n = 0;
@@ -123,4 +137,5 @@ for n = 1:length(connections)
         end
     end
 end
+n = n+1;
 end

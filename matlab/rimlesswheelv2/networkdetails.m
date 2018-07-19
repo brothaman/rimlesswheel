@@ -1,5 +1,5 @@
 %% get cost range
-load parallel_network_test.mat
+% load parallel_network_test.mat
 addpath ../single_pendulum/lib/
 max_cost = 0;
 min_cost = 0;
@@ -20,3 +20,6 @@ for i = 1:n
         end
     end
 end
+max_cost
+min_cost
+max_connections
