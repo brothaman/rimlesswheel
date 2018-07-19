@@ -1,17 +1,19 @@
-function [] = network_search(network)
+function [connections, id_n_state, conns] = network_search(network)
 [n,m,p] = size(network);
-STEPS = 5;
-% id_n_state = state_id_correlation(network);
-conns = get_state_connections(network)
-connections
+STEPS = 7;
+id_n_state = state_id_correlation(network);
+conns = get_state_connections(network);
 goal = -1.84;
 IDs = get_goal_nodes(id_n_state, goal, [n,m,p]);
 connections = cell(STEPS,1);
 for i = 1:STEPS
-    connections{i} = [];
-    for ID = IDs
-        connections{i} = [connections{i} search_for_connected_nodes(network,ID)];
+%     connections{i} = zeros(n*m*p*89,4);
+    for j = 1:size(IDs,1)
+        id = IDs(j,:);
+        connections{i} = [connections{i}; conns(~any(id - conns(:,5:7),2),:)]
+%         connections{i} = [connections{i} search_for_connected_nodes(network,ID)];
     end
+    IDs = connections{i}(:,1:3);
 end
 id = extract_location(183, m, p);
 search_for_connected_nodes(network,id)

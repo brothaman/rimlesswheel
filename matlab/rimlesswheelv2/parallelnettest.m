@@ -10,7 +10,7 @@ body_angle_range = [0 pi/2];
 body_angle_rate_range = [-6 6];
 
 % set up arrays of values
-torque_arr = vecof(torque_range, 20); % N*m
+torque_arr = vecof(torque_range, 200); % N*m
 velocity_arr = vecof(velocity_range, N);
 body_angle_arr = vecof(body_angle_range, M); % possibly going to change
 body_angle_rate_arr = vecof(body_angle_rate_range, P);
