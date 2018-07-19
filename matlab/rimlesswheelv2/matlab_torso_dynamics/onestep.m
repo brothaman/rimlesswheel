@@ -9,6 +9,11 @@ elseif nargin<3
     flag = 0; %send only last state
     steps = 1;
 end
+
+% -------------------------- made a change here ------------------------- %
+% flag = 1;
+% ----------------------------------------------------------------------- %
+
 %thetadotmid=zeros(1,steps);
 Avg_Velocity = zeros(1,steps);
 
@@ -76,7 +81,7 @@ for i=1:steps
 
     
     if (parms.ignore_VelocityCondition==0)
-        disp(['Steps = ', num2str(i), '; Velocity = ',num2str(Velocity)]);
+%         disp(['Steps = ', num2str(i), '; Velocity = ',num2str(Velocity)]);
         if (Velocity<0)
             warning('Velocity is less than zero. Modify T2 or launch condition');
         end
@@ -93,6 +98,9 @@ z = z_temp(end,1:2);
 if flag==1
    z=z_ode;
    t=t_ode;
+elseif flag == 0
+    z = z_temp(end,:);
+    t = t_temp(end);
 end
 
 
@@ -111,7 +119,9 @@ else
     parms2 = [parms.m1 parms.m2 parms.c parms.w parms.l parms.g parms.I1 parms.I2 parms.n ...
               parms.gam parms.disturb.height parms.control.T2];
     options_dop = dopset('AbsTol',1e-9,'RelTol',1e-9,'Events',1,'EventTol',1e-9);
-    %[tout,zout,te,ye,ie,stats] = dop853('single_stance_ahs2mid',tspan,z0,options_dop,parms2'); 
+% --------- if you havent run it yet this should be uncommented ----------%
+%     [tout,zout,te,ye,ie,stats] = dop853('single_stance_ahs2mid',tspan,z0,options_dop,parms2'); 
+% -------- after the initial run this line should be uncommented ---------%
     [tout,zout,te,ye,ie,stats] = dop853_single_stance_ahs2mid(tspan,z0,options_dop,parms2');
 end
 
@@ -133,7 +143,9 @@ else
     parms2 = [parms.m1 parms.m2 parms.c parms.w parms.l parms.g parms.I1 parms.I2 parms.n ...
               parms.gam parms.disturb.height parms.control.T2];
     options_dop = dopset('AbsTol',1e-9,'RelTol',1e-9,'Events',1,'EventTol',1e-9);
-    %[tout,zout,te,ye,ie,stats] = dop853('single_stance_mid2bhs',tspan,z0,options_dop,parms2'); 
+% --------- if you havent run it yet this should be uncommented ----------%
+%     [tout,zout,te,ye,ie,stats] = dop853('single_stance_mid2bhs',tspan,z0,options_dop,parms2'); 
+% -------- after the initial run this line should be uncommented ---------%
     [tout,zout,te,ye,ie,stats] = dop853_single_stance_mid2bhs(tspan,z0,options_dop,parms2');   
 end
 
@@ -247,6 +259,7 @@ qmax = max(z(:,1));
 if (qmin < (-pi/parms.n)-0.1 || qmax > (pi/parms.n)+0.1)
     warning('robot walk failure: ground penetration');
     flag = 1;
+    return
 end
 
 %%%%%%%% check reaction forces %%%%%%%
@@ -268,6 +281,7 @@ Fymin = min(Fy);
 if (Fymin<0)
      warning('robot walk failure: vertical reaction force is zero');
      flag = 2;
+     return
 end
 
 q2_all = z(:,3);
@@ -276,4 +290,5 @@ index2 = isempty(find(q2_all < -pi/2,1));
 if (~index1 || ~index2)
     warning('robot walk failure imminent: torso beyond horizontal');
      flag = 3;
+     return
 end
