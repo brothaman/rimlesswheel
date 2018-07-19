@@ -1,6 +1,5 @@
-function [connections, id_n_state, conns] = network_search(network)
+function [connections, id_n_state, conns] = network_search(network,STEPS)
 [n,m,p] = size(network);
-STEPS = 5;
 id_n_state = state_id_correlation(network);
 conns = get_state_connections(network);
 goal = -2.76;
