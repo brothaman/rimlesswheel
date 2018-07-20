@@ -6,7 +6,7 @@ function [t,x] = xnplusone( x, Torque, stepsize)
 
     M = @(theta,thetadot)-1;
     D = @(theta,thetadot)-(981*sin(theta))/100;
-	xdot = @(t,x) [x(2); (Torque-D(x(1),x(2)))/M(x(1),x(2))];
+	xdot = @(t,x) [x(2); (-Torque-D(x(1),x(2)))/M(x(1),x(2))];
     
 	% integrate to the next step
 	[T,X] = ode45(@(t,x) xdot(t,x), [0 stepsize], x, options);

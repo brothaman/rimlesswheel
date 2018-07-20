@@ -1,4 +1,5 @@
 %% generate all possible states and state transitions
+clear
 addpath ../lib
 xd  = [pi 0];
 torque = 1;
@@ -13,13 +14,13 @@ all_speeds = [-6:12/200:6];
 all_torques= [-10:1:10];
 
 nodes = initialize_nodes(all_angles, all_speeds);
+new_nodes = cell(length(all_angles), length(all_speeds),length(all_torques));
 parfor i = 1:length(all_angles)
     for j = 1:length(all_speeds)
-        node = nodes{i,j};
-        for torque = all_torques
-            node = generate_new_state(node,xd,torque,time,all_angles,all_speeds);
+        for k = 1:length(all_torques)
+            node = generate_new_state(nodes{i,j},xd,torque,time,all_angles,all_speeds);
         end
-%         new_nodes{i,j} = node;
+        nodes{i,j}.connections = node.connections;
     end
 end
 % save('lib/cost_network_v0.1.mat', 'NODES');
