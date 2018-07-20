@@ -45,7 +45,7 @@ function [connections] = parnetwork_search3(network, ids, previous_ids)
         connections{i} = network(~any(ids(i,1:2) - network(:,[4,5]),2),:);
         connections{i}
         for j = 1:size(previous_ids,1)
-            connections(i) = {connections{i}(any(previous_ids(j,4:5) - connections{i}(:,[1 2]),2),:)};
+            connections(i) = {connections{i}(any(previous_ids(j,[1 2 4 5]) - connections{i}(:,[1 2 4 5]),2),:)};
             connections{i}
         end
     end
