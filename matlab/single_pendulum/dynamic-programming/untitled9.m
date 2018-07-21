@@ -25,8 +25,9 @@ parfor i = 1:length(all_angles)
     end
     new_nodes(i,:) = node;
 end
-% save('lib/cost_network_v0.1.mat', 'NODES');
-
+network = new_nodes;
+save('../lib/cost_network_v1.0.mat', 'network');
+clearvars
 %% functions
 function nodes = initialize_nodes(angles,speeds)
     n = length(angles);
@@ -70,7 +71,7 @@ function node = generate_new_state(node,xd,torque,time,angles,speeds)
             node.connections{i} = [n m torque J];
             return
         end
-        if node.connections{i}(1:2) == xx
+        if node.connections{i}(1:2) == [n m]
             if node.connections{i}(4) > J
                 node.connections{i} = [n m torque J];
             end
@@ -81,9 +82,9 @@ function node = generate_new_state(node,xd,torque,time,angles,speeds)
 end
 
 function J = getcost(x, xd, torque)
-    kx = 1;
-    ka = 1;
-    state_error = dot(x-xd, x-xd) * kx;
+    Qx = [1/pi^2 0; 0 1/36];
+    ka = 1/100;
+    state_error = (x-xd)*Qx*( x-xd)';
     input_error = torque^2 * ka;
     J = state_error + input_error;
 end

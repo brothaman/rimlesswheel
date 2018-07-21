@@ -1,5 +1,5 @@
 %% Generate the network connections
-load ../lib/cost_network_v0.1.mat
+load ../lib/cost_network_v1.0.mat
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
@@ -12,9 +12,9 @@ else
         parpool(N)
     end
 end
-network = convert_network(NODES);
+network = convert_network(network);
 clearvars -except network p
-steps = 3;
+steps = 30;
 ids = [51 101];
 connections = cell(steps,1);
 for i = 1:steps
@@ -26,7 +26,9 @@ for i = 1:steps
     end
     t = seconds(toc);
     t.Format = 'hh:mm:ss.SSS';
-    save('cost_network.mat','i','NODES','connections', 't')
+    t
+    i
+    save('cost_network.mat','i','network','connections', 't')
     ids = cell2mat(connections{i});
     ids = ids(:,1:2);
 end
