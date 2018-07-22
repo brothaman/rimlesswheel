@@ -1,11 +1,11 @@
 %% Generate the network connections
-load ../lib/cost_network_v1.1.mat
+load ../lib/cost_network_v1.0.mat
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
     poolsize = 0;
     p = parpool(N);
-else
+else 
     poolsize = p.NumWorkers;
     if poolsize < N
         delete(gcp('nocreate'));
@@ -14,7 +14,7 @@ else
 end
 network = convert_network(network);
 clearvars -except network p
-steps = 5;
+steps = 30;
 ids = network(~any([51 101] - network(:,[1 2]),2),[1 2 4 5]);
 connections = cell(steps,1);
 for i = 1:steps
@@ -22,6 +22,7 @@ for i = 1:steps
     if i > 1
         connections{i} = parnetwork_search3(network, ids, previous_ids);
         previous_ids = [previous_ids; ids];
+        previous_ids = unique(previous_ids,'rows');
     else
         connections{i} = network_search3(network, ids(1,1:2));
         previous_ids = ids;
@@ -39,7 +40,7 @@ end
 function [connections] = parnetwork_search3(network, ids, previous_ids)
     len = size(ids,1);
     connections = cell(len,1);
-    for i = 1:len
+    parfor i = 1:len
         % if previous id's [4,5] is equal to current id's [1,2] and current
         % id's [4,5] is equal to previous id's [1,2] then eliminate current
         % id's connection that correlate with [4,5]. delete current id's
