@@ -1,14 +1,19 @@
 %% Generate the network connections
+addpath ../lib/
 load ../lib/cost_network_v1.0.mat
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
     poolsize = 0;
+    m = parcluster;
+    m.NumWorkers = N;
     p = parpool(N);
 else 
     poolsize = p.NumWorkers;
     if poolsize < N
         delete(gcp('nocreate'));
+        m = parcluster;
+        m.NumWorkers = N;
         parpool(N)
     end
 end
@@ -17,7 +22,7 @@ clearvars -except network p
 steps = 30;
 ids = network(~any([51 101] - network(:,[1 2]),2),[1 2 4 5]);
 connections = cell(steps,1);
-for i = 1:steps
+for i = 13:steps
     tic
     if i > 1
         connections{i} = parnetwork_search3(network, ids, previous_ids);
@@ -31,9 +36,10 @@ for i = 1:steps
     t.Format = 'hh:mm:ss.SSS';
     t
     i
-%     save('cost_network_v1.0.mat','i','network','connections', 't')
+    save('cost_network_v1.1.mat','i','network','connections', 't')
     ids = cell2mat(connections{i});
     ids = ids(:,[1 2 4 5]);
+    ids = unique(ids,'rows');
 end
 
 %% Functions
