@@ -6,8 +6,12 @@
 % clearvars -except network connections
 % addpath ../lib/
 
+% for each level of connection in the connection network cycle through all
+% the nodes and evaluate the connection. if a connection exist and the
+% compare the value and store the policy and value of the lower value
 len = length(connections);
 iterations = 2;
+net = cell(size(network));
 % get a slice of the network parfor goes here
 parfor i = 1:iterations
     for j =  1:size(network,1)
@@ -30,8 +34,9 @@ parfor i = 1:iterations
                 end
             end
         end
-        network(j,:) = nodes;
     end
+	net(j,:) = nodes;
+
 end
 %% functions
 function node = evaluate_connection(network,node, connection)
