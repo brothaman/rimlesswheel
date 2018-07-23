@@ -12,6 +12,19 @@
 len = length(connections);
 iterations = 2;
 net = cell(size(network));
+[N,M] = size(network);
+n = size(connection,1);
+for i = 1:n
+    m = size(connection{i},1);
+    for j = 1:m
+        [k,l] = size(network);
+        for k = 1:N
+            for l = 1:M
+            end
+        end
+    end
+end
+
 % get a slice of the network parfor goes here
 parfor i = 1:iterations
     for j =  1:size(network,1)
