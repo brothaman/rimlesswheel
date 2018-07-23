@@ -32,9 +32,9 @@ for i = 1:steps
         connections{i} = network_search3(network, ids(1,1:2));
         previous_ids = ids;
     end
-    t = seconds(toc);
-    t.Format = 'hh:mm:ss.SSS';
-    t
+    t(i) = seconds(toc);
+    t(i).Format = 'hh:mm:ss.SSS';
+    t(i)
     i
     save('cost_network_v1.1.mat','i','network','connections', 't', 'ids','previous_ids')
     ids = cell2mat(connections{i});
