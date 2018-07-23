@@ -1,6 +1,6 @@
 %% Generate the network connections
 addpath ../lib/
-load ../lib/cost_network_v1.1.mat
+load ../lib/cost_network_v1.0.mat
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
@@ -19,7 +19,7 @@ else
 end
 network = convert_network(network);
 clearvars -except network p
-steps = 10;
+steps = 30;
 ids = network(~any([51 101] - network(:,[1 2]),2),[1 2 4 5]);
 connections = cell(steps,1);
 for i = 1:steps
