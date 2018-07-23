@@ -1,6 +1,6 @@
 %% Generate the network connections
 addpath ../lib/
-load ../lib/cost_network_v1.0.mat
+load ../lib/cost_network_v1.1.mat
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)

@@ -1,22 +1,36 @@
-connection_data = load('cost_network_v1.0.mat');
-data = load('../lib/cost_network_v1.0.mat');
-network = data.network;
-connections = connection_data.connections;
-clearvars -except network connections
-addpath ../lib/
+% clear
+% connection_data = load('cost_network_v1.1.mat');
+% data = load('../lib/cost_network_v1.1.mat');
+% network = data.network;
+% connections = connection_data.connections;
+% clearvars -except network connections
+% addpath ../lib/
 
 len = length(connections);
 iterations = 2;
-% get a slice of the network
+% get a slice of the network parfor goes here
 parfor i = 1:iterations
-    for j =  1:size(network,2)
-        nodes = network(:,j);
+    for j =  1:size(network,1)
+        nodes = network(j,:);
         for k = 1:len
-            % if the ids match perform the calcualtion otherwise forget it
-            if nodes{k}.ID == connections{k}(1:2)
-                nodes(k) = evaluate_connection(network,nodes{k}, connections{k});
+            for l = 1:size(connections{k},1)
+                if isempty(connections{k})
+                    continue
+                end
+                for m = 1:size(connections{k}{l},1)
+                    % if the ids match perform the calcualtion otherwise forget
+                    % it
+                    connection = connections{k}{l}(m,:);
+                    if isempty(connection)
+                        continue
+                    end
+                    if nodes{k}.ID == connection(1:2)
+                        nodes(k) = evaluate_connection(network,network{j,k}, connection)
+                    end
+                end
             end
         end
+        network(j,:) = nodes;
     end
 end
 %% functions
