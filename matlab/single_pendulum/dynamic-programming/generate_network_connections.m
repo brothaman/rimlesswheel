@@ -22,7 +22,7 @@ clearvars -except network p
 steps = 30;
 ids = network(~any([51 101] - network(:,[1 2]),2),[1 2 4 5]);
 connections = cell(steps,1);
-for i = 13:steps
+for i = 1:steps
     tic
     if i > 1
         connections{i} = parnetwork_search3(network, ids, previous_ids);
@@ -36,7 +36,7 @@ for i = 13:steps
     t.Format = 'hh:mm:ss.SSS';
     t
     i
-    save('cost_network_v1.1.mat','i','network','connections', 't')
+    save('cost_network_v1.1.mat','i','network','connections', 't', 'ids','previous_ids')
     ids = cell2mat(connections{i});
     ids = ids(:,[1 2 4 5]);
     ids = unique(ids,'rows');
