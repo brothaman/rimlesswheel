@@ -19,26 +19,27 @@ else
 end
 network = convert_network(network);
 clearvars -except network p
-steps = 30;
+steps = 10;
 ids = network(~any([51 101] - network(:,[1 2]),2),[1 2 4 5]);
 connections = cell(steps,1);
 for i = 1:steps
     tic
     if i > 1
         connections{i} = parnetwork_search3(network, ids, previous_ids);
-        previous_ids = [previous_ids; ids];
+        ids = cell2mat(connections{i});
+        previous_ids = [previous_ids; ids(:,[1 2 4 5])];
         previous_ids = unique(previous_ids,'rows');
     else
         connections{i} = network_search3(network, ids(1,1:2));
         previous_ids = ids;
     end
     t(i) = seconds(toc);
-    t(i).Format = 'hh:mm:ss.SSS';
+%     t(i).Format = 'hh:mm:ss.SSS';
     t(i)
     i
     save('cost_network_v1.1.mat','i','network','connections', 't', 'ids','previous_ids')
     ids = cell2mat(connections{i});
-    ids = ids(:,[1 2 4 5]);
+    ids = ids(:,[1 2]);
     ids = unique(ids,'rows');
 end
 

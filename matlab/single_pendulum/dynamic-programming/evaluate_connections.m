@@ -25,7 +25,7 @@ parfor i = 1:iterations
                         continue
                     end
                     if nodes{k}.ID == connection(1:2)
-                        nodes(k) = evaluate_connection(network,network{j,k}, connection)
+                        nodes{k} = evaluate_connection(network,network{j,k}, connection)
                     end
                 end
             end
