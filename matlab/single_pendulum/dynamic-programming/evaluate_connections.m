@@ -27,7 +27,7 @@ for i = 1:n
             for l = 1:N
                 for p = 1:M
                     if connection(1:2) == [l p]
-                        network{l,p} = evaluate_connection(network,network{l,p}, connection);
+                        network{l,p} = evaluate_connection(network,network{l,p}, network{l,p}.connections{connection(3)});
                     end
                 end
             end
@@ -36,33 +36,6 @@ for i = 1:n
     end
     i
 end
-
-% get a slice of the network parfor goes here
-% parfor i = 1:iterations
-%     for j =  1:size(network,1)
-%         nodes = network(j,:);
-%         for l = 1:len
-%             for p = 1:size(connections{l},1)
-%                 if isempty(connections{l})
-%                     continue
-%                 end
-%                 for m = 1:size(connections{l}{p},1)
-%                     % if the ids match perform the calcualtion otherwise forget
-%                     % it
-%                     connection = connections{l}{p}(m,:);
-%                     if isempty(connection)
-%                         continue
-%                     end
-%                     if nodes{l}.ID == connection(1:2)
-%                         nodes{l} = evaluate_connection(network,network{j,l}, connection)
-%                     end
-%                 end
-%             end
-%         end
-%     end
-% 	net(j,:) = nodes;
-% 
-% end
 %% functions
 function node = evaluate_connection(network,node, connection)
     if isempty(network{connection(4), connection(5)}.optimal_value)

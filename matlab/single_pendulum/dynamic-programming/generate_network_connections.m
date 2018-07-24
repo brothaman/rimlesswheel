@@ -80,7 +80,7 @@ function new_network = convert_network(network)
                     break;
                 end
                 new_network((i-1)*max_cons*m + (j-1)*max_cons + k,:) = ...
-                    [ i j k network{i,j}.connections{k}];
+                    [ i j k network{i,j}.connections{k}(1:2)];
             end
         end
     end
