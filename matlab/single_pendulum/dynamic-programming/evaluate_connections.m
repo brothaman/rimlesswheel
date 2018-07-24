@@ -1,6 +1,6 @@
 clear
 connection_data = load('cost_network_v1.1.mat');
-data = load('../lib/cost_network_v1.1.mat');
+data = load('../lib/cost_network_v1.0.mat');
 network = data.network;
 connections = connection_data.connections;
 clearvars -except network connections

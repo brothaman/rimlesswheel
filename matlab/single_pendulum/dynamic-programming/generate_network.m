@@ -1,4 +1,21 @@
 %% generate all possible states and state transitions
+N = maxNumCompThreads;
+p = gcp('nocreate'); % If no pool, do not create new one.
+if isempty(p)
+    poolsize = 0;
+    m = parcluster;
+    m.NumWorkers = N;
+    p = parpool(N);
+else 
+    poolsize = p.NumWorkers;
+    if poolsize < N
+        delete(gcp('nocreate'));
+        m = parcluster;
+        m.NumWorkers = N;
+        parpool(N)
+    end
+end
+
 clear
 addpath ../lib
 xd  = [pi 0];
