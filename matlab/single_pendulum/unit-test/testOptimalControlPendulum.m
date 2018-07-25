@@ -1,0 +1,70 @@
+% this script drive from a state where an optimal path is known to the goal
+% state
+clear all
+close all
+load ../lib/cost_network_v2.0.mat
+addpath ../lib
+
+anglerange = [0,2*pi];
+speedrange = [-6,6];
+torquerange = [-10,10];
+
+angles = 100;
+speeds = 200;
+torques = 100;
+
+all_angles = min(anglerange):diff(anglerange)/angles:max(anglerange);
+all_speeds = min(speedrange):diff(speedrange)/speeds:max(speedrange);
+all_torques= min(torquerange):diff(torquerange)/torques:max(torquerange);
+
+time = 0.05;
+xd  = [pi 0];
+phi = -pi/2;
+
+t = 0;
+tf = 5;
+x = [0 0];
+[x(1),n] = nearest2(x(1),all_angles);
+[x(2),m] = nearest2(x(2),all_speeds);
+goalnotmet = true;
+txs = [0,0,0];
+xd = [pi,0];
+xd(1) = nearest2(xd(1),all_angles);
+xd(2) = nearest2(xd(2),all_speeds);
+P = {};
+
+
+% driver signal
+while max(t) < tf
+    torque = get_control_signal(network,n,m);
+    [~,x] = xnplusone(x,torque,time);
+    txs(end+1,:) = [t,x];
+    % map variables back over
+    [x(1),n] = nearest2(x(1),all_angles);
+    [x(2),m] = nearest2(x(2),all_speeds);
+    P{end+1} = {1*[0 0 cos(x(1)+phi) sin(x(1)+phi)]};
+    if (x == xd)
+        goalnotmet = false;
+    end
+    t = t + time;
+end
+%% animate the pendulum
+fig = figure;
+axis([-2 2 -2 2]);
+phandle = [];
+
+for i = 1:length(P)
+    [fig,phandle] = show_pendulum(fig,phandle,P{i});
+    pause(0.1);
+end
+
+%% functions
+function [val, n] = nearest2(val,arr)                                                                                                                                                                       
+vec = abs(arr - val);                                                                                                                                                                                       
+[val,n] = min(vec);                                                                                                                                                                                         
+val = arr(val == vec);                                                                                                                                                                                      
+end
+
+function [torque] = get_control_signal(network, n,m)
+    torque = network{n,m}.connections{network{n,m}.optimal_policy}(3);
+end
