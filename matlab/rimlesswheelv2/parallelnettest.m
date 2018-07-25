@@ -1,6 +1,21 @@
 addpath ./matlab_torso_dynamics ../single_pendulum/lib
-% mycluster = parcluster;
-% parpool(24)
+N = maxNumCompThreads;
+p = gcp('nocreate'); % If no pool, do not create new one.
+if isempty(p)
+    poolsize = 0;
+    m = parcluster;
+    m.NumWorkers = N;
+    p = parpool(N);
+else 
+    poolsize = p.NumWorkers;
+    if poolsize < N
+        delete(gcp('nocreate'));
+        m = parcluster;
+        m.NumWorkers = N;
+        parpool(N)
+    end
+end
+clearvars N p poolsize m
 N = 40;
 M = 20;
 P = 16;
@@ -10,7 +25,7 @@ body_angle_range = [0 pi/2];
 body_angle_rate_range = [-6 6];
 
 % set up arrays of values
-torque_arr = vecof(torque_range, 200); % N*m
+torque_arr = vecof(torque_range, 100); % N*m
 velocity_arr = vecof(velocity_range, N);
 body_angle_arr = vecof(body_angle_range, M); % possibly going to change
 body_angle_rate_arr = vecof(body_angle_rate_range, P);
