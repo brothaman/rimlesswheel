@@ -1,6 +1,6 @@
 %% Generate the network connections
 addpath ../lib/
-filename = underactuated_init();
+filename = standard_init();
 load(filename)
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
@@ -22,6 +22,7 @@ connection_network = convert_network(network);
 clearvars -except connection_network network p filename
 steps = 52;
 ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
+res = size(ids,1);
 connections = cell(steps,1);
 for i = 1:steps
     tic
@@ -34,7 +35,7 @@ for i = 1:steps
         connections{i} = network_search3(connection_network, ids(1,1:2));
         previous_ids = ids;
     end
-    if size(previous_ids,1) >= size(connection_network,1)-9
+    if size(previous_ids,1) >= size(connection_network,1)-(res-1)
         break;
     end
     t(i) = seconds(toc);
