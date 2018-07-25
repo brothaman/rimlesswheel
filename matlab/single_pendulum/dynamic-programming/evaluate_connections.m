@@ -1,6 +1,6 @@
 clear
 connection_data = load('cost_network_v1.1.mat');
-data = load('../lib/cost_network_v1.0.mat');
+data = load('../lib/cost_network_v2.0.mat');
 network = data.network;
 connections = connection_data.connections;
 clearvars -except network connections
@@ -18,9 +18,9 @@ net = cell(size(network));
 [N,M] = size(network);
 n = size(connections,1);
 for i = 1:n
-    m = size(connections{i},1);
+    m = find(~cellfun('isempty',connections{i}))';
     tic
-    for j = 1:m
+    for j = m
         [l,p] = size(network);
         for k = 1:size(connections{i}{j},1)
             connection = connections{i}{j}(k,:);
@@ -34,11 +34,12 @@ for i = 1:n
             end
         end
     end
-    t = seconds(toc);
-    t.Format = 'HH:mm:ss.SSS'
+    t(i) = seconds(toc);
+    t(i)
     i
 end
-save('../lib/cost_network_v2.0.mat','network');
+t.Format = 'hh:mm:ss'
+save('../lib/cost_network_v2.0.mat','network', 't');
 %% functions
 function node = evaluate_connection(network,node, connection)
     if isempty(network{connection(1), connection(2)}.optimal_value)
