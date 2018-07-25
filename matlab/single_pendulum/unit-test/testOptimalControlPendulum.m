@@ -2,7 +2,7 @@
 % state
 clear all
 close all
-load ../lib/cost_network_v2.0.mat
+load ../lib/underactuated_cost_network.mat
 addpath ../lib
 
 anglerange = [0,2*pi];
