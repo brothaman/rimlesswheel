@@ -1,14 +1,16 @@
 clear
-connection_data = load('cost_network_v1.1.mat');
-data = load('../lib/cost_network_v2.0.mat');
-network = data.network;
-connections = connection_data.connections;
-clearvars -except network connections
-addpath ../lib/
+% connection_data = load('cost_network_v1.1.mat');
+% data = load('../lib/cost_network_v2.0.mat');
+% network = data.network;
+% connections = connection_data.connections;
+% clearvars -except network connections
+% addpath ../lib/
+% 
+% % set the goal node 
+% network{51,101}.optimal_value = 0;
+% network{51,101}.optimal_policy = 9;
 
-% set the goal node 
-network{51,101}.optimal_value = 0;
-network{51,101}.optimal_policy = 9;
+[filename,i,network,connection_network,connections, t, ids,previous_ids] = underactuated_init();
 % for each level of connection in the connection network cycle through all
 % the nodes and evaluate the connection. if a connection exist and the
 % compare the value and store the policy and value of the lower value
@@ -34,12 +36,12 @@ for i = 1:n
             end
         end
     end
-    t(i) = seconds(toc);
-    t(i)
+    teval(i) = seconds(toc);
+    teval(i)
     i
 end
-t.Format = 'hh:mm:ss'
-save('../lib/cost_network_v2.0.mat','network', 't');
+teval.Format = 'hh:mm:ss'
+save(filename,'network','teval','t','i','network','connection_network','connections', 'ids','previous_ids');
 %% functions
 function node = evaluate_connection(network,node, connection)
     if isempty(network{connection(1), connection(2)}.optimal_value)
@@ -62,4 +64,12 @@ function node = evaluate_connection(network,node, connection)
             end
         end
     end
+end
+
+function [filename,i,network,connection_network,connections, t, ids,previous_ids] = underactuated_init()
+    filename = '../lib/underactuated_cost_network.mat';
+    load(filename);
+    % set the goal node 
+    network{51,101}.optimal_value = 0;
+    network{51,101}.optimal_policy = 5;
 end

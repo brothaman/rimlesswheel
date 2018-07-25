@@ -113,7 +113,6 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = standard_init()
     clear
     addpath ../lib
     xd  = [pi 0];
-    torque = 1;
     time = 0.05;
 
     anglerange = [0,2*pi];
@@ -131,5 +130,5 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = underactuated_in
     anglerange = [0,2*pi];
     speedrange = [-6,6];
     torquerange = [-5,5];
-    filename = '../lib/cost_networ.mat';
+    filename = '../lib/underactuated_cost_network.mat';
 end
