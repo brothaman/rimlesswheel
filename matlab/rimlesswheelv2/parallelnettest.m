@@ -61,12 +61,6 @@ parfor i = 1:N
                 [z(3), m] = nearest2(z(3), body_angle_arr);
                 [z(4), p] = nearest2(z(4), body_angle_rate_arr);
                 J = cost(z, zd, T, t);
-                % individual cost is for debugging purposes
-%                 [J,individual_cost] = cost(z, zd, T, t);
-%                 logical_locations = individual_cost > highest_cost;
-%                 highest_cost(logical_locations) = individual_cost(logical_locations)
-
-
                 if isempty(A{i,j,k}.connections)
                     first_connection = first_connection +1;
                     A{i,j,k}.connections{1} = [n m p T J];

@@ -16,19 +16,15 @@ else
     end
 end
 
-clear
-addpath ../lib
-xd  = [pi 0];
-torque = 1;
-time = 0.05;
+[xd,time,anglerange,speedrange,torquerange,filename] = underactuated_init();
 
-anglerange = [0,2*pi];
-speedrange = [-6,6];
-torquerange = [-10,10];
+angles = 100;
+speeds = 200;
+torques = 100;
 
-all_angles = [0:diff(anglerange)/100:2*pi];
-all_speeds = [-6:12/200:6];
-all_torques= [-10:1:10];
+all_angles = min(anglerange):diff(anglerange)/angles:max(anglerange);
+all_speeds = min(speedrange):diff(speedrange)/speeds:max(speedrange);
+all_torques= min(torquerange):diff(torquerange)/torques:max(torquerange);
 
 nodes = initialize_nodes(all_angles, all_speeds);
 new_nodes = cell(length(all_angles), length(all_speeds));
@@ -43,7 +39,7 @@ parfor i = 1:length(all_angles)
     new_nodes(i,:) = node;
 end
 network = new_nodes;
-save('../lib/cost_network_v1.0.mat', 'network');
+save(filename, 'network');
 clearvars
 %% functions
 function nodes = initialize_nodes(angles,speeds)
@@ -112,3 +108,28 @@ vec = abs(arr - val);
 [val,n] = min(vec);                                                                                                                                                                                         
 val = arr(val == vec);                                                                                                                                                                                      
 end  
+
+function [xd,time,anglerange,speedrange,torquerange,filename] = standard_init()
+    clear
+    addpath ../lib
+    xd  = [pi 0];
+    torque = 1;
+    time = 0.05;
+
+    anglerange = [0,2*pi];
+    speedrange = [-6,6];
+    torquerange = [-10,10];
+    filename = '../lib/cost_network.mat';
+end
+
+function [xd,time,anglerange,speedrange,torquerange,filename] = underactuated_init()
+    clear
+    addpath ../lib
+    xd  = [pi 0];
+    time = 0.05;
+
+    anglerange = [0,2*pi];
+    speedrange = [-6,6];
+    torquerange = [-5,5];
+    filename = '../lib/underactuated_cost_networ.mat';
+end
