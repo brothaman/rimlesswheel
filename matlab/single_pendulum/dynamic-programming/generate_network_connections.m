@@ -1,6 +1,7 @@
 %% Generate the network connections
 addpath ../lib/
-load ../lib/cost_network_v1.0.mat
+filename = underactuated_init();
+load(filename)
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
@@ -17,27 +18,30 @@ else
         parpool(N)
     end
 end
-network = convert_network(network);
-clearvars -except network p
-steps = 30;
-ids = network(~any([51 101] - network(:,[1 2]),2),[1 2 4 5]);
+connection_network = convert_network(network);
+clearvars -except connection_network network p filename
+steps = 50;
+ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
 connections = cell(steps,1);
 for i = 1:steps
     tic
     if i > 1
-        connections{i} = parnetwork_search3(network, ids, previous_ids);
+        connections{i} = parnetwork_search3(connection_network, ids, previous_ids);
         ids = cell2mat(connections{i});
         previous_ids = [previous_ids; ids(:,[1 2 4 5])];
         previous_ids = unique(previous_ids,'rows');
     else
-        connections{i} = network_search3(network, ids(1,1:2));
+        connections{i} = network_search3(connection_network, ids(1,1:2));
         previous_ids = ids;
+    end
+    if size(previous_ids,1) >= size(connection_network,1)-9
+        break;
     end
     t(i) = seconds(toc);
 %     t(i).Format = 'hh:mm:ss.SSS';
     t(i)
     i
-    save('cost_network_v1.1.mat','i','network','connections', 't', 'ids','previous_ids')
+    save(filename,'i','network','connection_network','connections', 't', 'ids','previous_ids')
     ids = cell2mat(connections{i});
     ids = ids(:,[1 2]);
     ids = unique(ids,'rows');
@@ -71,7 +75,7 @@ end
 function new_network = convert_network(network)
     [n,m] = size(network);
     max_cons = 21;
-    new_network = zeros(n*m*max_cons,2+1+4);
+    new_network = zeros(n*m*max_cons,2+1+2);
     for i = 1:n
         for j = 1:m
             len = length(network{i,j}.connections);
@@ -85,4 +89,12 @@ function new_network = convert_network(network)
         end
     end
     new_network = new_network(any(new_network,2),:);
+end
+
+function [filename] = underactuated_init()
+    filename = '../lib/underactuated_cost_network.mat';
+end
+
+function [filename] = standard_init()
+    filename = '../lib/cost_network.mat';
 end

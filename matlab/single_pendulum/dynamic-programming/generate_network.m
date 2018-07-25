@@ -131,5 +131,5 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = underactuated_in
     anglerange = [0,2*pi];
     speedrange = [-6,6];
     torquerange = [-5,5];
-    filename = '../lib/underactuated_cost_networ.mat';
+    filename = '../lib/cost_networ.mat';
 end
