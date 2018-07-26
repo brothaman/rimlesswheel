@@ -48,6 +48,8 @@ while max(t) < tf
     end
     t = t + time;
 end
+
+% plot value function and policy. 
 %% animate the pendulum
 fig = figure;
 axis([-2 2 -2 2]);
