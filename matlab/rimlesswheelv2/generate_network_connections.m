@@ -47,7 +47,7 @@ function connections = parnetwork_search2(network, ids, previous_ids)
     ids = unique(ids(:,1:3),'rows');
     len = size(ids,1);
     connections = cell(len,1);
-    for i = 1:len
+    parfor i = 1:len
         connections{i} = network(~any(ids(i,[1 2 3]) - network(:,[5 6 7]),2),:);
         % this will eliminate any connections back to the previous
         for j = 1:size(previous_ids,1)
@@ -61,7 +61,6 @@ function connections = network_search2(network, ids)
     len = size(ids,1);
     connections = cell(len,1);
     for i = 1:len
-        network(~any(ids(i,[1 2 3]) - network(:,[5 6 7]),2),:)
         connections{i} = network(~any(ids(i,[1 2 3]) - network(:,[5 6 7]),2),:);
     end
 end
