@@ -41,7 +41,7 @@ for i = 1:STEPS
     t(i) = seconds(toc);
     IDs = unique(cell2mat(connections{i}), 'rows');
 end
-save(filename,'network','connections','t','IDs','previous_ids');
+save(filename,'network','connections','t','IDs','previous_ids','conns');
 %% Functions
 function connections = parnetwork_search2(network, ids, previous_ids)
     ids = unique(ids(:,1:3),'rows');
