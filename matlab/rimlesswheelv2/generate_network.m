@@ -19,13 +19,13 @@ clearvars N p poolsize m
 N = 40;
 M = 20;
 P = 16;
-torque_range = [-10 10];
+torque_range = [0 5];
 velocity_range = [-2.76 0];
 body_angle_range = [0 pi/2];
 body_angle_rate_range = [-6 6];
 
 % set up arrays of values
-torque_arr = vecof(torque_range, 200); % N*m
+torque_arr = vecof(torque_range, 500); % N*m
 velocity_arr = vecof(velocity_range, N);
 body_angle_arr = vecof(body_angle_range, M); % possibly going to change
 body_angle_rate_arr = vecof(body_angle_rate_range, P);
@@ -34,7 +34,7 @@ body_angle_rate_arr = vecof(body_angle_rate_range, P);
 N = length(velocity_arr);
 M = length(body_angle_arr);
 P = length(body_angle_rate_arr);
-A = network_template(N,M,P);
+network = network_template(N,M,P);
 
 % enter the desired state of the system
 zd = [0 -2.76 0 0];
@@ -59,8 +59,8 @@ parfor i = 1:N
                 z0 = [q1 u1 q2 u2];% [angle rate];
                 [z,t,thetadotmid,Avg_Velocity,error_flag] = ...
                     onestep(z0, parms);
-                A{i,j,k}.ID = [i j k];
-                A{i,j,k}.state = [velocity_arr(i) body_angle_arr(j) body_angle_rate_arr(k)];
+                network{i,j,k}.ID = [i j k];
+                network{i,j,k}.state = [velocity_arr(i) body_angle_arr(j) body_angle_rate_arr(k)];
                 if z0 == z | error_flag
                     % if the states are equal or the error flag is set skip
                     % further computation
@@ -76,15 +76,15 @@ parfor i = 1:N
                 [z(3), m] = nearest2(z(3), body_angle_arr);
                 [z(4), p] = nearest2(z(4), body_angle_rate_arr);
                 J = cost(z, zd, T, t);
-                if isempty(A{i,j,k}.connections)
+                if isempty(network{i,j,k}.connections)
                     first_connection = first_connection +1;
-                    A{i,j,k}.connections{1} = [n m p T J];
+                    network{i,j,k}.connections{1} = [n m p T J];
                 else
                     more_than_one_connections = more_than_one_connections +1;
-                    conn = compare_connections(A{i,j,k}.connections, [n m p T J]);
+                    conn = compare_connections(network{i,j,k}.connections, [n m p T J]);
                     p = p+1;
                     if conn
-                        A{i,j,k}.connections{conn} = [n m p T J];
+                        network{i,j,k}.connections{conn} = [n m p T J];
                     end
                 end
             end
@@ -93,7 +93,7 @@ parfor i = 1:N
 end
 t = seconds(toc);
 t.Format = 'hh:mm:ss.SSS';
-save('parallel_network_test.mat','t','A')
+save('cost_network.mat','t','network')
 outside_bounds
 more_than_one_connections
 first_connection

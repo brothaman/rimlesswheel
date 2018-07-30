@@ -1,5 +1,10 @@
 %% network details
 % this script will gather information about the cost network
+torque_range = [0 5];
+velocity_range = [-2.76 0];
+body_angle_range = [0 pi/2];
+body_angle_rate_range = [-6 6];
+
 steps = find(~cellfun('isempty',connections));
 len = length(steps);
 fills = zeros(size(steps));
@@ -19,3 +24,20 @@ size(unique(net,'rows'),1) - size(net,1)
 plot (steps,fills)
 xlabel('steps')
 ylabel('nodes visited')
+
+[n,m] = size(network);
+for i = 1:n
+    for j = 1:m
+        number_of_connections(i,j) = length(network{i,j}.connections);
+        if ~isempty(network{i,j}.optimal_value)
+            cost_to_goal(i,j) = network{i,j}.optimal_value;
+        else
+            
+        end
+    end
+end
+fig1 = figure;
+surf(number_of_connections);
+
+fig2 = figure 
+surf(cost_to_goal);

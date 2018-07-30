@@ -16,7 +16,7 @@ else
     end
 end
 
-[xd,time,anglerange,speedrange,torquerange,filename] = standard_init();
+[xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuation_init();
 
 angles = 100;
 speeds = 200;
@@ -131,4 +131,16 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = underactuated_in
     speedrange = [-6,6];
     torquerange = [-5,5];
     filename = '../lib/underactuated_cost_network.mat';
+end
+
+function [xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuation_init()
+    clear
+    addpath ../lib
+    xd  = [pi 0];
+    time = 0.05;
+
+    anglerange = [0,2*pi];
+    speedrange = [-6,6];
+    torquerange = [-1,1];
+    filename = '../lib/very_weak_cost_network.mat';
 end

@@ -7,7 +7,7 @@ addpath ../lib
 
 anglerange = [0,2*pi];
 speedrange = [-6,6];
-torquerange = [-10,10];
+torquerange = [-5,5];
 
 angles = 100;
 speeds = 200;
@@ -54,6 +54,8 @@ end
 fig = figure;
 axis([-2 2 -2 2]);
 phandle = [];
+xlabel('meters')
+ylabel('meters')
 
 for i = 1:length(P)
     [fig,phandle] = show_pendulum(fig,phandle,P{i});
