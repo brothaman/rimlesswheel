@@ -1,6 +1,6 @@
 %% Generate the network connections
 addpath ../lib/
-filename = standard_init();
+filename = very_weak_actuation_init();
 load(filename)
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
@@ -98,4 +98,8 @@ end
 
 function [filename] = standard_init()
     filename = '../lib/cost_network.mat';
+end
+
+function [filename] = very_weak_actuation_init()
+    filename = '../lib/very_weak_cost_network.mat';
 end
