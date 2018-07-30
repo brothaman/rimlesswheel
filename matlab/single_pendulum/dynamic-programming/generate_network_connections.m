@@ -1,30 +1,30 @@
 %% Generate the network connections
-% addpath ../lib/
-% filename = standard_init();
-% load(filename)
-% N = maxNumCompThreads;
-% p = gcp('nocreate'); % If no pool, do not create new one.
-% if isempty(p)
-%     poolsize = 0;
-%     m = parcluster;
-%     m.NumWorkers = N;
-%     p = parpool(N);
-% else 
-%     poolsize = p.NumWorkers;
-%     if poolsize < N
-%         delete(gcp('nocreate'));
-%         m = parcluster;
-%         m.NumWorkers = N;
-%         parpool(N)
-%     end
-% end
-% connection_network = convert_network(network);
-% clearvars -except connection_network network p filename
-% steps = 52;
-% ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
-% res = size(ids,1);
-% connections = cell(steps,1);
-for i = 28:steps
+addpath ../lib/
+filename = standard_init();
+load(filename)
+N = maxNumCompThreads;
+p = gcp('nocreate'); % If no pool, do not create new one.
+if isempty(p)
+    poolsize = 0;
+    m = parcluster;
+    m.NumWorkers = N;
+    p = parpool(N);
+else 
+    poolsize = p.NumWorkers;
+    if poolsize < N
+        delete(gcp('nocreate'));
+        m = parcluster;
+        m.NumWorkers = N;
+        parpool(N)
+    end
+end
+connection_network = convert_network(network);
+clearvars -except connection_network network p filename
+steps = 100;
+ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
+res = size(ids,1);
+connections = cell(steps,1);
+for i = 1:steps
     tic
     if i > 1
         connections{i} = parnetwork_search3(connection_network, ids, previous_ids);
