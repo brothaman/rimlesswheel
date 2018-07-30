@@ -2,8 +2,6 @@
 clear
 filename = 'parallel_network_test.mat';
 load(filename);
-network = A;
-clear A
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
