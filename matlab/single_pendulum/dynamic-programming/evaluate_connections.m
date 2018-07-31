@@ -20,6 +20,9 @@ net = cell(size(network));
 [N,M] = size(network);
 n = size(connections,1);
 for i = 1:n
+    if isempty(connections{i})
+        break;
+    end
     m = find(~cellfun('isempty',connections{i}))';
     tic
     for j = m
@@ -74,7 +77,7 @@ function [filename,i,network,connection_network,connections, t, ids,previous_ids
     network{51,101}.optimal_policy = 5;
 end
 
-function [xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuation_init()
+function [filename,i,network,connection_network,connections, t, ids,previous_ids] = very_weak_actuation_init()
     filename = '../lib/very_weak_cost_network.mat';    
     load(filename);
     % set the goal node 
