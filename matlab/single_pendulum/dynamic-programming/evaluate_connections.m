@@ -44,7 +44,7 @@ for i = 1:n
     i
 end
 teval.Format = 'hh:mm:ss'
-save(filename,'network','teval','t','i','network','connection_network','connections', 'ids','previous_ids');
+save(filename,'network','ids','previous_ids','-append');
 %% functions
 function node = evaluate_connection(network,node, connection)
     if isempty(network{connection(1), connection(2)}.optimal_value)

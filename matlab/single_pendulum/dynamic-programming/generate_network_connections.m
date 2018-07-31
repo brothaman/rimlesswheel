@@ -40,7 +40,7 @@ for i = 1:steps
 %     t(i).Format = 'hh:mm:ss.SSS';
     t(i)
     i
-    save(filename,'i','network','connection_network','connections', 't', 'ids','previous_ids')
+    save(filename,'i','connection_network','connections', 't', 'ids','previous_ids','-append')
     ids = cell2mat(connections{i});
     ids = ids(:,[1 2]);
     ids = unique(ids,'rows');
