@@ -20,7 +20,7 @@ else
 end
 connection_network = convert_network(network);
 clearvars -except connection_network network p filename
-steps = 100;
+steps = 250;
 ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
 res = size(ids,1);
 connections = cell(steps,1);
@@ -35,9 +35,7 @@ for i = 1:steps
         connections{i} = network_search3(connection_network, ids(1,1:2));
         previous_ids = ids;
     end
-    if size(previous_ids,1) >= size(connection_network,1)-(res)
-        break;
-    end
+    
     t(i) = seconds(toc);
 %     t(i).Format = 'hh:mm:ss.SSS';
     t(i)
@@ -46,6 +44,9 @@ for i = 1:steps
     ids = cell2mat(connections{i});
     ids = ids(:,[1 2]);
     ids = unique(ids,'rows');
+    if isempty(ids)
+        break;
+    end
 end
 
 %% Functions
