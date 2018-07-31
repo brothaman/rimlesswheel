@@ -32,7 +32,7 @@ for i = 1:n
         if ~isempty(network{i,j}.optimal_value)
             cost_to_goal(i,j) = network{i,j}.optimal_value;
         else
-            
+            cost_to_goal(i,j) = 0;
         end
     end
 end

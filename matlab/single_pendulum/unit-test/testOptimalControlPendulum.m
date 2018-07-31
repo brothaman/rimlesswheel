@@ -2,12 +2,12 @@
 % state
 clear all
 close all
-load ../lib/underactuated_cost_network.mat
-addpath ../lib
+addpath ../lib/
+load ../lib/very_weak_cost_network.mat
 
 anglerange = [0,2*pi];
 speedrange = [-6,6];
-torquerange = [-5,5];
+torquerange = [-1,1];
 
 angles = 100;
 speeds = 200;
@@ -42,6 +42,8 @@ while max(t) < tf
     % map variables back over
     [x(1),n] = nearest2(x(1),all_angles);
     [x(2),m] = nearest2(x(2),all_speeds);
+    n = 1; m = 112;
+    x = [all_angles(n) all_speeds(m)]
     P{end+1} = {1*[0 0 cos(x(1)+phi) sin(x(1)+phi)]};
     if (x == xd)
         goalnotmet = false;

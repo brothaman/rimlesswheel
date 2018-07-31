@@ -18,8 +18,8 @@ end
 
 [xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuation_init();
 
-angles = 100;
-speeds = 200;
+angles = 600;
+speeds = 1200;
 torques = 100;
 
 all_angles = min(anglerange):diff(anglerange)/angles:max(anglerange);
@@ -39,7 +39,7 @@ parfor i = 1:length(all_angles)
     new_nodes(i,:) = node;
 end
 network = new_nodes;
-save(filename, 'network');
+save(filename, 'network','all_angles','all_speeds', 'all_torques');
 clearvars
 %% functions
 function nodes = initialize_nodes(angles,speeds)
@@ -137,7 +137,7 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuat
     clear
     addpath ../lib
     xd  = [pi 0];
-    time = 0.05;
+    time = 0.01;
 
     anglerange = [0,2*pi];
     speedrange = [-6,6];
