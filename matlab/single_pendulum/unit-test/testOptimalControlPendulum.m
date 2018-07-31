@@ -22,7 +22,7 @@ xd  = [pi 0];
 phi = -pi/2;
 
 t = 0;
-tf = 5;
+tf = 15;
 x = [0 0];
 [x(1),n] = nearest2(x(1),all_angles);
 [x(2),m] = nearest2(x(2),all_speeds);
@@ -31,6 +31,8 @@ txs = [0,0,0];
 xd = [pi,0];
 xd(1) = nearest2(xd(1),all_angles);
 xd(2) = nearest2(xd(2),all_speeds);
+n = 1; m = 112;
+x = [all_angles(n) all_speeds(m)];
 P = {};
 
 
@@ -42,8 +44,6 @@ while max(t) < tf
     % map variables back over
     [x(1),n] = nearest2(x(1),all_angles);
     [x(2),m] = nearest2(x(2),all_speeds);
-    n = 1; m = 112;
-    x = [all_angles(n) all_speeds(m)]
     P{end+1} = {1*[0 0 cos(x(1)+phi) sin(x(1)+phi)]};
     if (x == xd)
         goalnotmet = false;

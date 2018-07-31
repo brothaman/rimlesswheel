@@ -20,7 +20,7 @@ else
 end
 connection_network = convert_network(network);
 clearvars -except connection_network network p filename
-steps = 250;
+steps = 1000;
 ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
 res = size(ids,1);
 connections = cell(steps,1);
