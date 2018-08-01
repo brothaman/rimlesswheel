@@ -3,19 +3,7 @@
 clear all
 close all
 addpath ../lib/
-load ../lib/very_weak_cost_network.mat
-
-anglerange = [0,2*pi];
-speedrange = [-6,6];
-torquerange = [-1,1];
-
-angles = 100;
-speeds = 200;
-torques = 100;
-
-all_angles = min(anglerange):diff(anglerange)/angles:max(anglerange);
-all_speeds = min(speedrange):diff(speedrange)/speeds:max(speedrange);
-all_torques= min(torquerange):diff(torquerange)/torques:max(torquerange);
+load ../lib/cost_network.mat
 
 time = 0.05;
 xd  = [pi 0];
@@ -35,10 +23,11 @@ n = 1; m = 112;
 x = [all_angles(n) all_speeds(m)];
 P = {};
 
-
+clear taus
 % driver signal
 while max(t) < tf
     torque = get_control_signal(network,n,m);
+    taus(end+1) = torque;
     [~,x] = xnplusone(x,torque,time);
     txs(end+1,:) = [t,x];
     % map variables back over
@@ -61,9 +50,11 @@ ylabel('meters')
 
 for i = 1:length(P)
     [fig,phandle] = show_pendulum(fig,phandle,P{i});
-    pause(0.1);
+    pause(0.03);
 end
-
+% plot the torque over time
+fig2 = figure;
+plot(txs(:,1),taus)
 %% functions
 function [val, n] = nearest2(val,arr)                                                                                                                                                                       
 vec = abs(arr - val);                                                                                                                                                                                       
