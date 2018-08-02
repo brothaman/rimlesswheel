@@ -10,8 +10,8 @@ xd  = [pi 0];
 phi = -pi/2;
 
 t = 0;
-tf = 15;
-x = [0 0];
+tf = 3;
+x = [.75*pi 6];
 [x(1),n] = nearest2(x(1),all_angles);
 [x(2),m] = nearest2(x(2),all_speeds);
 goalnotmet = true;
@@ -19,11 +19,11 @@ txs = [0,0,0];
 xd = [pi,0];
 xd(1) = nearest2(xd(1),all_angles);
 xd(2) = nearest2(xd(2),all_speeds);
-n = 1; m = 112;
-x = [all_angles(n) all_speeds(m)];
 P = {};
 
 clear taus
+taus = 0;
+qactual = [];
 % driver signal
 while max(t) < tf
     torque = get_control_signal(network,n,m);
@@ -38,6 +38,9 @@ while max(t) < tf
         goalnotmet = false;
     end
     t = t + time;
+    if(goalnotmet)
+        qactual(end+1,:) = x;
+    end
 end
 
 % plot value function and policy. 

@@ -9,6 +9,6 @@ function [fig, phandle] = show_pendulum(fig, phandle, points)
 			end
 		end
 
-		phandle(i) = line(p([1 3]),p([2 4]),'Marker', 'o','MarkerSize',50);
+		phandle(i) = line(p([1 3]),p([2 4]),'Marker', 'o','MarkerSize',50,'LineWidth',5);
 	end
 end
