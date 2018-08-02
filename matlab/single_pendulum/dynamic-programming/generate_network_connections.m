@@ -1,6 +1,6 @@
 %% Generate the network connections
 addpath ../lib/
-filename = standard_init();
+filename = underactuated_init();
 load(filename)
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.

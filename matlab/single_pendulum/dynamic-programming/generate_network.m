@@ -16,7 +16,7 @@ else
     end
 end
 
-[xd,time,anglerange,speedrange,torquerange,filename] = standard_init();
+[xd,time,anglerange,speedrange,torquerange,filename] = underactuated_init();
 [angles, speeds, torques] = standard_resolution();
 
 

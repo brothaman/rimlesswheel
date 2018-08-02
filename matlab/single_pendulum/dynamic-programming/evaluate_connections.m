@@ -10,7 +10,7 @@ clear
 % network{51,101}.optimal_value = 0;
 % network{51,101}.optimal_policy = 9;
 
-[filename,i,network,connection_network,connections, t, ids,previous_ids] = standard_init();
+[filename,i,network,connection_network,connections, t, ids,previous_ids] = underactuated_init();
 % for each level of connection in the connection network cycle through all
 % the nodes and evaluate the connection. if a connection exist and the
 % compare the value and store the policy and value of the lower value
