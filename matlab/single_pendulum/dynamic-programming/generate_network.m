@@ -16,8 +16,8 @@ else
     end
 end
 
-[xd,time,anglerange,speedrange,torquerange,filename] = underactuated_init();
-[angles, speeds, torques] = standard_resolution();
+[xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_init();
+[angles, speeds, torques] = moderately_high_resolution();
 
 
 all_angles = min(anglerange):diff(anglerange)/angles:max(anglerange);
@@ -141,6 +141,18 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuat
     speedrange = [-6,6];
     torquerange = [-1.5,1.5];
     filename = '../lib/very_weak_cost_network.mat';
+end
+
+function [xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_init()
+    clear
+    addpath ../lib
+    xd  = [pi 0];
+    time = 0.01;
+
+    anglerange = [0,2*pi];
+    speedrange = [-6,6];
+    torquerange = [-1,1];
+    filename = '../lib/weak_cost_network.mat';
 end
 
 function [angles, speeds, torques] = high_resolution()
