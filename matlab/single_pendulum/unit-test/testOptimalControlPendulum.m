@@ -38,8 +38,9 @@ while max(t) < tf
         goalnotmet = false;
     end
     t = t + time;
-    if(goalnotmet)
-        qactual(end+1,:) = x;
+    qactual(end+1,:) = x;
+    if(~goalnotmet)
+        break
     end
 end
 

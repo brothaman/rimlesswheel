@@ -139,7 +139,7 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuat
 
     anglerange = [0,2*pi];
     speedrange = [-6,6];
-    torquerange = [-1,1];
+    torquerange = [-1.5,1.5];
     filename = '../lib/very_weak_cost_network.mat';
 end
 
@@ -147,6 +147,12 @@ function [angles, speeds, torques] = high_resolution()
     angles = 600;
     speeds = 1200;
     torques = 100;
+end
+
+function [angles, speeds, torques] = moderately_high_resolution()
+    angles = 300;
+    speeds = 300;
+    torques = 20;
 end
 
 function [angles, speeds, torques] = standard_resolution()
@@ -157,6 +163,6 @@ end
 
 function [angles, speeds, torques] = potato_resolution()
     angles = 20;
-    speeds = 40;
+    speeds = 30;
     torques = 10;
 end
