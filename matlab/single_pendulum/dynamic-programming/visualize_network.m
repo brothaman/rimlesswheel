@@ -1,7 +1,8 @@
 %% Visualize the cost network
 addpath ../lib
-load ../lib/underactuated_cost_network.mat
+load ../lib/cost_network.mat
 statenvalues = get_state_n_value(network);
+fig = figure;
 fig1 = figure;
 fig2 = figure;
 rmean = 100;
@@ -12,7 +13,7 @@ N = 50;
 clear x y z
 
 % animate the pendulum and generate the q_actual
-qactual = animate_pendulum(fig1, network, N, all_angles, all_speeds);
+[qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,'Strong Pendulum [0,0] to [\pi,0]',0);
 
 % plot network on a disk
 [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
@@ -20,16 +21,16 @@ qactual = animate_pendulum(fig1, network, N, all_angles, all_speeds);
 % plot_low_density_surf(fig1,x,y,[4,20])
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
 [xx,yy,zz] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost);
-fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz);
+fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,'Discoidal Representation of Strong Pendulum''s Cost Network');
 view(0, 45)
 saveas(fig1, 'images/underactuated_network_on_disk_isometric.pdf','pdf')
 
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
 [xx,yy,zz] = get_actual_data_for_cylinder(rmean,qactual,statenvalues);
-fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz);
+fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz,'Cylindrical Representation of the Strong Pendulum''s Cost Network');
 shading interp
-% saveas(fig1, 'images/underactuated_network_on_cylinder_isometric.pdf','pdf')
+saveas(fig1, 'images/underactuated_network_on_cylinder_isometric.pdf','pdf')
 
 % saveas(fig1, 'test_plot.tif','tiffn')
 % saveas(fig1, 'test_plot.jpg','jpeg')
@@ -64,6 +65,9 @@ end
 
 function J = get_value_at_state(state,network)
     J = network(sum(state - network(:,1:2),2) == 0,3);
+    if isempty(J)
+        disp('here')
+    end
 end
 
 function plot_circle(fig, radius,center,linename)
@@ -101,10 +105,11 @@ end
 function fig = visualize_cost_network_on_cylinder(fig,x,y,z,varargin)
     figure(fig)
     plot_every_thing = false;
-    if length(varargin) ~= 3
+    if length(varargin) ~= 4
         disp('no data for actual plot given or wrong size')
+        titl = varargin{1};
     else
-        [xx,yy,zz] = deal(varargin{:});
+        [xx,yy,zz,titl] = deal(varargin{:});
         plot_every_thing = true;
     end
     
@@ -116,7 +121,7 @@ function fig = visualize_cost_network_on_cylinder(fig,x,y,z,varargin)
         hold off
     end
     
-    title('Cylindrical Representation of Cost Network')
+    title(titl)
     zlabel('Cost to Navigate to the Goal')
     ylabel('y-position of Pendulum - Radius Indicates Cost')
     xlabel('x-position of Pendulum - Radius Indicates Cost')
@@ -162,10 +167,11 @@ end
 function fig = visualize_cost_network_on_disk(fig,x,y,z,varargin)
     figure(fig)
     plot_every_thing = false;
-    if length(varargin) ~= 3
+    if length(varargin) ~= 4
         disp('no data for actual plot given or wrong size')
+        titl = varargin{1};
     else
-        [xx,yy,zz] = deal(varargin{:});
+        [xx,yy,zz,titl] = deal(varargin{:});
         plot_every_thing = true;
     end
     
@@ -183,7 +189,8 @@ function fig = visualize_cost_network_on_disk(fig,x,y,z,varargin)
         plot3(xx,yy,zz,'k','LineWidth',5);
         hold off
     end
-    title('Discoidal Representation of Cost Network')
+%     title('Discoidal Representation of Cost Network')
+    title(titl)
     zlabel('Cost to Navigate to the Goal')
     ylabel('y-position of Pendulum')
     xlabel('x-position of Pendulum')
@@ -218,8 +225,7 @@ function plot_low_density_surf(fig, x, y, res)
 end
 
 %% Animate the pendulum
-function [qactual, txs, torque] = animate_pendulum(fig, network, N, all_angles, all_speeds)
-    qactual = zeros(N,2);
+function [qactual,txs, torque] = animate_pendulum(fig,network,N,all_angles,all_speeds,titl,flag)
     torque = zeros(1,N);
     txs = zeros(N,3);
     phi = -pi/2;
@@ -232,24 +238,27 @@ function [qactual, txs, torque] = animate_pendulum(fig, network, N, all_angles, 
     for i =1:N
         torque(i) = get_control_signal(network,n,m);
         [~,x] = xnplusone(x,torque(i),t);
-        txs(i,:) = [i*t,x];
         [x(1),n] = nearest2(x(1),all_angles);
         [x(2),m] = nearest2(x(2),all_speeds);
+        txs(i,:) = [i*t,x];
         P{end+1} = {1*[0 0 cos(x(1)+phi) sin(x(1)+phi)]};
         if round(x,4) == round(xd,4)
             break
         end
     end
-    
+    qactual = txs(1:i,2:3);
     figure(fig)
     axis([-2 2 -2 2]);
     phandle = [];
     xlabel('meters')
     ylabel('meters')
+    title(titl)
     
     for i = 1:length(P)
         [fig,phandle] = show_pendulum(fig,phandle,P{i});
-        saveas(fig, ['images/pend' int2str(i) '.jpg'],'jpeg')
+        if flag
+            saveas(fig, ['images/pend' int2str(i) '.jpg'],'jpeg')
+        end
         pause(0.03);
     end
 end
