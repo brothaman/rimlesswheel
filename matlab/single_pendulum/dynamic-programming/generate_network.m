@@ -138,7 +138,7 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuat
     time = 0.01;
 
     anglerange = [0,2*pi];
-    speedrange = [-6,6];
+    speedrange = [-10,10];
     torquerange = [-1.5,1.5];
     filename = '../lib/very_weak_cost_network.mat';
 end
@@ -147,10 +147,10 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_i
     clear
     addpath ../lib
     xd  = [pi 0];
-    time = 0.01;
+    time = 0.025;
 
     anglerange = [0,2*pi];
-    speedrange = [-6,6];
+    speedrange = [-10,10];
     torquerange = [-1,1];
     filename = '../lib/weak_cost_network.mat';
 end

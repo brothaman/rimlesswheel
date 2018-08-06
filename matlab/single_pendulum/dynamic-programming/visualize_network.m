@@ -1,32 +1,43 @@
 %% Visualize the cost network
 addpath ../lib
-load ../lib/cost_network.mat
+load ../lib/underactuated_cost_network.mat
 statenvalues = get_state_n_value(network);
-fig = figure;
+fig1 = figure;
+fig2 = figure;
 rmean = 100;
 k = 10;
 kspeeds = k;
 kcost = 1/7;
+N = 50;
 clear x y z
+
+% animate the pendulum and generate the q_actual
+qactual = animate_pendulum(fig1, network, N, all_angles, all_speeds);
 
 % plot network on a disk
 [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
+% plot_low_density_scatter(fig1,x,y,[4,20])
+% plot_low_density_surf(fig1,x,y,[4,20])
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
 [xx,yy,zz] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost);
-fig = visualize_cost_network_on_disk(fig,x,y,z,xx,yy,zz);
+fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz);
+view(0, 45)
+saveas(fig1, 'images/underactuated_network_on_disk_isometric.pdf','pdf')
 
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
 [xx,yy,zz] = get_actual_data_for_cylinder(rmean,qactual,statenvalues);
-fig = visualize_cost_network_on_cylinder(fig,x,y,z,xx,yy,zz);
+fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz);
 shading interp
-saveas(fig, 'test_plot.tif','tiffn')
-saveas(fig, 'test_plot.jpg','jpeg')
-saveas(fig, 'test_plot.ppm','ppmraw')
-saveas(fig, 'test_plot.pdf','pdf')
+% saveas(fig1, 'images/underactuated_network_on_cylinder_isometric.pdf','pdf')
+
+% saveas(fig1, 'test_plot.tif','tiffn')
+% saveas(fig1, 'test_plot.jpg','jpeg')
+% saveas(fig1, 'test_plot.ppm','ppmraw')
+% saveas(fig1, 'test_plot.pdf','pdf')
 
 % rotate the cyclinder's plot
-rotating_the_cylindrical_cost_network(fig,x,y,z)
+% rotating_the_cylindrical_cost_network(fig,x,y,z)
 %% functions
 function [val, n] = nearest2(val,arr)                                                                                                                                                                       
 vec = abs(arr - val);                                                                                                                                                                                       
@@ -42,7 +53,11 @@ function state_value = get_state_n_value(network)
     [n,m] = size(network);
     for i = 1:n
         for j = 1:m
-            state_value((i-1)*m + j,:) = [network{i,j}.state network{i,j}.optimal_value];
+            if isempty(network{i,j}.optimal_value)
+                state_value((i-1)*m + j,:) = [network{i,j}.state nan];
+            else
+                state_value((i-1)*m + j,:) = [network{i,j}.state network{i,j}.optimal_value];
+            end
         end
     end
 end
@@ -120,7 +135,7 @@ function fig = rotating_the_cylindrical_cost_network(fig,x,y,z)
 end
 %% Functions for Plotting Disk
 function [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds)
-    r = sqrt(rmean + k*all_speeds);
+    r = rmean + k*all_speeds;
     x = cos(all_angles').*r;
     y = sin(all_angles').*r;
 end
@@ -172,4 +187,69 @@ function fig = visualize_cost_network_on_disk(fig,x,y,z,varargin)
     zlabel('Cost to Navigate to the Goal')
     ylabel('y-position of Pendulum')
     xlabel('x-position of Pendulum')
+end
+
+function plot_low_density_scatter(fig, x, y, res)
+    x = x(1:res(1):end,1:res(2):end);
+    y = y(1:res(1):end,1:res(2):end);
+    rmax = max(x(1,:));
+    rmin = min(x(1,:));
+    figure(fig)
+    hold on
+    scatter(x,y,zeros(size(x)),'b','DisplayName','States')  
+    plot_circle(fig, rmax, [0 0],'Max Velocity')
+    plot_circle(fig, rmin, [0 0],'Min Velocity')
+    legend('show')
+    hold off
+end
+
+function plot_low_density_surf(fig, x, y, res)
+    x = x(1:res(1):end,1:res(2):end);
+    y = y(1:res(1):end,1:res(2):end);
+    rmax = max(x(1,:));
+    rmin = min(x(1,:));
+    figure(fig)
+    hold on
+    surf(x,y,zeros(size(x)),'DisplayName','States')  
+    plot_circle(fig, rmax, [0 0],'Max Velocity')
+    plot_circle(fig, rmin, [0 0],'Min Velocity')
+    legend('show')
+    hold off
+end
+
+%% Animate the pendulum
+function [qactual, txs, torque] = animate_pendulum(fig, network, N, all_angles, all_speeds)
+    qactual = zeros(N,2);
+    torque = zeros(1,N);
+    txs = zeros(N,3);
+    phi = -pi/2;
+    t = 0.05;
+    x = [0 0];
+    [x(1),n] = nearest2(x(1),all_angles);
+    [x(2),m] = nearest2(x(2),all_speeds);
+    xd = [pi 0];
+    P = {};
+    for i =1:N
+        torque(i) = get_control_signal(network,n,m);
+        [~,x] = xnplusone(x,torque(i),t);
+        txs(i,:) = [i*t,x];
+        [x(1),n] = nearest2(x(1),all_angles);
+        [x(2),m] = nearest2(x(2),all_speeds);
+        P{end+1} = {1*[0 0 cos(x(1)+phi) sin(x(1)+phi)]};
+        if round(x,4) == round(xd,4)
+            break
+        end
+    end
+    
+    figure(fig)
+    axis([-2 2 -2 2]);
+    phandle = [];
+    xlabel('meters')
+    ylabel('meters')
+    
+    for i = 1:length(P)
+        [fig,phandle] = show_pendulum(fig,phandle,P{i});
+        saveas(fig, ['images/pend' int2str(i) '.jpg'],'jpeg')
+        pause(0.03);
+    end
 end

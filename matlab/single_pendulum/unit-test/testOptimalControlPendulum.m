@@ -3,7 +3,7 @@
 clear all
 close all
 addpath ../lib/
-load ../lib/cost_network.mat
+load ../lib/underactuated_cost_network.mat
 
 time = 0.05;
 xd  = [pi 0];
@@ -11,7 +11,7 @@ phi = -pi/2;
 
 t = 0;
 tf = 3;
-x = [.75*pi 6];
+x = [0 0];
 [x(1),n] = nearest2(x(1),all_angles);
 [x(2),m] = nearest2(x(2),all_speeds);
 goalnotmet = true;
@@ -54,6 +54,7 @@ ylabel('meters')
 
 for i = 1:length(P)
     [fig,phandle] = show_pendulum(fig,phandle,P{i});
+%     saveas(fig, ['pend' int2str(i) '.tif'],'tiffn')
     pause(0.03);
 end
 % plot the torque over time
