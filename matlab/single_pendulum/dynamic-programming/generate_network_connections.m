@@ -37,7 +37,6 @@ for i = 1:steps
     end
     
     t(i) = seconds(toc);
-%     t(i).Format = 'hh:mm:ss.SSS';
     t(i)
     i
     save(filename,'i','connection_network','connections', 't', 'ids','previous_ids','-append')
