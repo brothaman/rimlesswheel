@@ -1,44 +1,71 @@
 %% Visualize the cost network
+close all
 addpath ../lib
-load ../lib/cost_network.mat
+load ../lib/very_weak_cost_network.mat
+pendulum_type = 'Very Weak Pendulum';
 statenvalues = get_state_n_value(network);
 fig = figure;
 fig1 = figure;
 fig2 = figure;
+fig3 = figure;
+fig4 = figure;
 rmean = 100;
 k = 10;
 kspeeds = k;
 kcost = 1/7;
 N = 50;
-clear x y z
+flag = 0;
+ clear x y z
 
 % animate the pendulum and generate the q_actual
-[qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,'Strong Pendulum [0,0] to [\pi,0]',0);
+if flag
+    [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],0);
+end
+
+% plot the torque and state
+if flag
+    plot_state_parameters(fig4,txs, torques,[pendulum_type ' System Response'])
+    saveas(fig1, ['images/' pendulum_type ' Response Plot.pdf'],'pdf'); %pause;
+end
 
 % plot network on a disk
 [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
-% plot_low_density_scatter(fig1,x,y,[4,20])
-% plot_low_density_surf(fig1,x,y,[4,20])
+plot_low_density_scatter(fig1,x,y,[4,20]);
+saveas(fig1, ['images/' pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
+clf(fig1)
+
+plot_low_density_surf(fig1,x,y,[4,20]);
+saveas(fig1, ['images/' pendulum_type ' cost network surface on flat disk-isometric.pdf'],'pdf'); %pause;
+clf(fig1)
+
+
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
-[xx,yy,zz] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost);
-fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,'Discoidal Representation of Strong Pendulum''s Cost Network');
+if flag
+    [xx,yy,zz] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost);
+    fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
+else
+    fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
+end
 view(0, 45)
-saveas(fig1, 'images/underactuated_network_on_disk_isometric.pdf','pdf')
+saveas(fig1, ['images/' pendulum_type ' cost network on disk-isometric.pdf'],'pdf')
 
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
-[xx,yy,zz] = get_actual_data_for_cylinder(rmean,qactual,statenvalues);
-fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz,'Cylindrical Representation of the Strong Pendulum''s Cost Network');
+if flag
+    [xx,yy,zz] = get_actual_data_for_cylinder(rmean,qactual,statenvalues);
+    fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
+else
+    fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
+end
 shading interp
-saveas(fig1, 'images/underactuated_network_on_cylinder_isometric.pdf','pdf')
-
-% saveas(fig1, 'test_plot.tif','tiffn')
-% saveas(fig1, 'test_plot.jpg','jpeg')
-% saveas(fig1, 'test_plot.ppm','ppmraw')
-% saveas(fig1, 'test_plot.pdf','pdf')
+saveas(fig1, ['images/moderately ' pendulum_type ' cost network on cylinder-isometric.pdf'],'pdf')
+[az,el] = view;
 
 % rotate the cyclinder's plot
-% rotating_the_cylindrical_cost_network(fig,x,y,z)
+az = 180-90; el = 15;
+rotx = 180/pi*(qactual(1:end-1,1) - qactual(2:end,1))';
+roty = 180/pi*(atan(qactual(2:end,2))/6)';
+rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,xx,yy,zz)
 %% functions
 function [val, n] = nearest2(val,arr)                                                                                                                                                                       
 vec = abs(arr - val);                                                                                                                                                                                       
@@ -127,15 +154,31 @@ function fig = visualize_cost_network_on_cylinder(fig,x,y,z,varargin)
     xlabel('x-position of Pendulum - Radius Indicates Cost')
 end
 
-function fig = rotating_the_cylindrical_cost_network(fig,x,y,z)
+function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,rotx,roty,varargin)
     figure(fig)
     C = x.^2 +y.^2;
     h = surf(x,y,z,C,'DisplayName','Cost Network');
-    title('Cylindrical Representation of Cost Network')
+    if ~isempty(varargin)
+        [xx,yy,zz] = deal(varargin{:});
+        hold on
+        p = plot3(xx,yy,zz,'k','LineWidth',5,'DisplayName','Path Traveled');
+        hold off
+    end
+    title(titl)
+    view(desc(1), desc(2));
     shading interp
-    for i = 1:10
-        rotate(h,[0 0 1],5)
-        saveas(fig,['images/test_plot' int2str(i) '.eps'],'epsc')
+    j = 1;
+    for i = [rotx;roty]
+        rotate(h,[0 0 1],i(1))
+        view(desc(1), i(2));
+        if ~isempty(varargin)
+            rotate(p,[0 0 1],i(1))
+        end
+        if flag
+            saveas(fig,['images/test_plot' int2str(j) '.jpg'],'jpeg')
+        end
+        pause(0.1)
+        j = j + 1;
     end
 end
 %% Functions for Plotting Disk
@@ -203,7 +246,7 @@ function plot_low_density_scatter(fig, x, y, res)
     rmin = min(x(1,:));
     figure(fig)
     hold on
-    scatter(x,y,zeros(size(x)),'b','DisplayName','States')  
+    scatter(x(:),y(:),'b','DisplayName','States')  
     plot_circle(fig, rmax, [0 0],'Max Velocity')
     plot_circle(fig, rmin, [0 0],'Min Velocity')
     legend('show')
@@ -261,4 +304,27 @@ function [qactual,txs, torque] = animate_pendulum(fig,network,N,all_angles,all_s
         end
         pause(0.03);
     end
+end
+
+function plot_state_parameters(fig, txs, torques, titl)
+    figure(fig)
+    txs = txs(~any(sum(txs,2)==0,2),:);
+    torques = torques(~any(sum(txs,2)==0,2));
+    
+    hold on
+    plot(txs(:,1),txs(:,2),'b','LineWidth',4,'DisplayName','Angular Position $\theta$ in rad')
+    plot(txs(:,1),ones(size(txs(:,1)))*pi,'--b','DisplayName','Desired Angular Position')
+    
+    plot(txs(:,1),txs(:,3),'k','LineWidth',3,'DisplayName','Angular Speed $\dot\theta$ in $\frac{rad}{sec}$')
+    plot(txs(:,1),zeros(size(txs(:,1))),'--k','DisplayName','Desired Angular Speed')
+    
+    plot(txs(:,1),torques,'r','LineWidth',3,'DisplayName', 'Torque Input $\tau$ in N*m');
+    hold off
+    title(titl)
+    l = legend('show');
+    l.Interpreter = 'latex';
+    l.Location = 'southeast';
+    
+    xlabel('time (t) in seconds')
+    ylabel('$Torque-Nm$, Angular Position - rad, Angular Speed - $\frac{rad}{sec}$','Interpreter','latex')
 end

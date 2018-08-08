@@ -147,7 +147,7 @@ function [xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_i
     clear
     addpath ../lib
     xd  = [pi 0];
-    time = 0.025;
+    time = 0.05;
 
     anglerange = [0,2*pi];
     speedrange = [-10,10];
