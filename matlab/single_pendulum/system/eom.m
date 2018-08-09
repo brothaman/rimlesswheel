@@ -33,4 +33,4 @@ model.D = simplify(subs(model.D,symbolic_variables,physical_variables));
 model.M = simplify(subs(model.M,thetaddot,1));
 model.D = str2func(strcat('@(theta, thetadot)',char(model.D)));
 model.M = str2func(strcat('@(theta, thetadot)',char(model.M)));
-save('lib/model.mat')
+% save('lib/model.mat')
