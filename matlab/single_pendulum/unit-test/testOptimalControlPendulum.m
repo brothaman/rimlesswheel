@@ -3,7 +3,7 @@
 clear all
 close all
 addpath ../lib/
-load ../lib/underactuated_cost_network.mat
+load ../dynamic-programming/data_1.mat
 
 time = 0.05;
 xd  = [pi 0];
