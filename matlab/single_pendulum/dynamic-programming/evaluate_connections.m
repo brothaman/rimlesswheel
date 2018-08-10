@@ -91,6 +91,7 @@ function [filename,i,network,connection_network,connections, t, ids,previous_ids
 end
 
 function [filename,i,network,connection_network,connections, t, ids,previous_ids, maxconns] = underactuated_init()
+    maxconns = 50;
     filename = '../lib/underactuated_cost_network.mat';
     load(filename);
     % set the goal node 
@@ -99,6 +100,7 @@ function [filename,i,network,connection_network,connections, t, ids,previous_ids
 end
 
 function [filename,i,network,connection_network,connections, t, ids,previous_ids, maxconns] = very_weak_actuation_init()
+    maxconns = 50;
     filename = '../lib/very_weak_cost_network.mat';    
     load(filename);
     % set the goal node 
@@ -107,6 +109,7 @@ function [filename,i,network,connection_network,connections, t, ids,previous_ids
 end
 
 function [filename,i,network,connection_network,connections, t, ids,previous_ids, maxconns] = weak_actuation_init()
+    maxconns = 50;
     filename = '../lib/weak_cost_network.mat';    
     load(filename);
     % set the goal node 
