@@ -10,7 +10,7 @@ clear
 % network{51,101}.optimal_value = 0;
 % network{51,101}.optimal_policy = 9;
 
-[filename,i,network,connection_network,connections, t, ids,previous_ids, maxconns] = standard_init();
+[filename,i,network,connection_network,connections, t, ids,previous_ids,maxconns] = standard_init();
 % for each level of connection in the connection network cycle through all
 % the nodes and evaluate the connection. if a connection exist and the
 % compare the value and store the policy and value of the lower value
@@ -23,20 +23,27 @@ for i = 1:n
     if isempty(connections{i})
         break;
     end
-    m = find(~cellfun('isempty',connections{i}))';
     tic
-    for j = m
-        [l,p] = size(network);
-        for k = 1:size(connections{i}{j},1)
-            connection = connections{i}{j}(k,:);
+    m = find(~cellfun('isempty',connections{i}))';
+    nodes = cell(length(m),maxconns);
+    for l = 1:length(m)
+        j = m(l);
+        len = size(connections{i}{j},1);
+        node = cell(1,maxconns);
+        for k = 1:len
             
-            for l = 1:N
-                for p = 1:M
-                    if connection(1:2) == [l p]
-                        network{l,p} = evaluate_connection(network,network{l,p}, [network{l,p}.connections{connection(3)} connection(3)]);
-                    end
-                end
-            end
+            node(k)  = evaluate_connection(...
+                network,...
+                network{connections{i}{j}(k,1),connections{i}{j}(k,2)},...
+                [network{connections{i}{j}(k,1),connections{i}{j}(k,2)}.connections{connections{i}{j}(k,3)} connections{i}{j}(k,3)]);
+        end
+        nodes(l,:) = node;
+    end
+    nodes = reshape(nodes,[numel(nodes),1]);
+    for j = 1:length(nodes)
+        if ~isempty(nodes{j})
+            network{nodes{j}(1),nodes{j}(2)}.optimal_policy = nodes{j}(3);
+            network{nodes{j}(1),nodes{j}(2)}.optimal_value = nodes{j}(4);
         end
     end
     teval(i) = seconds(toc);
@@ -44,9 +51,10 @@ for i = 1:n
     i
 end
 teval.Format = 'hh:mm:ss'
-save(filename,'network','ids','previous_ids','-append');
+save('data_1.mat','network','ids','previous_ids','-append');
 %% functions
-function node = evaluate_connection(network,node, connection)
+function conn = evaluate_connection(network,node, connection)
+    conn = {[]};
     if isempty(network{connection(1), connection(2)}.optimal_value)
         return
     else
@@ -55,22 +63,26 @@ function node = evaluate_connection(network,node, connection)
         % if the policy and value do not exit
         % if  isempty(node.optimal_value) && isempty(node.optimal_policy)
         value = connection(4) + network{connection(1), connection(2)}.optimal_value;
-        if  isempty(node.optimal_value)
-            node.optimal_policy = connection(5);
-            node.optimal_value = value;
+        if  isempty(node.optimal_value) || isnan(node.optimal_value)
+%             optimal_policy = connection(5);
+%             optimal_value = value;
+%             conn = [node.ID optimal_policy optimal_value];
+            conn = {[node.ID connection(5) value]};
         else
             % compare the node and update if a better policy exist
             % otherwise do nothing
             if node.optimal_value > value
-                node.optimal_policy = connection(5);
-                node.optimal_value = value;
+%                 optimal_policy = connection(5);
+%                 optimal_value = value;
+%                 conn = [node.ID optimal_policy optimal_value];
+                conn = {[node.ID connection(5) value]};
             end
         end
     end
 end
 
 function [filename,i,network,connection_network,connections, t, ids,previous_ids, maxconns] = standard_init()
-    maxconns = 19;
+    maxconns = 50;
     filename = '../lib/cost_network.mat';
     load(filename);
     % set the goal node 
