@@ -44,7 +44,7 @@ for i = 1:steps
     t(i)
     i
     save(filename,'i','connection_network','connections', 't', 'ids','previous_ids','-append','maxconns')
-gener    ids = cell2mat(connections{i});
+    ids = cell2mat(connections{i});
     ids = ids(:,[1 2]);
     ids = unique(ids,'rows');
     if isempty(ids)
