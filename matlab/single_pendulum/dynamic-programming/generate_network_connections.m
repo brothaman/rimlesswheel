@@ -1,6 +1,6 @@
 %% Generate the network connections
 addpath ../lib/
-filename = weak_actuation_init();
+filename = standard_init();
 load(filename)
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
@@ -24,10 +24,14 @@ steps = 1000;
 ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
 res = size(ids,1);
 connections = cell(steps,1);
+maxconns = 0;
 for i = 1:steps
     tic
     if i > 1
-        connections{i} = parnetwork_search3(connection_network, ids, previous_ids);
+        [connections{i},maxcon] = parnetwork_search3(connection_network, ids, previous_ids);
+        if maxcon > maxconns
+            maxconns = maxcon;
+        end
         ids = cell2mat(connections{i});
         previous_ids = [previous_ids; ids(:,[1 2 4 5])];
         previous_ids = unique(previous_ids,'rows');
@@ -39,7 +43,7 @@ for i = 1:steps
     t(i) = seconds(toc);
     t(i)
     i
-    save(filename,'i','connection_network','connections', 't', 'ids','previous_ids','-append')
+    save(filename,'i','connection_network','connections', 't', 'ids','previous_ids','-append','maxconns')
     ids = cell2mat(connections{i});
     ids = ids(:,[1 2]);
     ids = unique(ids,'rows');
@@ -49,9 +53,10 @@ for i = 1:steps
 end
 
 %% Functions
-function [connections] = parnetwork_search3(network, ids, previous_ids)
+function [connections,maxconns] = parnetwork_search3(network, ids, previous_ids)
     len = size(ids,1);
     connections = cell(len,1);
+    maxconns = 0;
     parfor i = 1:len
         % if previous id's [4,5] is equal to current id's [1,2] and current
         % id's [4,5] is equal to previous id's [1,2] then eliminate current
@@ -61,6 +66,13 @@ function [connections] = parnetwork_search3(network, ids, previous_ids)
         % this will eliminate any connections back to the previous
         for j = 1:size(previous_ids,1)
             connections(i) = {connections{i}(any(previous_ids(j,:) - connections{i}(:,[1 2 4 5]),2),:)};
+        end
+    end
+    for i = 1:length(connections)
+        if ~isempty(connections{i})
+            if size(connections{i},1) > maxconns
+                maxconns = size(connections{i},1);
+            end
         end
     end
 end
