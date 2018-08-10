@@ -1,4 +1,4 @@
-clearvars -except filename
+clearvars -except filename goal
 % connection_data = load('cost_network_v1.1.mat');
 % data = load('../lib/cost_network_v2.0.mat');
 % network = data.network;
@@ -7,8 +7,8 @@ clearvars -except filename
 % addpath ../lib/
 % 
 % % set the goal node 
-% network{51,101}.optimal_value = 0;
-% network{51,101}.optimal_policy = 9;
+network{goal(1),goal(2)}.optimal_value = 0;
+network{goal(1),goal(2)}.optimal_policy = nan;
 load(filename)
 %[filename,i,network,connection_network,connections, t, ids,previous_ids,maxconns] = weak_actuation_init();
 % for each level of connection in the connection network cycle through all
