@@ -16,8 +16,8 @@ else
     end
 end
 
-[xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_init();
-[angles, speeds, torques] = moderately_high_resolution();
+[xd,time,anglerange,speedrange,torquerange,filename] = standard_init();
+[angles, speeds, torques] = standard_resolution();
 
 
 all_angles = min(anglerange):diff(anglerange)/angles:max(anglerange);
@@ -37,7 +37,7 @@ parfor i = 1:length(all_angles)
     new_nodes(i,:) = node;
 end
 network = new_nodes;
-save(filename, 'network','all_angles','all_speeds', 'all_torques');
+save(filename, 'network','all_angles','all_speeds', 'all_torques','-append');
 clearvars
 %% functions
 function nodes = initialize_nodes(angles,speeds)
