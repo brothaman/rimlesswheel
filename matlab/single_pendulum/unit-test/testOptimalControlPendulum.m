@@ -3,14 +3,14 @@
 clear all
 close all
 addpath ../lib/
-load ../dynamic-programming/data_1.mat
+load ../lib/weak_cost_network.mat
 
 time = 0.05;
 xd  = [pi 0];
 phi = -pi/2;
 
 t = 0;
-tf = 3;
+tf = 100;
 x = [0 0];
 [x(1),n] = nearest2(x(1),all_angles);
 [x(2),m] = nearest2(x(2),all_speeds);
@@ -55,7 +55,7 @@ ylabel('meters')
 for i = 1:length(P)
     [fig,phandle] = show_pendulum(fig,phandle,P{i});
 %     saveas(fig, ['pend' int2str(i) '.tif'],'tiffn')
-    pause(0.03);
+    pause(0.01);
 end
 % plot the torque over time
 fig2 = figure;

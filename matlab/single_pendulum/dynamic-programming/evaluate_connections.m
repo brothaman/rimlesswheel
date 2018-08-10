@@ -1,4 +1,4 @@
-clear
+clearvars -except filename
 % connection_data = load('cost_network_v1.1.mat');
 % data = load('../lib/cost_network_v2.0.mat');
 % network = data.network;
@@ -9,8 +9,8 @@ clear
 % % set the goal node 
 % network{51,101}.optimal_value = 0;
 % network{51,101}.optimal_policy = 9;
-
-[filename,i,network,connection_network,connections, t, ids,previous_ids,maxconns] = weak_actuation_init();
+load(filename)
+%[filename,i,network,connection_network,connections, t, ids,previous_ids,maxconns] = weak_actuation_init();
 % for each level of connection in the connection network cycle through all
 % the nodes and evaluate the connection. if a connection exist and the
 % compare the value and store the policy and value of the lower value

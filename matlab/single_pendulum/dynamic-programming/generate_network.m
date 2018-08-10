@@ -16,8 +16,8 @@ else
     end
 end
 
-[xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_init();
-[angles, speeds, torques] = moderately_high_resolution();
+%[xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_init();
+%[angles, speeds, torques] = moderately_high_resolution();
 
 
 all_angles = min(anglerange):diff(anglerange)/angles:max(anglerange);

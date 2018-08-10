@@ -1,25 +1,25 @@
 %% Visualize the cost network
 close all
 addpath ../lib
-load ../lib/very_weak_cost_network.mat
-pendulum_type = 'Very Weak Pendulum';
+load ../lib/weak_cost_network.mat
+pendulum_type = 'Weak Pendulum First iteration';
 statenvalues = get_state_n_value(network);
 fig = figure;
 fig1 = figure;
 fig2 = figure;
 fig3 = figure;
 fig4 = figure;
-rmean = 100;
+rmean = 200;
 k = 10;
 kspeeds = k;
 kcost = 1/7;
-N = 50;
-flag = 0;
+N = 179;
+flag = 1;
  clear x y z
 
 % animate the pendulum and generate the q_actual
 if flag
-    [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],0);
+    [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],1);
 end
 
 % plot the torque and state
@@ -65,7 +65,9 @@ saveas(fig1, ['images/moderately ' pendulum_type ' cost network on cylinder-isom
 az = 180-90; el = 15;
 rotx = 180/pi*(qactual(1:end-1,1) - qactual(2:end,1))';
 roty = 180/pi*(atan(qactual(2:end,2))/6)';
-rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,xx,yy,zz)
+if flag
+    rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,xx,yy,zz)
+end
 %% functions
 function [val, n] = nearest2(val,arr)                                                                                                                                                                       
 vec = abs(arr - val);                                                                                                                                                                                       
