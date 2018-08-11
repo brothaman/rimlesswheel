@@ -2,6 +2,7 @@
 %addpath ../lib/
 %filename = weak_actuation_init();
 %load(filename)
+%{
 N = maxNumCompThreads;
 p = gcp('nocreate'); % If no pool, do not create new one.
 if isempty(p)
@@ -18,8 +19,9 @@ else
         parpool(N)
     end
 end
+%}
+
 connection_network = convert_network(network);
-clearvars -except connection_network network p filename
 steps = 1000;
 ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
 res = size(ids,1);
