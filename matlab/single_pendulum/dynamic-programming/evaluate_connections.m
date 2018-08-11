@@ -1,4 +1,3 @@
-clearvars -except filename goal
 % connection_data = load('cost_network_v1.1.mat');
 % data = load('../lib/cost_network_v2.0.mat');
 % network = data.network;
