@@ -37,7 +37,7 @@ parfor i = 1:length(all_angles)
     new_nodes(i,:) = node;
 end
 network = new_nodes;
-save(filename, 'network','all_angles','all_speeds', 'all_torques');
+save(filename, 'network','all_angles','all_speeds', 'all_torques','-append');
 %% functions
 function nodes = initialize_nodes(angles,speeds)
     n = length(angles);
