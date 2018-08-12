@@ -21,14 +21,14 @@ disp('Generating Network')
 generate_network
 disp('Finished Generating Network')
 
-clearvars -except filename
+clearvars -except filename total_time
 load(filename)
 
 disp('Generating Network Connections')
 generate_network_connections
 disp('Finished Generating Network Connections')
 
-clearvars -except filename
+clearvars -except filename total_time
 load(filename)
 
 disp('Evaluating Network Connections')

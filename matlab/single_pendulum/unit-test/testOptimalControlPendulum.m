@@ -3,7 +3,7 @@
 clear all
 close all
 addpath ../lib/
-load ../lib/weak_cost_network.mat
+load ../lib/strong_cost_network.mat
 
 time = 0.05;
 xd  = [pi 0];

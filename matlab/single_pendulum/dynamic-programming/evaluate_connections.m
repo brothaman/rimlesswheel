@@ -6,9 +6,9 @@
 % addpath ../lib/
 % 
 % % set the goal node 
+load(filename)
 network{goal(1),goal(2)}.optimal_value = 0;
 network{goal(1),goal(2)}.optimal_policy = nan;
-load(filename)
 %[filename,i,network,connection_network,connections, t, ids,previous_ids,maxconns] = weak_actuation_init();
 % for each level of connection in the connection network cycle through all
 % the nodes and evaluate the connection. if a connection exist and the
