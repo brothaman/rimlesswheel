@@ -68,6 +68,9 @@ function [connections,maxconns] = parnetwork_search3(network, ids, previous_ids)
         % this will eliminate any connections back to the previous
         for j = 1:size(previous_ids,1)
             connections(i) = {connections{i}(any(previous_ids(j,:) - connections{i}(:,[1 2 4 5]),2),:)};
+            if isempty(connections{i})
+                break;
+            end
         end
     end
     for i = 1:length(connections)
