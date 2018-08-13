@@ -65,6 +65,7 @@ function [connections,maxconns] = parnetwork_search3(network, ids, previous_ids)
         % id's connection that correlate with [4,5]. delete current id's
         % [4,5]
         connections{i} = network(~any(ids(i,[1,2]) - network(:,[4,5]),2),:);
+        
         % this will eliminate any connections back to the previous
         for j = 1:size(previous_ids,1)
             connections(i) = {connections{i}(any(previous_ids(j,:) - connections{i}(:,[1 2 4 5]),2),:)};
