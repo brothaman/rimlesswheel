@@ -3,7 +3,7 @@
 clear all
 close all
 addpath ../lib/
-load ../lib/strong_cost_network.mat
+load ../lib/weak_cost_network.mat
 
 time = 0.05;
 xd  = [pi 0];
@@ -11,7 +11,7 @@ phi = -pi/2;
 
 t = 0;
 tf = 100;
-x = [0 0];
+x = [0 10];
 [x(1),n] = nearest2(x(1),all_angles);
 [x(2),m] = nearest2(x(2),all_speeds);
 goalnotmet = true;

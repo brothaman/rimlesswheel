@@ -17,7 +17,7 @@ len = length(connections);
 iterations = 2;
 net = cell(size(network));
 [N,M] = size(network);
-n = size(connections,1);
+n = sum(any(~cellfun('isempty',connections),2));
 for i = 1:n
     if isempty(connections{i})
         break;
@@ -46,8 +46,6 @@ for i = 1:n
         end
     end
     teval(i) = seconds(toc);
-    teval(i)
-    i
 end
 teval.Format = 'hh:mm:ss'
 save(filename,'network','ids','previous_ids','-append');

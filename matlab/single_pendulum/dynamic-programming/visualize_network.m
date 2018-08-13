@@ -2,7 +2,7 @@
 close all
 addpath ../lib
 load ../lib/weak_cost_network.mat
-pendulum_type = 'Weak Pendulum First iteration';
+pendulum_type = 'Weak Pendulum Iteration 14';
 statenvalues = get_state_n_value(network);
 fig = figure;
 fig1 = figure;
@@ -14,8 +14,8 @@ k = 10;
 kspeeds = k;
 kcost = 1/7;
 N = 179;
-flag = 1;
- clear x y z
+flag = 0;
+clear x y z
 
 % animate the pendulum and generate the q_actual
 if flag
@@ -47,7 +47,7 @@ else
     fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
 end
 view(0, 45)
-saveas(fig1, ['images/' pendulum_type ' cost network on disk-isometric.pdf'],'pdf')
+saveas(fig1, ['images/' pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
 
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
@@ -58,7 +58,7 @@ else
     fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 end
 shading interp
-saveas(fig1, ['images/moderately ' pendulum_type ' cost network on cylinder-isometric.pdf'],'pdf')
+saveas(fig1, ['images/moderately ' pendulum_type ' cost network on cylinder-isometric.jpg'],'jpeg')
 [az,el] = view;
 
 % rotate the cyclinder's plot
@@ -83,7 +83,7 @@ function state_value = get_state_n_value(network)
     [n,m] = size(network);
     for i = 1:n
         for j = 1:m
-            if isempty(network{i,j}.optimal_value)
+            if isempty(network{i,j}.optimal_value) || isnan(network{i,j}.optimal_value)
                 state_value((i-1)*m + j,:) = [network{i,j}.state nan];
             else
                 state_value((i-1)*m + j,:) = [network{i,j}.state network{i,j}.optimal_value];

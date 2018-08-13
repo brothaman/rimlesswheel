@@ -8,7 +8,7 @@ torquerange = [-1.5,1.5];
 angles = 300;
 speeds = 300;
 torques = 20;
-goal = [151,151];
+goal = [151,201];
 
 
 save(filename,...
@@ -32,7 +32,18 @@ clearvars -except filename total_time
 load(filename)
 
 disp('Evaluating Network Connections')
-evaluate_connections
+N = sum(any(~cellfun('isempty',connections),2));
+path = 'images/weak_pend/growth/';
+if ~exist(path,'dir')
+    mkdir(path)
+end
+for i = 1:N
+    evaluate_connections
+    figure_file_name = ['weak cost network iteration ' int2str(i)];
+    show_cost_network(figure_file_name, path, all_angles, all_speeds, network)
+    close all
+end
+visualize_network
 disp('Finished Evaluating Network Connections')
 
 
