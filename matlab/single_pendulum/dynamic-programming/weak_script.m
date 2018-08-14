@@ -45,7 +45,7 @@ for iter = 1:N
     show_cost_network(figure_file_name, path, all_angles, all_speeds, network)
     close all
 end
-visualize_network
+save(filename,'network','ids','previous_ids','-append');
 disp('Finished Evaluating Network Connections')
 
 

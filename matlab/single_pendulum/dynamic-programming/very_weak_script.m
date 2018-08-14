@@ -32,7 +32,19 @@ clearvars -except filename total_time
 load(filename)
 
 disp('Evaluating Network Connections')
-evaluate_connections
+N = sum(any(~cellfun('isempty',connections),2));
+path = 'images/very_weak_pend/growth/';
+if ~exist(path,'dir')
+    mkdir(path)
+end
+for iter = 1:N
+    evaluate_connections
+    save(['../lib/very_weak_pend/very_weak_network_' int2str(iter) '.mat'],'network')
+    figure_file_name = ['very weak cost network iteration ' int2str(iter)];
+    show_cost_network(figure_file_name, path, all_angles, all_speeds, network)
+    close all
+end
+save(filename,'network','ids','previous_ids','-append');
 disp('Finished Evaluating Network Connections')
 
 
