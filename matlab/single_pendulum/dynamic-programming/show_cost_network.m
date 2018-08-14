@@ -18,7 +18,7 @@ saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
 [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
 fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,figure_file_name);
 shading interp
-saveas(fig1, [path 'cylindrical_' figure_file_name '.jpg'],'jpeg')
+saveas(fig2, [path 'cylindrical_' figure_file_name '.jpg'],'jpeg')
 end
 
 %% functions
