@@ -1,3 +1,4 @@
+maxNumCompThreads =32;
 filename = '../lib/weak_cost_network.mat';
 addpath ../lib                                 
 xd  = [pi 0];
@@ -37,9 +38,10 @@ path = 'images/weak_pend/growth/';
 if ~exist(path,'dir')
     mkdir(path)
 end
-for i = 1:N
+for iter = 1:N
     evaluate_connections
-    figure_file_name = ['weak cost network iteration ' int2str(i)];
+    save(['../lib/weak_pend/weak_network_' int2str(iter) '.mat'],'network')
+    figure_file_name = ['weak cost network iteration ' int2str(iter)];
     show_cost_network(figure_file_name, path, all_angles, all_speeds, network)
     close all
 end

@@ -6,7 +6,7 @@
 % addpath ../lib/
 % 
 % % set the goal node 
-load(filename)
+%load(filename)
 network{goal(1),goal(2)}.optimal_value = 0;
 network{goal(1),goal(2)}.optimal_policy = nan;
 %[filename,i,network,connection_network,connections, t, ids,previous_ids,maxconns] = weak_actuation_init();
@@ -48,7 +48,7 @@ for i = 1:n
     teval(i) = seconds(toc);
 end
 teval.Format = 'hh:mm:ss'
-save(filename,'network','ids','previous_ids','-append');
+%save(filename,'network','ids','previous_ids','-append');
 %% functions
 function conn = evaluate_connection(network,node, connection)
     conn = {[]};
