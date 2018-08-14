@@ -8,16 +8,22 @@ fig1 = figure;
 fig2 = figure;
 
 % plot network on a disk
-[x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
-z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
-visualize_cost_network_on_disk(fig1,x,y,z,figure_file_name);
-view(0, 45)
-saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
+% [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
+% z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
+% visualize_cost_network_on_disk(fig1,x,y,z,figure_file_name);
+% view(0, 45)
+% zlim([0 50])
+% xlim([-320 320])
+% ylim([-320 320])
+% saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
 
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
 fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,figure_file_name);
 shading interp
+zlim([-10 10])
+xlim([-550 550])
+ylim([-550 550])
 saveas(fig2, [path 'cylindrical_' figure_file_name '.jpg'],'jpeg')
 end
 
