@@ -39,7 +39,7 @@ if ~exist(path,'dir')
 end
 for iter = 1:N
     evaluate_connections
-    save(['../lib/moderately_weak_pend/weak_network_' int2str(iter) '.mat'],'network')
+    save(['../lib/moderately_weak_pend/moderately_weak_network_' int2str(iter) '.mat'],'network')
     figure_file_name = ['moderately weak cost network iteration ' int2str(iter)];
     show_cost_network(figure_file_name, path, all_angles, all_speeds, network)
     close all
