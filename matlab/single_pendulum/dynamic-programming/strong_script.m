@@ -49,4 +49,3 @@ disp('Finished Evaluating Network Connections')
 
 
 total_time = seconds(toc(total_time));
-total_time.Format = 'hh:mm:ss.sss'

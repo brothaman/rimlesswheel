@@ -1,8 +1,8 @@
 %% Visualize the cost network
 close all
 addpath ../lib
-load ../lib/weak_cost_network.mat
-pendulum_type = 'Weak Pendulum Iteration 14';
+load ../lib/moderately_weak_cost_network.mat
+pendulum_type = 'Moderately Weak Pendulum';
 statenvalues = get_state_n_value(network);
 fig = figure;
 fig1 = figure;
@@ -14,12 +14,12 @@ k = 10;
 kspeeds = k;
 kcost = 1/7;
 N = 179;
-flag = 0;
+flag = 1;
 clear x y z
 
 % animate the pendulum and generate the q_actual
 if flag
-    [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],1);
+    [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],0);
 end
 
 % plot the torque and state
@@ -124,7 +124,7 @@ end
 function [x,y,z] = get_actual_data_for_cylinder(rmean,qactual,statenvalues)
     ractual = zeros(size(qactual(:,1)));
     for i = 1: length(qactual(:,1))
-        ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues))+5;
+        ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues))+10;
     end
     x = ractual.*cos(qactual(:,1));
     y = ractual.*sin(qactual(:,1));
@@ -146,7 +146,7 @@ function fig = visualize_cost_network_on_cylinder(fig,x,y,z,varargin)
     surf(x,y,z,C,'DisplayName','Cost Network');
     if plot_every_thing
         hold on
-        plot3(xx,yy,zz,'k','LineWidth',5,'DisplayName','Path Traveled');
+        plot3(xx,yy,zz,'k','LineWidth',10,'DisplayName','Path Traveled');
         hold off
     end
     
@@ -163,7 +163,7 @@ function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,ro
     if ~isempty(varargin)
         [xx,yy,zz] = deal(varargin{:});
         hold on
-        p = plot3(xx,yy,zz,'k','LineWidth',5,'DisplayName','Path Traveled');
+        p = plot3(xx,yy,zz,'k','LineWidth',10,'DisplayName','Path Traveled');
         hold off
     end
     title(titl)
@@ -205,7 +205,7 @@ function [x,y,z] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost)
     y = ractual.*sin(qactual(:,1));
     z = zeros(size(x));
     for j = 1:length(qactual(:,1))
-        z(j) = kcost*get_value_at_state(qactual(j,:),statenvalues)+.1;
+        z(j) = kcost*get_value_at_state(qactual(j,:),statenvalues)+.3;
     end
 end
 
@@ -231,7 +231,7 @@ function fig = visualize_cost_network_on_disk(fig,x,y,z,varargin)
     shading interp
     if plot_every_thing
         hold on
-        plot3(xx,yy,zz,'k','LineWidth',5);
+        plot3(xx,yy,zz,'k','LineWidth',10);
         hold off
     end
 %     title('Discoidal Representation of Cost Network')
