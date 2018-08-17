@@ -9,7 +9,7 @@ torquerange = [-1.5,1.5];
 angles = 300;
 speeds = 300;
 torques = 20;
-goal = [151,201];
+goal = [151,151];
 
 
 save(filename,...
