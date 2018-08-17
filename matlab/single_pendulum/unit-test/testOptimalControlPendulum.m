@@ -55,7 +55,7 @@ ylabel('meters')
 for i = 1:length(P)
     [fig,phandle] = show_pendulum(fig,phandle,P{i});
 %     saveas(fig, ['pend' int2str(i) '.tif'],'tiffn')
-    pause(0.01);
+    pause(0.05);
 end
 % plot the torque over time
 fig2 = figure;

@@ -1,8 +1,12 @@
 %% Visualize the cost network
 close all
 addpath ../lib
-load ../lib/moderately_weak_cost_network.mat
-pendulum_type = 'Moderately Weak Pendulum';
+load ../lib/weak_cost_network.mat
+pendulum_type = 'Weak Pendulum';
+path = 'images/weak_pend/figures/';
+if ~exist(path,'dir')
+    mkdir(path)
+end
 statenvalues = get_state_n_value(network);
 fig = figure;
 fig1 = figure;
@@ -13,29 +17,29 @@ rmean = 200;
 k = 10;
 kspeeds = k;
 kcost = 1/7;
-N = 179;
+N = 200;%sum(any(~cellfun('isempty',connections),2));
 flag = 1;
 clear x y z
 
 % animate the pendulum and generate the q_actual
 if flag
-    [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],0);
+    [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],path,0);
 end
 
 % plot the torque and state
 if flag
     plot_state_parameters(fig4,txs, torques,[pendulum_type ' System Response'])
-    saveas(fig1, ['images/' pendulum_type ' Response Plot.pdf'],'pdf'); %pause;
+    saveas(fig1, [path pendulum_type ' Response Plot.pdf'],'pdf'); %pause;
 end
 
 % plot network on a disk
 [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
 plot_low_density_scatter(fig1,x,y,[4,20]);
-saveas(fig1, ['images/' pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
+saveas(fig1, [path pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
 clf(fig1)
 
 plot_low_density_surf(fig1,x,y,[4,20]);
-saveas(fig1, ['images/' pendulum_type ' cost network surface on flat disk-isometric.pdf'],'pdf'); %pause;
+saveas(fig1, [path pendulum_type ' cost network surface on flat disk-isometric.pdf'],'pdf'); %pause;
 clf(fig1)
 
 
@@ -47,7 +51,7 @@ else
     fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
 end
 view(0, 45)
-saveas(fig1, ['images/' pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
+saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
 
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
@@ -58,7 +62,7 @@ else
     fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 end
 shading interp
-saveas(fig1, ['images/moderately ' pendulum_type ' cost network on cylinder-isometric.jpg'],'jpeg')
+saveas(fig1, [path pendulum_type ' cost network on cylinder-isometric.jpg'],'jpeg')
 [az,el] = view;
 
 % rotate the cyclinder's plot
@@ -66,7 +70,7 @@ az = 180-90; el = 15;
 rotx = 180/pi*(qactual(1:end-1,1) - qactual(2:end,1))';
 roty = 180/pi*(atan(qactual(2:end,2))/6)';
 if flag
-    rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,xx,yy,zz)
+    rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,path,xx,yy,zz)
 end
 %% functions
 function [val, n] = nearest2(val,arr)                                                                                                                                                                       
@@ -124,7 +128,7 @@ end
 function [x,y,z] = get_actual_data_for_cylinder(rmean,qactual,statenvalues)
     ractual = zeros(size(qactual(:,1)));
     for i = 1: length(qactual(:,1))
-        ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues))+10;
+        ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues))+100;
     end
     x = ractual.*cos(qactual(:,1));
     y = ractual.*sin(qactual(:,1));
@@ -156,7 +160,7 @@ function fig = visualize_cost_network_on_cylinder(fig,x,y,z,varargin)
     xlabel('x-position of Pendulum - Radius Indicates Cost')
 end
 
-function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,rotx,roty,varargin)
+function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,rotx,roty,path,varargin)
     figure(fig)
     C = x.^2 +y.^2;
     h = surf(x,y,z,C,'DisplayName','Cost Network');
@@ -177,7 +181,7 @@ function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,ro
             rotate(p,[0 0 1],i(1))
         end
         if flag
-            saveas(fig,['images/test_plot' int2str(j) '.jpg'],'jpeg')
+            saveas(fig,[path 'test_plot' int2str(j) '.jpg'],'jpeg')
         end
         pause(0.1)
         j = j + 1;
@@ -270,7 +274,7 @@ function plot_low_density_surf(fig, x, y, res)
 end
 
 %% Animate the pendulum
-function [qactual,txs, torque] = animate_pendulum(fig,network,N,all_angles,all_speeds,titl,flag)
+function [qactual,txs, torque] = animate_pendulum(fig,network,N,all_angles,all_speeds,titl,path,flag)
     torque = zeros(1,N);
     txs = zeros(N,3);
     phi = -pi/2;
@@ -302,7 +306,7 @@ function [qactual,txs, torque] = animate_pendulum(fig,network,N,all_angles,all_s
     for i = 1:length(P)
         [fig,phandle] = show_pendulum(fig,phandle,P{i});
         if flag
-            saveas(fig, ['images/pend' int2str(i) '.jpg'],'jpeg')
+            saveas(fig, [path 'pend' int2str(i) '.jpg'],'jpeg')
         end
         pause(0.03);
     end
