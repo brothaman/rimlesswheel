@@ -8,7 +8,7 @@ speedrange = [-6,6];
 torquerange = [-10,10];
 angles = 100;
 speeds = 200;
-torques = 20;
+torques = 200;
 goal = [51,101];
 
 save(filename,...
