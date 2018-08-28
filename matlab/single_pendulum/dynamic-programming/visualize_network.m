@@ -1,9 +1,9 @@
 %% Visualize the cost network
 close all
 addpath ../lib
-load ../lib/weak_cost_network.mat
-pendulum_type = 'Weak Pendulum';
-path = 'images/weak_pend/figures/';
+load ../lib/strong_cost_network.mat
+pendulum_type = 'Strong Pendulum';
+path = 'images/strong_pend/figures/';
 if ~exist(path,'dir')
     mkdir(path)
 end
@@ -17,10 +17,10 @@ rmean = 200;
 k = 10;
 kspeeds = k;
 kcost = 1/7;
-N = 200;%sum(any(~cellfun('isempty',connections),2));
+N = sum(any(~cellfun('isempty',connections),2));
 flag = 1;
 clear x y z
-
+[J,q,qdot,inputs] = get_other_data_cost('../lib/pdata.csv');
 % animate the pendulum and generate the q_actual
 if flag
     [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],path,0);
@@ -28,8 +28,8 @@ end
 
 % plot the torque and state
 if flag
-    plot_state_parameters(fig4,txs, torques,[pendulum_type ' System Response'])
-    saveas(fig1, [path pendulum_type ' Response Plot.pdf'],'pdf'); %pause;
+    plot_state_parameters(fig4,txs, torques,[pendulum_type ' System Response'],q,qdot,inputs)
+    saveas(fig4, [path pendulum_type ' Response Plot.pdf'],'pdf'); %pause;
 end
 
 % plot network on a disk
@@ -128,7 +128,7 @@ end
 function [x,y,z] = get_actual_data_for_cylinder(rmean,qactual,statenvalues)
     ractual = zeros(size(qactual(:,1)));
     for i = 1: length(qactual(:,1))
-        ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues))+100;
+        ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues))+10;
     end
     x = ractual.*cos(qactual(:,1));
     y = ractual.*sin(qactual(:,1));
@@ -312,25 +312,81 @@ function [qactual,txs, torque] = animate_pendulum(fig,network,N,all_angles,all_s
     end
 end
 
-function plot_state_parameters(fig, txs, torques, titl)
+function plot_state_parameters(fig, txs, torques, titl,q,qdot,inputs)
     figure(fig)
     txs = txs(~any(sum(txs,2)==0,2),:);
     torques = torques(~any(sum(txs,2)==0,2));
     
+    subplot(3,1,1)
     hold on
     plot(txs(:,1),txs(:,2),'b','LineWidth',4,'DisplayName','Angular Position $\theta$ in rad')
+%     plot(0.05*(1:length(q))',q,'k','LineWidth',4,'DisplayName','Pranav''s Angular Position $\theta$ in rad')
     plot(txs(:,1),ones(size(txs(:,1)))*pi,'--b','DisplayName','Desired Angular Position')
-    
-    plot(txs(:,1),txs(:,3),'k','LineWidth',3,'DisplayName','Angular Speed $\dot\theta$ in $\frac{rad}{sec}$')
-    plot(txs(:,1),zeros(size(txs(:,1))),'--k','DisplayName','Desired Angular Speed')
-    
-    plot(txs(:,1),torques,'r','LineWidth',3,'DisplayName', 'Torque Input $\tau$ in N*m');
     hold off
-    title(titl)
+    title('Positional Response')
+    xlabel('time (t) in seconds','interpreter','latex')
+    ylabel('$Position (\theta) in radians$','interpreter','latex')
     l = legend('show');
     l.Interpreter = 'latex';
-    l.Location = 'southeast';
+    l.Location = 'eastoutside';
     
-    xlabel('time (t) in seconds')
-    ylabel('$Torque-Nm$, Angular Position - rad, Angular Speed - $\frac{rad}{sec}$','Interpreter','latex')
+    subplot(3,1,2)
+    hold on
+    plot(txs(:,1),txs(:,3),'b','LineWidth',3,'DisplayName','Angular Speed $\dot\theta$ in $\frac{rad}{sec}$')
+%     plot(0.05*(1:length(q))',qdot,'k','LineWidth',3,'DisplayName','Pranav''s Angular Speed $\dot\theta$ in $\frac{rad}{sec}$')
+    plot(txs(:,1),zeros(size(txs(:,1))),'--k','DisplayName','Desired Angular Speed')
+    hold off
+    title('Velocity Response')
+    xlabel('time (t) in seconds','interpreter','latex')
+    ylabel('$Velocity (\dot\theta) in \frac{radians}{seconds} $','interpreter','latex')
+    l = legend('show');
+    l.Interpreter = 'latex';
+    l.Location = 'eastoutside';
+    
+    subplot(3,1,3)
+    hold on
+    plot(txs(:,1),torques,'b','LineWidth',3,'DisplayName', 'Torque Input $\tau$ in N*m');
+%     plot(0.05*(1:length(q))',inputs,'k','LineWidth',3,'DisplayName', 'Pranav''s Torque Input $\tau$ in N*m');
+    hold off
+    title(titl)
+    title('Torque Input (Control Signal)')
+    xlabel('time (t) in seconds','interpreter','latex')
+    ylabel('$Torque (\tau) in Nm$','interpreter','latex')
+    l = legend('show');
+    l.Interpreter = 'latex';
+    l.Location = 'eastoutside';
+end
+
+%% Visualizing Other Optimization 
+function [J,q,qdot,input] = get_other_data_cost(filename)
+    data = csvread(filename);
+    q = data(:,1);
+    qdot = data(:,2);
+    input = data(:,3);
+    J = zeros(size(q));
+    for i = 1:length(q)
+        J(i) = getcost([q(i),qdot(i)],[pi,0],input(i));
+    end
+    for i = 1:length(q)
+        J(i) = sum(J(i:end));
+    end
+end
+
+function [x,y,z] = get_other_cylindrical_cost(rmean,qactual,J,kcost)
+    ractual = zeros(size(qactual(:,1)));
+    for i = 1: length(qactual(:,1))
+        ractual(i) = (rmean + J(i))+10;
+    end
+    x = ractual.*cos(qactual(:,1));
+    y = ractual.*sin(qactual(:,1));
+    z = qactual(:,2);
+end
+
+function J = getcost(x, xd, torque)
+    Qx = [1/pi^2 0; 0 1/36];
+    ka = 1/100;
+    state_error = (x-xd)*Qx*( x-xd)';
+    input_error = torque^2 * ka;
+    time_error = 1;
+    J = state_error + input_error + time_error;
 end
