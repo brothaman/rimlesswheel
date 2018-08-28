@@ -71,7 +71,7 @@ function node = generate_new_state(node,xd,torque,time,angles,speeds)
     end
     [xx(1), n] = nearest2(xx(1), angles);
     [xx(2), m] = nearest2(xx(2), speeds);
-    J = getcost(xx, xd, torque);
+    J = getcost(xx, xd, torque,time);
     if isempty(node.connections)
         node.connections{1} = [n m torque J];
         return
@@ -91,19 +91,18 @@ function node = generate_new_state(node,xd,torque,time,angles,speeds)
     end
 end
 
-function J = getcost(x, xd, torque)
+function J = getcost(x, xd, torque,t)
     Qx = [1/pi^2 0; 0 1/36];
     ka = 1/100;
     state_error = (x-xd)*Qx*( x-xd)';
     input_error = torque^2 * ka;
-    time_error = 1;
-    J = state_error + input_error + time_error;
+    J = (state_error + input_error)*t;
 end
 
-function [val, n] = nearest2(val,arr)                                                                                                                                                                       
-vec = abs(arr - val);                                                                                                                                                                                       
-[val,n] = min(vec);                                                                                                                                                                                         
-val = arr(val == vec);                                                                                                                                                                                      
+function [val, n] = nearest2(val,arr) 
+vec = abs(arr - val);
+[val,n] = min(vec);
+val = arr(val == vec);
 end  
 
 function [xd,time,anglerange,speedrange,torquerange,filename] = standard_init()
