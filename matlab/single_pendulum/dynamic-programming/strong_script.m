@@ -43,12 +43,16 @@ end
 for iter = 1:N
     evaluate_connections
     save(['../lib/strong_pend/strong_network_' int2str(iter) '.mat'],'network')
+end
+save(filename,'network','ids','previous_ids','-append');
+disp('Finished Evaluating Network Connections')
+total_time = seconds(toc(total_time));
+
+disp('Generating plots')
+for iter = 1:N
+	load(['../lib/strong_pend/strong_network_' int2str(iter) '.mat'])
     figure_file_name = ['strong cost network iteration ' int2str(iter)];
     show_cost_network(figure_file_name, path, all_angles, all_speeds, network)
     close all
 end
-save(filename,'network','ids','previous_ids','-append');
-disp('Finished Evaluating Network Connections')
-
-
-total_time = seconds(toc(total_time));
+disp('Finished generating plots')

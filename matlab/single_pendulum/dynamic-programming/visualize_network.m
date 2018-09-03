@@ -14,6 +14,7 @@ fig2 = figure;
 fig3 = figure;
 fig4 = figure;
 rmean = 200;
+rcyl = 5;
 k = 10;
 kspeeds = k;
 kcost = 1/7;
@@ -54,9 +55,9 @@ view(0, 45)
 saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
 
 % plot the network on a cylinder
-[x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
+[x,y,z] = get_CN_cylinder_data(rcyl,all_angles,all_speeds,statenvalues);
 if flag
-    [xx,yy,zz] = get_actual_data_for_cylinder(rmean,qactual,statenvalues);
+    [xx,yy,zz] = get_actual_data_for_cylinder(rcyl,qactual,statenvalues);
     fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 else
     fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
@@ -128,7 +129,7 @@ end
 function [x,y,z] = get_actual_data_for_cylinder(rmean,qactual,statenvalues)
     ractual = zeros(size(qactual(:,1)));
     for i = 1: length(qactual(:,1))
-        ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues))+10;
+        ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues));
     end
     x = ractual.*cos(qactual(:,1));
     y = ractual.*sin(qactual(:,1));
@@ -198,7 +199,7 @@ function z = get_disk_cost_height(k,all_angles, all_speeds, statenvalues)
     z = zeros(length(all_angles), length(all_speeds));
     for i = 1:length(all_angles)
         for j = 1:length(all_speeds)
-            z(i,j) = k*get_value_at_state([all_angles(i) all_speeds(j)], statenvalues);
+            z(i,j) = get_value_at_state([all_angles(i) all_speeds(j)], statenvalues);
         end
     end
 end
@@ -209,7 +210,7 @@ function [x,y,z] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost)
     y = ractual.*sin(qactual(:,1));
     z = zeros(size(x));
     for j = 1:length(qactual(:,1))
-        z(j) = kcost*get_value_at_state(qactual(j,:),statenvalues)+.3;
+        z(j) = get_value_at_state(qactual(j,:),statenvalues);
     end
 end
 
@@ -278,7 +279,7 @@ function [qactual,txs, torque] = animate_pendulum(fig,network,N,all_angles,all_s
     torque = zeros(1,N);
     txs = zeros(N,3);
     phi = -pi/2;
-    t = 0.05;
+    t = 0.01;
     x = [0 0];
     [x(1),n] = nearest2(x(1),all_angles);
     [x(2),m] = nearest2(x(2),all_speeds);
@@ -325,7 +326,7 @@ function plot_state_parameters(fig, txs, torques, titl,q,qdot,inputs)
     hold off
     title('Positional Response')
     xlabel('time (t) in seconds','interpreter','latex')
-    ylabel('$Position (\theta) in radians$','interpreter','latex')
+    ylabel('Position $(\theta$) in radians','interpreter','latex')
     l = legend('show');
     l.Interpreter = 'latex';
     l.Location = 'eastoutside';
@@ -338,7 +339,7 @@ function plot_state_parameters(fig, txs, torques, titl,q,qdot,inputs)
     hold off
     title('Velocity Response')
     xlabel('time (t) in seconds','interpreter','latex')
-    ylabel('$Velocity (\dot\theta) in \frac{radians}{seconds} $','interpreter','latex')
+    ylabel('Velocity $(\dot\theta)$ in $\frac{radians}{seconds}$','interpreter','latex')
     l = legend('show');
     l.Interpreter = 'latex';
     l.Location = 'eastoutside';
@@ -351,7 +352,7 @@ function plot_state_parameters(fig, txs, torques, titl,q,qdot,inputs)
     title(titl)
     title('Torque Input (Control Signal)')
     xlabel('time (t) in seconds','interpreter','latex')
-    ylabel('$Torque (\tau) in Nm$','interpreter','latex')
+    ylabel('Torque $(\tau)$ in $Nm$','interpreter','latex')
     l = legend('show');
     l.Interpreter = 'latex';
     l.Location = 'eastoutside';
