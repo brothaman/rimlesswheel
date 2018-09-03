@@ -9,8 +9,9 @@ torquerange = [-10,10];
 angles = 500;
 speeds = 200;
 torques = 200;
-goal = [51,101];
+goal = [251,101];
 
+%{
 save(filename,...
 	'time','anglerange','speedrange',...
 	'torquerange','angles','speeds',...
@@ -27,6 +28,8 @@ load(filename)
 disp('Generating Network Connections')
 generate_network_connections
 disp('Finished Generating Network Connections')
+%}
+save(filename,'goal','-append')
 
 clearvars -except filename total_time
 load(filename)
