@@ -2,14 +2,14 @@ maxNumCompThreads = 32;
 filename = '../lib/strong_cost_network.mat';
 addpath ../lib                                 
 xd  = [pi 0];
-time = 0.02;                                 
+time = 0.025;                                 
 anglerange = [0,2*pi];                         
 speedrange = [-6,6];                         
 torquerange = [-10,10];
-angles = 500;
-speeds = 200;
+angles = 300;
+speeds = 300;
 torques = 200;
-goal = [251,101];
+goal = [151,151];
 
 %{
 save(filename,...
