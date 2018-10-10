@@ -18,34 +18,39 @@ iterations = 2;
 net = cell(size(network));
 [N,M] = size(network);
 n = sum(any(~cellfun('isempty',connections),2));
+% loop through each stage and evaluate the connections
 for i = 1:n
+% 	check to see if the stage has any connection
     if isempty(connections{i})
         break;
     end
     tic
-    m = find(~cellfun('isempty',connections{i}))';
-    nodes = cell(length(m),maxconns);
-    for l = 1:length(m)
-        j = m(l);
-        len = size(connections{i}{j},1);
-        node = cell(1,maxconns);
-        for k = 1:len
-            
-            node(k)  = evaluate_connection(...
-                network,...
-                network{connections{i}{j}(k,1),connections{i}{j}(k,2)},...
-                [network{connections{i}{j}(k,1),connections{i}{j}(k,2)}.connections{connections{i}{j}(k,3)} connections{i}{j}(k,3)]);
-        end
-        nodes(l,:) = node;
-    end
-    nodes = reshape(nodes,[numel(nodes),1]);
-    for j = 1:length(nodes)
-        if ~isempty(nodes{j})
-            network{nodes{j}(1),nodes{j}(2)}.optimal_policy = nodes{j}(3);
-            network{nodes{j}(1),nodes{j}(2)}.optimal_value = nodes{j}(4);
-        end
-    end
-    teval(i) = seconds(toc);
+% 	determine the actual number of connections in the stage
+	m = find(~cellfun('isempty',connections{i}))';
+	nodes = cell(length(m),maxconns);
+	
+% 	for each connection in the stage
+	for l = 1:length(m)
+		j = m(l);
+		len = size(connections{i}{j},1);
+		node = cell(1,maxconns);
+		for k = 1:len
+			
+			node(k)  = evaluate_connection(...
+				network,...
+				network{connections{i}{j}(k,1),connections{i}{j}(k,2)},...
+				[network{connections{i}{j}(k,1),connections{i}{j}(k,2)}.connections{connections{i}{j}(k,3)} connections{i}{j}(k,3)]);
+		end
+		nodes(l,:) = node;
+	end
+	nodes = reshape(nodes,[numel(nodes),1]);
+	for j = 1:length(nodes)
+		if ~isempty(nodes{j})
+			network{nodes{j}(1),nodes{j}(2)}.optimal_policy = nodes{j}(3);
+			network{nodes{j}(1),nodes{j}(2)}.optimal_value = nodes{j}(4);
+		end
+	end
+	teval(i) = seconds(toc);
 end
 teval.Format = 'hh:mm:ss'
 %save(filename,'network','ids','previous_ids','-append');
