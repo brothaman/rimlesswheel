@@ -51,7 +51,7 @@ function EvaluateConnectedNetwork(input_filename, output_filename)
 		teval(i) = seconds(toc);
 	end
 	teval.Format = 'hh:mm:ss';
-	save(output_filename,'network','searched_ids','ids_to_search','connections','teval','maxconns','connection_network');
+	save(output_filename,'network','searched_ids','ids_to_search','connections','teval','maxconns','connection_network','parameters');
 end
 %% functions
 function conn = evaluate_connection(network,node, connection)

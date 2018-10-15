@@ -9,12 +9,12 @@ addpath('../model/')
 % ------------------------- Add Model Path ----------------------------- %
 
 % ------------------------ discretizations ----------------------------- %
-N = 100;
+N = 300;
 M = 90;
 % ------------------------ discretizations ----------------------------- %
 
-vmax =  0;
-vmin = -2.76;
+vmax =  0.67;
+vmin = -5.6;
 amax = 90*pi/180;
 amin = 0;
 velocities = vmin:(vmax-vmin)/N:vmax;
