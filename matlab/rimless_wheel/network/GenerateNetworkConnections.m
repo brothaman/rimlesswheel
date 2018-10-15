@@ -37,7 +37,7 @@ function GenerateNetworkConnections(input_filename, output_filename)
 		end
 		% also store the 
 	end
-	save(output_filename, 'i','connection_network','connections', 'ids_to_search', 'searched_ids','maxconns','network');
+	save(output_filename, 'i','connection_network','connections', 'ids_to_search', 'searched_ids','maxconns','network','parameters');
 end
 
 %% Functions
