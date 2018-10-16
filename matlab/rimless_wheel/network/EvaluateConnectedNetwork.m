@@ -9,6 +9,7 @@ function EvaluateConnectedNetwork(input_filename, output_filename)
 	connection_network = data.connection_network;
 	ids_to_search = data.ids_to_search;
 	searched_ids = data.searched_ids;
+	parameters = data.parameters;
 	
 	
 	len = length(connections);

@@ -64,6 +64,7 @@ for xd = parameters.velocities
 	disp('Finished evaluating connections')
 end
 
+exit();
 function nnetwork = convertNetwork(network)
 	nnetwork = [];
 	for i = 1:length(network)
