@@ -61,7 +61,7 @@ for xd = parameters.velocities
 	if i == 20
 		disp('global minima may not have been found')
 	end
-	disp('Finished evaluating connections')
+	disp(['Finished evaluating connections on:	' output_filename])
 end
 
 exit();
