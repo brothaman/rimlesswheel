@@ -13,26 +13,44 @@ N = 150;
 M = 90;
 % ------------------------ discretizations ----------------------------- %
 
+% define the feasible region space
 vmax =  0.67;
 vmin = -5.6;
+
+% define the actions
 amax = 90*pi/180;
 amin = 0;
+
+% vectorize the region and actions
 velocities = vmin:(vmax-vmin)/N:vmax;
 actions = amin:(amax-amin)/M:amax;
+
+% define the type of model for programming the network
 fixed = 1;
 
-flag = 0;
-steps = 1;
+% build the parameters struct that will contain the characteristic
+% information about the system: feasible region, action limits, model
+% programming type
 parameters = get_parameters(fixed);
-
 parameters.vmin = vmin;
 parameters.vmax = vmax;
 parameters.amax = amax;
 parameters.amin = amin;
 parameters.velocities = velocities;
 parameters.actions = actions;
+parameters.desired_speed = velocities(ceil(N/2));
 
-for xd = parameters.velocities
+% generate the network 
+output_filename = ['../data/network.mat'];
+GenerateCostNetwork(output_filename,parameters);
+[connectivity,~,~,conns] = testNetworkConnectivity(output_filename);
+if connectivity < 0.1*length(parameters.actions)
+	disp('something is wrong. connectivity too low to continue')
+	exit();
+end
+disp('Complete network generation now Generating Connections')
+	
+for xd = parameters.velocities(any(conns ~=0,1))
 	parameters.desired_speed = xd;
 	
 	output_filename = ['../data/network_desired_speed_' num2str(xd) '.mat'];
