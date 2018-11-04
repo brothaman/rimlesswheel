@@ -1,43 +1,46 @@
-%% generate all possible states and state transitions
-N = maxNumCompThreads;
-p = gcp('nocreate'); % If no pool, do not create new one.
-if isempty(p)
-    poolsize = 0;
-    m = parcluster;
-    m.NumWorkers = N;
-    p = parpool(N);
-else 
-    poolsize = p.NumWorkers;
-    if poolsize < N
-        delete(gcp('nocreate'));
-        m = parcluster;
-        m.NumWorkers = N;
-        parpool(N)
-    end
+function generate_network(parameters)
+	%% generate all possible states and state transitions
+	N = maxNumCompThreads;
+	p = gcp('nocreate'); % If no pool, do not create new one.
+	if isempty(p)
+		poolsize = 0;
+		m = parcluster;
+		m.NumWorkers = N;
+		p = parpool(N);
+	else 
+		poolsize = p.NumWorkers;
+		if poolsize < N
+			delete(gcp('nocreate'));
+			m = parcluster;
+			m.NumWorkers = N;
+			parpool(N)
+		end
+	end
+	xd = parameters.xd;
+	time = parameters.time;
+	%[xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_init();
+	%[angles, speeds, torques] = moderately_high_resolution();
+
+
+	all_angles = min(parameters.anglerange):diff(parameters.anglerange)/parameters.angles:max(parameters.anglerange);
+	all_speeds = min(parameters.speedrange):diff(parameters.speedrange)/parameters.speeds:max(parameters.speedrange);
+	all_torques= min(parameters.torquerange):diff(parameters.torquerange)/parameters.torques:max(parameters.torquerange);
+
+	nodes = initialize_nodes(all_angles, all_speeds);
+	new_nodes = cell(length(all_angles), length(all_speeds));
+	parfor i = 1:length(all_angles)
+		node = cell(1,length(all_speeds));
+		for j = 1:length(all_speeds)
+			node{j} = nodes{i,j};
+			for torque = all_torques
+				node{j} = generate_new_state(node{j},xd,torque,time,all_angles,all_speeds);
+			end
+		end
+		new_nodes(i,:) = node;
+	end
+	network = new_nodes;
+	save(parameters.filename, 'network','all_angles','all_speeds', 'all_torques','-append');
 end
-
-%[xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_init();
-%[angles, speeds, torques] = moderately_high_resolution();
-
-
-all_angles = min(anglerange):diff(anglerange)/angles:max(anglerange);
-all_speeds = min(speedrange):diff(speedrange)/speeds:max(speedrange);
-all_torques= min(torquerange):diff(torquerange)/torques:max(torquerange);
-
-nodes = initialize_nodes(all_angles, all_speeds);
-new_nodes = cell(length(all_angles), length(all_speeds));
-parfor i = 1:length(all_angles)
-    node = cell(1,length(all_speeds));
-    for j = 1:length(all_speeds)
-        node{j} = nodes{i,j};
-        for torque = all_torques
-            node{j} = generate_new_state(node{j},xd,torque,time,all_angles,all_speeds);
-        end
-    end
-    new_nodes(i,:) = node;
-end
-network = new_nodes;
-save(filename, 'network','all_angles','all_speeds', 'all_torques','-append');
 %% functions
 function nodes = initialize_nodes(angles,speeds)
     n = length(angles);
@@ -104,75 +107,3 @@ vec = abs(arr - val);
 [val,n] = min(vec);
 val = arr(val == vec);
 end  
-
-function [xd,time,anglerange,speedrange,torquerange,filename] = standard_init()
-    clear
-    addpath ../lib
-    xd  = [pi 0];
-    time = 0.05;
-
-    anglerange = [0,2*pi];
-    speedrange = [-6,6];
-    torquerange = [-10,10];
-    filename = '../lib/cost_network.mat';
-end
-
-function [xd,time,anglerange,speedrange,torquerange,filename] = underactuated_init()
-    clear
-    addpath ../lib
-    xd  = [pi 0];
-    time = 0.05;
-
-    anglerange = [0,2*pi];
-    speedrange = [-6,6];
-    torquerange = [-5,5];
-    filename = '../lib/underactuated_cost_network.mat';
-end
-
-function [xd,time,anglerange,speedrange,torquerange,filename] = very_weak_actuation_init()
-    clear
-    addpath ../lib
-    xd  = [pi 0];
-    time = 0.01;
-
-    anglerange = [0,2*pi];
-    speedrange = [-10,10];
-    torquerange = [-1.5,1.5];
-    filename = '../lib/very_weak_cost_network.mat';
-end
-
-function [xd,time,anglerange,speedrange,torquerange,filename] = weak_actuation_init()
-    clear
-    addpath ../lib
-    xd  = [pi 0];
-    time = 0.05;
-
-    anglerange = [0,2*pi];
-    speedrange = [-10,10];
-    torquerange = [-1,1];
-    filename = '../lib/weak_cost_network.mat';
-end
-
-function [angles, speeds, torques] = high_resolution()
-    angles = 600;
-    speeds = 1200;
-    torques = 100;
-end
-
-function [angles, speeds, torques] = moderately_high_resolution()
-    angles = 300;
-    speeds = 300;
-    torques = 20;
-end
-
-function [angles, speeds, torques] = standard_resolution()
-    angles = 100;
-    speeds = 200;
-    torques = 20;
-end
-
-function [angles, speeds, torques] = potato_resolution()
-    angles = 20;
-    speeds = 30;
-    torques = 10;
-end

@@ -1,52 +1,60 @@
-filename = '../lib/moderately_weak_cost_network.mat';
+parameters.filename = '../lib/moderately_weak_cost_network.mat';
+parameters.path = '../lib/moderately_weak_pend/';
+parameters.evalfname = 'moderately_weak_network_';
+parameters.plottitle = 'moderately weak cost network iteration ';
+parameters.imagepath = 'images/moderately_weak_pend/growth/';
+
 addpath ../lib                                 
-xd  = [pi 0];
-time = 0.05;                                 
-anglerange = [0,2*pi];                         
-speedrange = [-6,6];                         
-torquerange = [-3,3];
-angles = 100;
-speeds = 200;
-torques = 20;
-goal = [51,101];
+parameters.xd  = [pi 0];
+parameters.time = 0.05;                                 
+parameters.anglerange = [0,2*pi];                         
+parameters.speedrange = [-6,6];                         
+parameters.torquerange = [-3,3];
+parameters.angles = 100;
+parameters.speeds = 200;
+parameters.torques = 20;
+parameters.goal = [51,101];
 
 
-save(filename,...
-	'time','anglerange','speedrange',...
-	'torquerange','angles','speeds',...
-	'goal');
+
+save(parameters.filename,...
+	'parameters');
 total_time = tic;
 
 disp('Generating Network')
-generate_network
+generate_network(parameters);
 disp('Finished Generating Network')
 
-clearvars -except filename total_time
-load(filename)
+clearvars -except parameters total_time
+load(parameters.filename)
 
 disp('Generating Network Connections')
-generate_network_connections
+generate_network_connections(parameters);
 disp('Finished Generating Network Connections')
 
-clearvars -except filename total_time
-load(filename)
+clearvars -except parameters total_time
+load(parameters.filename)
 
 disp('Evaluating Network Connections')
 N = sum(any(~cellfun('isempty',connections),2));
-path = 'images/moderately_weak_pend/growth/';
-if ~exist(path,'dir')
-    mkdir(path)
+if ~exist(parameters.imagepath,'dir')
+    mkdir(parameters.imagepath)
 end
+save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
 for iter = 1:N
-    evaluate_connections
-    save(['../lib/moderately_weak_pend/moderately_weak_network_' int2str(iter) '.mat'],'network')
-    figure_file_name = ['moderately weak cost network iteration ' int2str(iter)];
-    show_cost_network(figure_file_name, path, all_angles, all_speeds, network)
+    evaluate_connections(parameters)
+	load(parameters.filename)
+	save([parameters.path parameters.evalfname int2str(iter) '.mat'],'network')
+end
+save(parameters.filename,'network','ids','previous_ids','-append');
+disp('Finished Evaluating Network Connections')
+total_time = seconds(toc(total_time));
+
+disp('Generating plots')
+for iter = 1:N
+	load([parameters.path parameters.evalfname int2str(iter) '.mat'])
+    figure_file_name = [parameters.plottitle int2str(iter)];
+    show_cost_network(figure_file_name, parameters.imagepath, all_angles, all_speeds, network)
     close all
 end
-save(filename,'network','ids','previous_ids','-append');
-disp('Finished Evaluating Network Connections')
-
-
-total_time = seconds(toc(total_time));
-total_time.Format = 'hh:mm:ss.sss'
+disp('Finished generating plots')

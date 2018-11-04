@@ -1,58 +1,59 @@
 maxNumCompThreads = 32;
-filename = '../lib/strong_cost_network.mat';
-addpath ../lib                                 
-xd  = [pi 0];
-time = 0.025;                                 
-anglerange = [0,2*pi];                         
-speedrange = [-6,6];                         
-torquerange = [-10,10];
-angles = 300;
-speeds = 300;
-torques = 200;
-goal = [151,151];
+parameters.filename = '../lib/strong_cost_network.mat';
+parameters.path = '../lib/strong_pend/';
+parameters.evalfname = 'strong_network_';
+parameters.plottitle = 'strong cost network iteration ';
+parameters.imagepath = 'images/strong_pend/growth/';
 
-%{
-save(filename,...
-	'time','anglerange','speedrange',...
-	'torquerange','angles','speeds',...
-	'goal');
+addpath ../lib                                 
+parameters.xd  = [pi 0];
+parameters.time = 0.025;                                 
+parameters.anglerange = [0,2*pi];                         
+parameters.speedrange = [-6,6];                         
+parameters.torquerange = [-10,10];
+parameters.angles = 30;
+parameters.speeds = 30;
+parameters.torques = 20;
+parameters.goal = [15,15];
+
+save(parameters.filename,...
+	'parameters');
 total_time = tic;
 
 disp('Generating Network')
-generate_network
+generate_network(parameters);
 disp('Finished Generating Network')
 
-clearvars -except filename total_time
-load(filename)
+clearvars -except parameters total_time
+load(parameters.filename)
 
 disp('Generating Network Connections')
-generate_network_connections
+generate_network_connections(parameters);
 disp('Finished Generating Network Connections')
-%}
-save(filename,'goal','-append')
 
-clearvars -except filename total_time
-load(filename)
+clearvars -except parameters total_time
+load(parameters.filename)
 
 disp('Evaluating Network Connections')
 N = sum(any(~cellfun('isempty',connections),2));
-path = 'images/strong_pend/growth/';
-if ~exist(path,'dir')
-    mkdir(path)
+if ~exist(parameters.imagepath,'dir')
+    mkdir(parameters.imagepath)
 end
+save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
 for iter = 1:N
-    evaluate_connections
-    save(['../lib/strong_pend/strong_network_' int2str(iter) '.mat'],'network')
+    evaluate_connections(parameters)
+	load(parameters.filename)
+	save([parameters.path parameters.evalfname int2str(iter) '.mat'],'network')
 end
-save(filename,'network','ids','previous_ids','-append');
+save(parameters.filename,'network','ids','previous_ids','-append');
 disp('Finished Evaluating Network Connections')
 total_time = seconds(toc(total_time));
 
 disp('Generating plots')
 for iter = 1:N
-	load(['../lib/strong_pend/strong_network_' int2str(iter) '.mat'])
-    figure_file_name = ['strong cost network iteration ' int2str(iter)];
-    show_cost_network(figure_file_name, path, all_angles, all_speeds, network)
+	load([parameters.path parameters.evalfname int2str(iter) '.mat'])
+    figure_file_name = [parameters.plottitle int2str(iter)];
+    show_cost_network(figure_file_name, parameters.imagepath, all_angles, all_speeds, network)
     close all
 end
 disp('Finished generating plots')

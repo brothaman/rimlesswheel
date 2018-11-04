@@ -1,59 +1,37 @@
 %% Generate the network connections
-%addpath ../lib/
-%filename = weak_actuation_init();
-%load(filename)
-%{
-N = maxNumCompThreads;
-p = gcp('nocreate'); % If no pool, do not create new one.
-if isempty(p)
-    poolsize = 0;
-    m = parcluster;
-    m.NumWorkers = N;
-    p = parpool(N);
-else 
-    poolsize = p.NumWorkers;
-    if poolsize < N
-        delete(gcp('nocreate'));
-        m = parcluster;
-        m.NumWorkers = N;
-        parpool(N)
-    end
-end
-%}
+function parameters = generate_network_connections(parameters)
+	data = load(parameters.filename);
+	network = data.network;
+	connection_network = convert_network(network);
+	steps = 1000;
+	ids = connection_network(~any(parameters.goal - connection_network(:,[1 2]),2),[1 2 4 5]);
+	connections = cell(steps,1);
+	parameters.maxconns = 0;
+	for i = 1:steps
+		tic
+		if i > 1
+			[connections{i},maxcon] = parnetwork_search3(connection_network, ids, previous_ids);
+			if maxcon > parameters.maxconns
+				parameters.maxconns = maxcon;
+			end
+			ids = cell2mat(connections{i});
+			previous_ids = [previous_ids; ids(:,[1 2 4 5])];
+			previous_ids = unique(previous_ids,'rows');
+		else
+			connections{i} = network_search3(connection_network, ids(1,1:2));
+			previous_ids = ids;
+		end
 
-connection_network = convert_network(network);
-steps = 1000;
-ids = connection_network(~any([51 101] - connection_network(:,[1 2]),2),[1 2 4 5]);
-res = size(ids,1);
-connections = cell(steps,1);
-maxconns = 0;
-for i = 1:steps
-    tic
-    if i > 1
-        [connections{i},maxcon] = parnetwork_search3(connection_network, ids, previous_ids);
-        if maxcon > maxconns
-            maxconns = maxcon;
-        end
-        ids = cell2mat(connections{i});
-        previous_ids = [previous_ids; ids(:,[1 2 4 5])];
-        previous_ids = unique(previous_ids,'rows');
-    else
-        connections{i} = network_search3(connection_network, ids(1,1:2));
-        previous_ids = ids;
-    end
-    
-    t(i) = seconds(toc);
-    t(i)
-    i
-    save(filename,'i','connection_network','connections', 't', 'ids','previous_ids','-append','maxconns')
-    ids = cell2mat(connections{i});
-    ids = ids(:,[1 2]);
-    ids = unique(ids,'rows');
-    if isempty(ids)
-        break;
-    end
+		t(i) = seconds(toc);
+		save(parameters.filename,'parameters','i','connection_network','connections', 't', 'ids','previous_ids','-append')
+		ids = cell2mat(connections{i});
+		ids = ids(:,[1 2]);
+		ids = unique(ids,'rows');
+		if isempty(ids)
+			break;
+		end
+	end
 end
-
 %% Functions
 function [connections,maxconns] = parnetwork_search3(network, ids, previous_ids)
     len = size(ids,1);
@@ -108,20 +86,4 @@ function new_network = convert_network(network)
         end
     end
     new_network = new_network(any(new_network,2),:);
-end
-
-function [filename] = underactuated_init()
-    filename = '../lib/underactuated_cost_network.mat';
-end
-
-function [filename] = standard_init()
-    filename = '../lib/cost_network.mat';
-end
-
-function [filename] = very_weak_actuation_init()
-    filename = '../lib/very_weak_cost_network.mat';
-end
-
-function [filename] = weak_actuation_init()
-    filename = '../lib/weak_cost_network.mat';
 end
