@@ -48,9 +48,6 @@ for iter = 1:N
 	output_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
 	evaluate_connections(parameters,input_filename,output_filename)
 	input_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
-
-	load( output_filename)
-	save( output_filename, 'network')
 end
 save(parameters.filename,'network','ids','previous_ids','-append');
 disp('Finished Evaluating Network Connections')
