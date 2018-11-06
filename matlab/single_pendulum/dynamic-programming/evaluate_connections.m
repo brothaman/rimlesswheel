@@ -57,7 +57,7 @@ function evaluate_connections(parameters,input_filename,output_filename)
 		teval(i) = seconds(toc);
 	end
 	teval.Format = 'hh:mm:ss';
-	save(output_filename,'network','-append');
+	save(output_filename,'network');
 end
 
 %% functions
