@@ -31,8 +31,6 @@ disp('Generating Network Connections')
 generate_network_connections(parameters);
 disp('Finished Generating Network Connections')
 
-
-
 clearvars -except parameters total_time
 load(parameters.filename)
 
