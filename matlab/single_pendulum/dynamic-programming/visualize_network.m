@@ -1,9 +1,25 @@
 %% Visualize the cost network
 close all
 addpath ../lib
-load ../lib/strong_cost_network.mat
-pendulum_type = 'Strong Pendulum';
-path = 'images/strong_pend/figures/';
+pendulum_type = 1;
+switch pendulum_type
+	case 1
+		load ../lib/strong_cost_network.mat
+		pendulum_type = 'Strong Pendulum';
+		path = 'images/strong_pend/figures/';
+	case 2
+		load ../lib/moderately_weak_cost_network.mat
+		pendulum_type = 'Moderately Weak Pendulum';
+		path = 'images/moderately_weak_pend/figures/';
+	case 3
+		load ../lib/weak_cost_network.mat
+		pendulum_type = 'Weak Pendulum';
+		path = 'images/weak_pend/figures/';
+	case 4
+		load ../lib/very_weak_cost_network.mat
+		pendulum_type = 'Very Weak Pendulum';
+		path = 'images/very_weak_pend/figures/';
+end
 if ~exist(path,'dir')
     mkdir(path)
 end
@@ -32,8 +48,9 @@ if flag
     plot_state_parameters(fig4,txs, torques,[pendulum_type ' System Response'],q,qdot,inputs)
     saveas(fig4, [path pendulum_type ' Response Plot.pdf'],'pdf'); %pause;
 end
-
-% plot network on a disk
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% plot network on a disk %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
 plot_low_density_scatter(fig1,x,y,[4,20]);
 saveas(fig1, [path pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
@@ -45,34 +62,42 @@ clf(fig1)
 
 
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
-if flag
-    [xx,yy,zz] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost);
-    fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
-else
-    fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
+switch flag
+	case 1 
+		[xx,yy,zz] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost);
+		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
+	case 0
+		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
 end
 view(0, 45)
 saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%% plot network on a cylinder %%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rcyl,all_angles,all_speeds,statenvalues);
-if flag
-    [xx,yy,zz] = get_actual_data_for_cylinder(rcyl,qactual,statenvalues);
-    fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
-else
-    fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
+switch flag
+	case 1
+		[xx,yy,zz] = get_actual_data_for_cylinder(rcyl,qactual,statenvalues);
+		fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
+	case 0
+		fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 end
 shading interp
 saveas(fig1, [path pendulum_type ' cost network on cylinder-isometric.jpg'],'jpeg')
 [az,el] = view;
 
-% rotate the cyclinder's plot
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%% rotating network plot  %%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 az = 180-90; el = 15;
 rotx = 180/pi*(qactual(1:end-1,1) - qactual(2:end,1))';
 roty = 180/pi*(atan(qactual(2:end,2))/6)';
 if flag
     rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,path,xx,yy,zz)
 end
+
 %% functions
 function [val, n] = nearest2(val,arr)                                                                                                                                                                       
 vec = abs(arr - val);                                                                                                                                                                                       
