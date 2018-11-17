@@ -62,3 +62,4 @@ for iter = 1:N
 	close all
 end
 disp('Finished generating plots')
+exit()
