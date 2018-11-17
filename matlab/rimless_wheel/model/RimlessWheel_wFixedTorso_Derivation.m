@@ -5,14 +5,14 @@
 clc;
 clear all;
 
-syms q alpha real %Angles as defined in figures (theta and phi resp in garcia's figure)
-syms u real %Angular velocity (thetadot and phidot resp in garcia's figure)
-syms ud real%Angular Acceleration
-syms gam g real %slope of ramp, gravity
-syms L l n real % com of torso, leg length, number of spokes
-syms M m I_M I_m real  %masses and inertia, 1 wheel, 2 torso
-syms v real %angles before heelstrike
-syms r real %velocities before heelstrike
+syms q alpha real		% Angles as defined in figures (theta and phi resp in garcia's figure)
+syms u real				% Angular velocity (thetadot and phidot resp in garcia's figure)
+syms ud real			% Angular Acceleration
+syms gam g real			% slope of ramp, gravity
+syms L l n real			% com of torso, leg length, number of spokes
+syms M m I_M I_m real	% masses and inertia, 1 wheel, 2 torso
+syms v real				% angles before heelstrike
+syms r real				% velocities before heelstrike
 
 I_M = 0;
 I_m = 0;

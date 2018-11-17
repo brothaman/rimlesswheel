@@ -23,6 +23,7 @@ end
 if ~exist(path,'dir')
     mkdir(path)
 end
+stats = netstats(network);
 statenvalues = get_state_n_value(network);
 fig = figure;
 fig1 = figure;
@@ -30,7 +31,7 @@ fig2 = figure;
 fig3 = figure;
 fig4 = figure;
 rmean = 200;
-rcyl = 5;
+rcyl = stats.max;
 k = 10;
 kspeeds = k;
 kcost = 1/7;
@@ -40,7 +41,7 @@ clear x y z
 [J,q,qdot,inputs] = get_other_data_cost('../lib/pdata.csv');
 % animate the pendulum and generate the q_actual
 if flag
-    [qactual,txs,torques] = animate_pendulum(fig, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],path,0);
+    [qactual,txs,torques] = animate_pendulum(fig, parameters, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],path,0);
 end
 
 % plot the torque and state
@@ -69,8 +70,9 @@ switch flag
 	case 0
 		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
 end
+axis([-300 300 -300 300 (stats.min-stats.std) (stats.max+stats.std)])
 view(0, 45)
-saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
+% saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%% plot network on a cylinder %%%%%%%%%%%%%%%%%%%%%%%%
@@ -85,7 +87,7 @@ switch flag
 		fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 end
 shading interp
-saveas(fig1, [path pendulum_type ' cost network on cylinder-isometric.jpg'],'jpeg')
+% saveas(fig1, [path pendulum_type ' cost network on cylinder-isometric.jpg'],'jpeg')
 [az,el] = view;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -300,11 +302,11 @@ function plot_low_density_surf(fig, x, y, res)
 end
 
 %% Animate the pendulum
-function [qactual,txs, torque] = animate_pendulum(fig,network,N,all_angles,all_speeds,titl,path,flag)
+function [qactual,txs, torque] = animate_pendulum(fig,parameters,network,N,all_angles,all_speeds,titl,path,flag)
+	t = parameters.time;
     torque = zeros(1,N);
     txs = zeros(N,3);
     phi = -pi/2;
-    t = 0.01;
     x = [0 0];
     [x(1),n] = nearest2(x(1),all_angles);
     [x(2),m] = nearest2(x(2),all_speeds);
@@ -415,4 +417,19 @@ function J = getcost(x, xd, torque)
     input_error = torque^2 * ka;
     time_error = 1;
     J = state_error + input_error + time_error;
+end
+
+function stats = netstats(network)
+	sz = size(network);
+	values = zeros(1,prod(sz));
+	for i = 1:sz(1)
+		for j = 1:sz(2)
+			values((i-1)*sz(2) + j) = network{i,j}.optimal_value;
+		end
+	end
+	stats.mean = mean(values);
+	stats.median = median(values);
+	stats.max = max(values);
+	stats.min = min(values);
+	stats.std = std(values);
 end
