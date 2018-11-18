@@ -1,27 +1,31 @@
 function show_cost_network(figure_file_name,path,all_angles,all_speeds,network, stats)
 statenvalues = get_state_n_value(network);
-rmean = 20;
-k = 10;
-kcost = 1/7;
+rdisk = 20;
+rcyl = stats.max;
+k = 1;
+kcost = 1;
 
 fig1 = figure;
 fig2 = figure;
 
 % plot network on a disk
-[x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
+[x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
 visualize_cost_network_on_disk(fig1,x,y,z,stats,figure_file_name);
 view(0, 45)
 saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
 
 % plot the network on a cylinder
-[x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues);
+[x,y,z] = get_CN_cylinder_data(rcyl,all_angles,all_speeds,statenvalues);
 fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,figure_file_name);
 shading interp
-zlim([-10 10])
-xlim([-550 550])
-ylim([-550 550])
+axis([(-rcyl-stats.max-stats.std) (rcyl+stats.max+stats.std) (-rcyl-stats.max-stats.std) (rcyl+stats.max+stats.std) min(all_speeds) max(all_speeds)]);
+view(0,30)
 saveas(fig2, [path 'cylindrical_' figure_file_name '.jpg'],'jpeg')
+view(120,30)
+saveas(fig2, [path 'cylindrical_' figure_file_name '-120.jpg'],'jpeg')
+view(240,30)
+saveas(fig2, [path 'cylindrical_' figure_file_name '-240.jpg'],'jpeg')
 end
 
 %% functions

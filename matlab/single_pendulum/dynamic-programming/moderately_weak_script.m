@@ -77,7 +77,7 @@
 % load(parameters.filename)
 % 
 % disp('Evaluating Network Connections')
-% N = sum(any(~cellfun('isempty',connections),2));
+N = sum(any(~cellfun('isempty',connections),2));
 % if ~exist(parameters.imagepath,'dir')
 %     mkdir(parameters.imagepath)
 % end
@@ -104,7 +104,9 @@ for iter = 1:N
 	close all
 end
 disp('Finished generating plots')
+exit();
 
+%% Functions
 function stats = netstats(network)
 	sz = size(network);
 	values = zeros(1,prod(sz));
@@ -119,4 +121,3 @@ function stats = netstats(network)
 	stats.min = min(values);
 	stats.std = std(values);
 end
-exit();

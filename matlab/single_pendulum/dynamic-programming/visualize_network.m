@@ -30,11 +30,11 @@ fig1 = figure;
 fig2 = figure;
 fig3 = figure;
 fig4 = figure;
-rmean = 200;
+rdisk = 20;
 rcyl = stats.max;
 k = 10;
 kspeeds = k;
-kcost = 1/7;
+kcost = 1;
 N = sum(any(~cellfun('isempty',connections),2));
 flag = 1;
 clear x y z
@@ -52,7 +52,7 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% plot network on a disk %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
+[x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
 plot_low_density_scatter(fig1,x,y,[4,20]);
 saveas(fig1, [path pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
 clf(fig1)
@@ -65,7 +65,7 @@ clf(fig1)
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
 switch flag
 	case 1 
-		[xx,yy,zz] = get_actual_data_for_disk(rmean,qactual,statenvalues,k,kcost);
+		[xx,yy,zz] = get_actual_data_for_disk(rdisk,qactual,statenvalues,k,kcost);
 		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
 	case 0
 		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
