@@ -4,6 +4,7 @@ parameters.path = '../lib/very_weak_pend/';
 parameters.evalfname = 'very_weak_network_';
 parameters.plottitle = 'very weak cost network iteration ';
 parameters.imagepath = 'images/very_weak_pend/growth/';
+parameters.maxNumCompThreads = 32;
 
 addpath ../lib                                 
 parameters.xd  = [pi 0];
@@ -52,11 +53,28 @@ disp('Finished Evaluating Network Connections')
 total_time = seconds(toc(total_time));
 
 disp('Generating plots')
+stats = netstats(network);
 for iter = 1:N
 	load([parameters.path parameters.evalfname int2str(iter) '.mat'])
 	figure_file_name = [parameters.plottitle int2str(iter)];
-	show_cost_network(figure_file_name, parameters.imagepath, all_angles, all_speeds, network)
+	show_cost_network(figure_file_name, parameters.imagepath, all_angles, all_speeds, network, stats)
 	close all
 end
 disp('Finished generating plots')
-exit()
+exit();
+
+%% Functions
+function stats = netstats(network)
+	sz = size(network);
+	values = zeros(1,prod(sz));
+	for i = 1:sz(1)
+		for j = 1:sz(2)
+			values((i-1)*sz(2) + j) = network{i,j}.optimal_value;
+		end
+	end
+	stats.mean = mean(values);
+	stats.median = median(values);
+	stats.max = max(values);
+	stats.min = min(values);
+	stats.std = std(values);
+end

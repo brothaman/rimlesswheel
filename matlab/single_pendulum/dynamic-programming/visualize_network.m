@@ -1,7 +1,7 @@
 %% Visualize the cost network
 close all
 addpath ../lib
-pendulum_type = 1;
+pendulum_type = 3;
 switch pendulum_type
 	case 1
 		load ../lib/strong_cost_network.mat
@@ -41,7 +41,7 @@ clear x y z
 [J,q,qdot,inputs] = get_other_data_cost('../lib/pdata.csv');
 % animate the pendulum and generate the q_actual
 if flag
-    [qactual,txs,torques] = animate_pendulum(fig, parameters, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],path,0);
+    [qactual,txs,torques] = animate_pendulum(fig, parameters, network, N, all_angles, all_speeds,[ pendulum_type ' Pendulum [0,0] to [\pi,0]'],path,1);
 end
 
 % plot the torque and state
@@ -52,26 +52,26 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% plot network on a disk %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
-plot_low_density_scatter(fig1,x,y,[4,20]);
-saveas(fig1, [path pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
-clf(fig1)
-
-plot_low_density_surf(fig1,x,y,[4,20]);
-saveas(fig1, [path pendulum_type ' cost network surface on flat disk-isometric.pdf'],'pdf'); %pause;
-clf(fig1)
-
-
-z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
-switch flag
-	case 1 
-		[xx,yy,zz] = get_actual_data_for_disk(rdisk,qactual,statenvalues,k,kcost);
-		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
-	case 0
-		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
-end
-axis([-300 300 -300 300 (stats.min-stats.std) (stats.max+stats.std)])
-view(0, 45)
+% [x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
+% plot_low_density_scatter(fig1,x,y,[4,20]);
+% saveas(fig1, [path pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
+% clf(fig1)
+% 
+% plot_low_density_surf(fig1,x,y,[4,20]);
+% saveas(fig1, [path pendulum_type ' cost network surface on flat disk-isometric.pdf'],'pdf'); %pause;
+% clf(fig1)
+% 
+% 
+% z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
+% switch flag
+% 	case 1 
+% 		[xx,yy,zz] = get_actual_data_for_disk(rdisk,qactual,statenvalues,k,kcost);
+% 		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
+% 	case 0
+% 		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
+% end
+% axis([-300 300 -300 300 (stats.min-stats.std) (stats.max+stats.std)])
+% view(0, 45)
 % saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,7 +97,7 @@ az = 180-90; el = 15;
 rotx = 180/pi*(qactual(1:end-1,1) - qactual(2:end,1))';
 roty = 180/pi*(atan(qactual(2:end,2))/6)';
 if flag
-    rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,path,xx,yy,zz)
+    rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,path,xx,yy,zz)    
 end
 
 %% functions
@@ -190,6 +190,11 @@ end
 
 function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,rotx,roty,path,varargin)
     figure(fig)
+	% --------------------------adding movie--------------------------------- %
+	myPathVid = [path 'RotatingCylindricalNetwork.jpg'];
+	vidObj = VideoWriter(myPathVid,'Uncompressed AVI');
+	open(vidObj);
+	% ----------------------------------------------------------------------- 
     C = x.^2 +y.^2;
     h = surf(x,y,z,C,'DisplayName','Cost Network');
     if ~isempty(varargin)
@@ -209,11 +214,14 @@ function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,ro
             rotate(p,[0 0 1],i(1))
         end
         if flag
-            saveas(fig,[path 'test_plot' int2str(j) '.jpg'],'jpeg')
+			% ----------------------------------------------------------------------- %
+			writeVideo(vidObj,getframe(fig));
+			% ----------------------------------------------------------------------- %
         end
         pause(0.1)
         j = j + 1;
-    end
+	end
+	close(vidObj);
 end
 %% Functions for Plotting Disk
 function [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds)
@@ -331,13 +339,21 @@ function [qactual,txs, torque] = animate_pendulum(fig,parameters,network,N,all_a
     ylabel('meters')
     title(titl)
     
+	% --------------------------adding movie--------------------------------- %
+	myPathVid = [path 'pendulumControl.avi'];
+	vidObj = VideoWriter(myPathVid,'Uncompressed AVI');
+	open(vidObj);
+	% ----------------------------------------------------------------------- 
     for i = 1:length(P)
         [fig,phandle] = show_pendulum(fig,phandle,P{i});
         if flag
-            saveas(fig, [path 'pend' int2str(i) '.jpg'],'jpeg')
+			% ----------------------------------------------------------------------- %
+			writeVideo(vidObj,getframe(fig));
+			% ----------------------------------------------------------------------- %
         end
         pause(0.03);
-    end
+	end
+	close(vidObj);
 end
 
 function plot_state_parameters(fig, txs, torques, titl,q,qdot,inputs)
@@ -347,7 +363,7 @@ function plot_state_parameters(fig, txs, torques, titl,q,qdot,inputs)
     
     subplot(3,1,1)
     hold on
-    plot(txs(:,1),txs(:,2),'b','LineWidth',4,'DisplayName','Angular Position $\theta$ in rad')
+    plot(txs(:,1),wrapTo2Pi(pi+txs(:,2))-pi,'b','LineWidth',4,'DisplayName','Angular Position $\theta$ in rad')
 %     plot(0.05*(1:length(q))',q,'k','LineWidth',4,'DisplayName','Pranav''s Angular Position $\theta$ in rad')
     plot(txs(:,1),ones(size(txs(:,1)))*pi,'--b','DisplayName','Desired Angular Position')
     hold off
@@ -424,7 +440,9 @@ function stats = netstats(network)
 	values = zeros(1,prod(sz));
 	for i = 1:sz(1)
 		for j = 1:sz(2)
-			values((i-1)*sz(2) + j) = network{i,j}.optimal_value;
+            if ~isempty(network{i,j}.optimal_value)
+                values((i-1)*sz(2) + j) = network{i,j}.optimal_value;
+            end
 		end
 	end
 	stats.mean = mean(values);

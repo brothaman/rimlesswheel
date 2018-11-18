@@ -1,6 +1,6 @@
 function generate_network(parameters)
 	%% generate all possible states and state transitions
-	N = maxNumCompThreads;
+	N = parameters.maxNumCompThreads;
 	p = gcp('nocreate'); % If no pool, do not create new one.
 	if isempty(p)
 		poolsize = 0;
