@@ -1,6 +1,6 @@
-function show_cost_network(figure_file_name,path,all_angles,all_speeds,network)
+function show_cost_network(figure_file_name,path,all_angles,all_speeds,network, stats)
 statenvalues = get_state_n_value(network);
-rmean = 200;
+rmean = 20;
 k = 10;
 kcost = 1/7;
 
@@ -10,11 +10,8 @@ fig2 = figure;
 % plot network on a disk
 [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds);
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
-visualize_cost_network_on_disk(fig1,x,y,z,figure_file_name);
+visualize_cost_network_on_disk(fig1,x,y,z,stats,figure_file_name);
 view(0, 45)
-zlim([0 50])
-xlim([-320 320])
-ylim([-320 320])
 saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
 
 % plot the network on a cylinder
@@ -110,7 +107,7 @@ function z = get_disk_cost_height(k,all_angles, all_speeds, statenvalues)
     end
 end
 
-function fig = visualize_cost_network_on_disk(fig,x,y,z,varargin)
+function fig = visualize_cost_network_on_disk(fig,x,y,z,stats,varargin)
     figure(fig)
     plot_every_thing = false;
     if length(varargin) ~= 4
@@ -140,4 +137,11 @@ function fig = visualize_cost_network_on_disk(fig,x,y,z,varargin)
     zlabel('Cost to Navigate to the Goal')
     ylabel('y-position of Pendulum')
     xlabel('x-position of Pendulum')
+	maxx = max(max(x));
+	minx = min(min(x));
+	maxy = max(max(y));
+	miny = min(min(y));
+	stdx = std(max(x));
+	stdy = std(max(y));
+	axis([(minx-stdx) (maxx+stdx) (miny-stdy) (maxy+stdy) (stats.min-stats.std) (stats.max+stats.std)])
 end
