@@ -119,3 +119,4 @@ function stats = netstats(network)
 	stats.min = min(values);
 	stats.std = std(values);
 end
+exit();
