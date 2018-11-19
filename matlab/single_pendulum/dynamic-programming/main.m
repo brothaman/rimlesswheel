@@ -1,6 +1,6 @@
 addpath ../lib
 
-if ~exist(ptype)
+if ~exist('ptype','var')
 	disp('no pendulum type designated')
 	exit()
 end
@@ -81,6 +81,12 @@ save(parameters.filename,...
 total_time = tic;
 
 % ------------------------ Generate Network ----------------------------- %
+
+% timer
+evaltime = tic;
+% timer
+
+
 disp('Generating Network')
 generate_network(parameters);
 disp('Finished Generating Network')
@@ -88,16 +94,31 @@ disp('Finished Generating Network')
 clearvars -except parameters total_time
 load(parameters.filename)
 
+% timer
+evaltime = seconds(toc(evaltime));
+evaltime.Format = 'hh:mm:ss';
+disp(['Finished Generating Network After ' char(evaltime)])
+% timer
+
+
 % ---------------------- Generate Connections --------------------------- %
 disp('Generating Network Connections')
+evaltime = tic;
 generate_network_connections(parameters);
-disp('Finished Generating Network Connections')
+evaltime = seconds(toc(evaltime));
+evaltime.Format = 'hh:mm:ss';
+disp(['Finished Generating Network Connections After ' char(evaltime)])
 
 clearvars -except parameters total_time
 load(parameters.filename)
 
 % ---------------------- Evaluate Connections --------------------------- %
 disp('Evaluating Network Connections')
+
+% timer
+evaltime = tic;
+% timer
+
 N = sum(any(~cellfun('isempty',connections),2));
 if ~exist(parameters.imagepath,'dir')
     mkdir(parameters.imagepath)
@@ -117,9 +138,22 @@ save(parameters.filename,'network','ids','previous_ids','-append');
 disp('Finished Evaluating Network Connections')
 total_time = seconds(toc(total_time));
 
+% timer
+evaltime = seconds(toc(evaltime));
+evaltime.Format = 'hh:mm:ss';
+disp(['Finished Generating Network Connections After ' char(evaltime)])
+% timer
+
 disp('Generating plots')
 stats = netstats(network);
 % --------------------- Network Growth Movie ---------------------------- %
+
+
+% timer
+evaltime = tic;
+% timer
+
+
 myPathVid = [parameters.imagepath 'DiskNetworkGrowth.avi'];
 DiskVidObj = VideoWriter(myPathVid,'Uncompressed AVI');
 open(DiskVidObj);
@@ -144,7 +178,13 @@ for iter = 1:N
 end
 close(DiskVidObj);
 close(CylVidObj);
-disp('Finished generating plots')
+
+% timer
+evaltime = seconds(toc(evaltime));
+evaltime.Format = 'hh:mm:ss';
+disp(['Finished Generating plots After ' char(evaltime)])
+% timer
+
 exit();
 
 %% Functions
