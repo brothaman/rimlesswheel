@@ -1,4 +1,4 @@
-function show_cost_network(figure_file_name,path,all_angles,all_speeds,network, stats)
+function [fig1,fig2] = show_cost_network(figure_file_name,path,all_angles,all_speeds,network, stats)
 statenvalues = get_state_n_value(network);
 rdisk = 20;
 rcyl = stats.max;

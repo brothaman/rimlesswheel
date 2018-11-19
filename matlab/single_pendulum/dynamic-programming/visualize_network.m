@@ -32,8 +32,7 @@ fig3 = figure;
 fig4 = figure;
 rdisk = 20;
 rcyl = stats.max;
-k = 10;
-kspeeds = k;
+k = 1;
 kcost = 1;
 N = sum(any(~cellfun('isempty',connections),2));
 flag = 1;
@@ -52,27 +51,33 @@ end
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% plot network on a disk %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% [x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
-% plot_low_density_scatter(fig1,x,y,[4,20]);
-% saveas(fig1, [path pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
-% clf(fig1)
-% 
-% plot_low_density_surf(fig1,x,y,[4,20]);
-% saveas(fig1, [path pendulum_type ' cost network surface on flat disk-isometric.pdf'],'pdf'); %pause;
-% clf(fig1)
-% 
-% 
-% z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
-% switch flag
-% 	case 1 
-% 		[xx,yy,zz] = get_actual_data_for_disk(rdisk,qactual,statenvalues,k,kcost);
-% 		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
-% 	case 0
-% 		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
-% end
-% axis([-300 300 -300 300 (stats.min-stats.std) (stats.max+stats.std)])
-% view(0, 45)
-% saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
+[x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
+plot_low_density_scatter(fig1,x,y,[4,20]);
+saveas(fig1, [path pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
+clf(fig1)
+
+plot_low_density_surf(fig1,x,y,[4,20]);
+saveas(fig1, [path pendulum_type ' cost network surface on flat disk-isometric.pdf'],'pdf'); %pause;
+clf(fig1)
+
+
+z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
+switch flag
+	case 1 
+		[xx,yy,zz] = get_actual_data_for_disk(rdisk,qactual,statenvalues,k,kcost);
+		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,xx,yy,zz,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
+	case 0
+		fig1 = visualize_cost_network_on_disk(fig1,x,y,z,['Discoidal Representation of ' pendulum_type ' Pendulum''s Cost Network']);
+end
+maxx = max(max(x));
+minx = min(min(x));
+maxy = max(max(y));
+miny = min(min(y));
+stdx = std(max(x));
+stdy = std(max(y));
+axis([(minx-stdx) (maxx+stdx) (miny-stdy) (maxy+stdy) (stats.min-stats.std) (stats.max+stats.std)])
+view(0, 45)
+saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%% plot network on a cylinder %%%%%%%%%%%%%%%%%%%%%%%%
@@ -191,7 +196,7 @@ end
 function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,rotx,roty,path,varargin)
     figure(fig)
 	% --------------------------adding movie--------------------------------- %
-	myPathVid = [path 'RotatingCylindricalNetwork.jpg'];
+	myPathVid = [path 'RotatingCylindricalNetwork.avi'];
 	vidObj = VideoWriter(myPathVid,'Uncompressed AVI');
 	open(vidObj);
 	% ----------------------------------------------------------------------- 
