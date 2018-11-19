@@ -202,6 +202,7 @@ for iter = 1:N
 	writeVideo(CylVidObj240,getframe(fig2));
 	% ------------------------------------------------------------------- %
 	close all
+	disp(['completed plot ' num2str(iter)])
 end
 close(DiskVidObj);
 close(CylVidObj);
