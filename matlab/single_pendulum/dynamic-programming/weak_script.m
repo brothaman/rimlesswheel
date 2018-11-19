@@ -93,7 +93,7 @@ function stats = netstats(network)
 		for j = 1:sz(2)
 			if ~isempty(network{i,j}.optimal_value)
                 values((i-1)*sz(2) + j) = network{i,j}.optimal_value;
-            end
+			end
 		end
 	end
 	stats.mean = mean(values);
