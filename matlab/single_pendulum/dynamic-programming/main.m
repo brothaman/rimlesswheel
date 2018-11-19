@@ -2,18 +2,18 @@ addpath ../lib
 
 if ~exist('ptype','var')
 	disp('no pendulum type designated')
-	exit()
-end
+else
 
 switch ptype
 	case 0
-		parameters.filename = '../lib/test_cost_network.mat';
-		parameters.path = '../lib/test_pend/';
+		clearvars
+		parameters.filename = 'jnk/test_cost_network.mat';
+		parameters.path = 'jnk/test_pend/';
 		parameters.evalfname = 'test_network_';
 		parameters.plottitle = 'test cost network iteration ';
-		parameters.imagepath = 'images/test_pend/growth/';
+		parameters.imagepath = 'jnk/images/growth/';
 		
-		parameters.time = 0.025;                                 
+		parameters.time = 0.1;                                 
 		parameters.anglerange = [0,2*pi];                         
 		parameters.speedrange = [-6,6];                         
 		parameters.torquerange = [-10,10];
@@ -22,6 +22,7 @@ switch ptype
 		parameters.torques = 20;
 		parameters.goal = [15,15];
 	case 1
+		clearvars
 		parameters.filename = '../lib/strong_cost_network.mat';
 		parameters.path = '../lib/strong_pend/';
 		parameters.evalfname = 'strong_network_';
@@ -37,6 +38,7 @@ switch ptype
 		parameters.torques = 200;
 		parameters.goal = [151,151];
 	case 2
+		clearvars
 		parameters.filename = '../lib/moderately_weak_cost_network.mat';
 		parameters.path = '../lib/moderately_weak_pend/';
 		parameters.evalfname = 'moderately_weak_network_';
@@ -52,6 +54,7 @@ switch ptype
 		parameters.torques = 60;
 		parameters.goal = [51,101];
 	case 3
+		clearvars
 		parameters.filename = '../lib/weak_cost_network.mat';
 		parameters.path = '../lib/weak_pend/';
 		parameters.evalfname = 'weak_network_';
@@ -88,7 +91,7 @@ switch ptype
 		exit();
 end
 
-parameters.maxNumCompThreads = 32;
+parameters.maxNumCompThreads = 10;
 parameters.xd  = [pi 0];
 
 save(parameters.filename,...
@@ -138,7 +141,7 @@ end
 save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
 input_filename = parameters.filename;
 for iter = 1:N
-	disp(['completed iteration' num2str(iter)])
+	disp(['completed iteration ' num2str(iter)])
 	output_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
 	evaluate_connections(parameters,input_filename,output_filename)
 	input_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
@@ -173,6 +176,14 @@ open(DiskVidObj);
 myPathVid = [parameters.imagepath 'CylindricalNetworkGrowth.avi'];
 CylVidObj = VideoWriter(myPathVid,'Uncompressed AVI');
 open(CylVidObj);
+
+myPathVid = [parameters.imagepath 'CylindricalNetworkGrowth120.avi'];
+CylVidObj120 = VideoWriter(myPathVid,'Uncompressed AVI');
+open(CylVidObj120);
+
+myPathVid = [parameters.imagepath 'CylindricalNetworkGrowth240.avi'];
+CylVidObj240 = VideoWriter(myPathVid,'Uncompressed AVI');
+open(CylVidObj240);
 % ----------------------------------------------------------------------- %
 
 for iter = 1:N
@@ -183,21 +194,27 @@ for iter = 1:N
 	writeVideo(DiskVidObj,getframe(fig1));
 	
 	figure(fig2)
-	view(120,30)
+	view(0,30)
 	writeVideo(CylVidObj,getframe(fig2));
+	view(120,30)
+	writeVideo(CylVidObj120,getframe(fig2));
+	view(240,30)
+	writeVideo(CylVidObj240,getframe(fig2));
 	% ------------------------------------------------------------------- %
 	close all
 end
 close(DiskVidObj);
 close(CylVidObj);
+close(CylVidObj120);
+close(CylVidObj240);
 
 % timer
 evaltime = seconds(toc(evaltime));
 evaltime.Format = 'hh:mm:ss';
 disp(['Finished Generating plots After ' char(evaltime)])
 % timer
-
-exit();
+end
+% exit();
 
 %% Functions
 function stats = netstats(network)

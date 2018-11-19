@@ -20,12 +20,16 @@ saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
 fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,figure_file_name);
 shading interp
 axis([(-rcyl-stats.max-stats.std) (rcyl+stats.max+stats.std) (-rcyl-stats.max-stats.std) (rcyl+stats.max+stats.std) min(all_speeds) max(all_speeds)]);
-view(0,30)
-saveas(fig2, [path 'cylindrical_' figure_file_name '.jpg'],'jpeg')
-view(120,30)
-saveas(fig2, [path 'cylindrical_' figure_file_name '-120.jpg'],'jpeg')
-view(240,30)
-saveas(fig2, [path 'cylindrical_' figure_file_name '-240.jpg'],'jpeg')
+% ----------------------------------------------------------------------- %
+% #DEPRECATED - 11-18-2018 now adding to video stream in main script
+% view(0,30)
+% saveas(fig2, [path 'cylindrical_' figure_file_name '.jpg'],'jpeg')
+% view(120,30)
+% saveas(fig2, [path 'cylindrical_' figure_file_name '-120.jpg'],'jpeg')
+% view(240,30)
+% saveas(fig2, [path 'cylindrical_' figure_file_name '-240.jpg'],'jpeg')
+% #DEPRECATED
+% ----------------------------------------------------------------------- %
 end
 
 %% functions

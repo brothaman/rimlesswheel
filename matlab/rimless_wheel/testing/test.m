@@ -6,8 +6,8 @@ addpath ../../lib/ ../data/ ../model/
 load ../data/network.mat
 
 network = convertAllNetworks(parameters.velocities);
-fixed_filename = '../plots/fixed_angle.mp4';
-dynamic_filename = '../plots/dynamics_accurate.mp4';
+fixed_filename = '../plots/fixed_angle.avi';
+dynamic_filename = '../plots/dynamics_accurate.avi';
 
 
 %% Fix Angle Rimless Wheel Robot Control
@@ -20,21 +20,21 @@ zs = data_fixed{2};
 alphas = data_fixed{3};
 parms = data_fixed{4};
 
-fps = 30;
-farview = 0; %=1 to have a farview of the animation
-disp('Animating...');
-%disp('NOTE: Animation speed can be changed using fps defined in the code');
-figure(1)
-animater_fixed(ts,zs,parms,steps,fps,farview,alphas,myPathVid);
+% fps = 30;
+% farview = 0; %=1 to have a farview of the animation
+% disp('Animating...');
+% %disp('NOTE: Animation speed can be changed using fps defined in the code');
+% figure(1)
+% animater_fixed(ts,zs,parms,steps,fps,farview,alphas,fixed_filename);
 
-figure(2)
+figure('Position',[0 0 1200 300])
 subplot(2,1,1)
-plot(ts,zs(:,1),'r');
+plot(ts,zs(:,1),'r','LineWidth',3);
 title('Angle Between Stance Leg and Ground')
 xlabel('t - time')
 
 subplot(2,1,2)
-plot(ts,zs(:,2),'b');
+plot(ts,zs(:,2),'b','LineWidth',3);
 title('Translational Velocity of Hip in +x - direction')
 xlabel('t - time')
 saveas(gcf,'../plots/control_of_fixed_rimlesswheel.jpg')
@@ -49,37 +49,37 @@ zs = data_dynamic{2};
 alphas = data_dynamic{3};
 parms = data_dynamic{4};
 
-fps = 30;
-farview = 0; %=1 to have a farview of the animation
-disp('Animating...');
-%disp('NOTE: Animation speed can be changed using fps defined in the code');
-figure(1)
-animater_dynamics(ts,zs,parms,steps,fps,farview,myPathVid);
+% fps = 30;
+% farview = 0; %=1 to have a farview of the animation
+% disp('Animating...');
+% %disp('NOTE: Animation speed can be changed using fps defined in the code');
+% figure(1)
+% animater_dynamics(ts,zs,parms,steps,fps,farview,myPathVid);
 
-figure(2)
+figure('Position',[0 0 1200 300])
 subplot(4,1,1)
-plot(ts,zs(:,1),'r');
+plot(ts,zs(:,1),'r','LineWidth',3);
 title('Angle Between Stance Leg and Ground')
 xlabel('t - time')
 
 subplot(4,1,2)
-plot(ts,zs(:,2),'b');
+plot(ts,zs(:,2),'b','LineWidth',3);
 title('Translational Velocity of Hip in +x - direction')
 xlabel('t - time')
 
 subplot(4,1,3)
-plot(ts,zs(:,3),'r');
+plot(ts,zs(:,3),'r','LineWidth',3);
 title('Angle Between Torso and Ground')
 xlabel('t - time')
 
 subplot(4,1,4)
-plot(ts,alphas,'b');
+plot(ts,alphas,'b','LineWidth',3);
 title('Desired Angle Between Torso and Ground')
-xlabel('t - time')
+xlabel('t - time','LineWidth',3)
 saveas(gcf,'../plots/control_of_dynamic_rimlesswheel.jpg')
 	
 %% Plot Both 
-h = figure;
+h = figure('Position',[0 0 1200 300]);
 hold on
 plot(data_dynamic{1},data_dynamic{2}(:,2),'b.','DisplayName','Fixed Angle','LineWidth',.5)
 plot(data_fixed{1},moving_average(data_fixed{2}(:,2),100),'r-','DisplayName','Average of Dynamically Accurate','LineWidth',5)
@@ -88,7 +88,7 @@ plot(data_dynamic{1},moving_average(data_dynamic{2}(:,2),100),'b-','DisplayName'
 legend('show')
 
 title('Velocity of Hip when Walking')
-% saveas(gcf,'../plots/Ideal vs Real.jpg')
+saveas(gcf,'../plots/Ideal vs Real.jpg')
 %% Functions
 function nnetwork = convertAllNetworks(velocities)
 	path = '../data/evaluated_network/';
