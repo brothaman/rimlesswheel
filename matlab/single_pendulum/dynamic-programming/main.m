@@ -89,16 +89,13 @@ evaltime = tic;
 
 disp('Generating Network')
 generate_network(parameters);
-disp('Finished Generating Network')
-
-clearvars -except parameters total_time
-load(parameters.filename)
-
-% timer
 evaltime = seconds(toc(evaltime));
 evaltime.Format = 'hh:mm:ss';
 disp(['Finished Generating Network After ' char(evaltime)])
 % timer
+
+clearvars -except parameters total_time
+load(parameters.filename)
 
 
 % ---------------------- Generate Connections --------------------------- %
