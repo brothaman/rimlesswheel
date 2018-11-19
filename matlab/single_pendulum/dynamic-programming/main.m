@@ -34,7 +34,7 @@ switch ptype
 		parameters.torquerange = [-3,3];
 		parameters.angles = 100;
 		parameters.speeds = 200;
-		parameters.torques = 200;
+		parameters.torques = 60;
 		parameters.goal = [51,101];
 	case 3
 		parameters.filename = '../lib/weak_cost_network.mat';
@@ -49,7 +49,7 @@ switch ptype
 		parameters.torquerange = [-1.5,1.5];
 		parameters.angles = 300;
 		parameters.speeds = 300;
-		parameters.torques = 20;
+		parameters.torques = 30;
 		parameters.goal = [151,151];
 	case 4
 		parameters.filename = '../lib/very_weak_cost_network.mat';
