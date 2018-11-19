@@ -6,6 +6,21 @@ if ~exist('ptype','var')
 end
 
 switch ptype
+	case 0
+		parameters.filename = '../lib/test_cost_network.mat';
+		parameters.path = '../lib/test_pend/';
+		parameters.evalfname = 'test_network_';
+		parameters.plottitle = 'test cost network iteration ';
+		parameters.imagepath = 'images/test_pend/growth/';
+		
+		parameters.time = 0.025;                                 
+		parameters.anglerange = [0,2*pi];                         
+		parameters.speedrange = [-6,6];                         
+		parameters.torquerange = [-10,10];
+		parameters.angles = 30;
+		parameters.speeds = 30;
+		parameters.torques = 20;
+		parameters.goal = [15,15];
 	case 1
 		parameters.filename = '../lib/strong_cost_network.mat';
 		parameters.path = '../lib/strong_pend/';
@@ -20,7 +35,7 @@ switch ptype
 		parameters.angles = 300;
 		parameters.speeds = 300;
 		parameters.torques = 200;
-		parameters.goal = [15,15];
+		parameters.goal = [151,151];
 	case 2
 		parameters.filename = '../lib/moderately_weak_cost_network.mat';
 		parameters.path = '../lib/moderately_weak_pend/';
