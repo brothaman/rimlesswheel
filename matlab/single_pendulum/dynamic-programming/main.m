@@ -29,14 +29,14 @@ switch ptype
 		parameters.plottitle = 'strong cost network iteration ';
 		parameters.imagepath = 'images/strong_pend/growth/';
 		
-		parameters.time = 0.025;                                 
+		parameters.time = 0.05;                                 
 		parameters.anglerange = [0,2*pi];                         
 		parameters.speedrange = [-6,6];                         
 		parameters.torquerange = [-10,10];
-		parameters.angles = 300;
-		parameters.speeds = 300;
+		parameters.angles = 150;
+		parameters.speeds = 150;
 		parameters.torques = 200;
-		parameters.goal = [151,151];
+		parameters.goal = [76,76];
 	case 2
 		clearvars
 		parameters.filename = '../lib/moderately_weak_cost_network.mat';
@@ -49,10 +49,10 @@ switch ptype
 		parameters.anglerange = [0,2*pi];                         
 		parameters.speedrange = [-6,6];                         
 		parameters.torquerange = [-3,3];
-		parameters.angles = 100;
-		parameters.speeds = 200;
+		parameters.angles = 150;
+		parameters.speeds = 150;
 		parameters.torques = 60;
-		parameters.goal = [51,101];
+		parameters.goal = [76,76];
 	case 3
 		clearvars
 		parameters.filename = '../lib/weak_cost_network.mat';
@@ -91,7 +91,7 @@ switch ptype
 		exit();
 end
 
-parameters.maxNumCompThreads = 10;
+parameters.maxNumCompThreads = 2;
 parameters.xd  = [pi 0];
 
 save(parameters.filename,...
@@ -141,8 +141,15 @@ end
 save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
 for iter = 1:N
 	disp(['completed iteration ' num2str(iter)])
+	before = convertNetwork(network);
 	output_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
 	network = evaluate_connections(parameters,output_filename,network);
+	after = convertNetwork(network);
+	
+	% stopping criteria
+	if sum(sum(before - after)) == 0
+		break;
+	end
 end
 save(parameters.filename,'network','ids','previous_ids','-append');
 disp('Finished Evaluating Network Connections')
@@ -181,7 +188,7 @@ CylVidObj240 = VideoWriter(myPathVid,'Uncompressed AVI');
 open(CylVidObj240);
 % ----------------------------------------------------------------------- %
 
-for iter = 1:N
+for iter = 1:iter
 	load([parameters.path parameters.evalfname int2str(iter) '.mat'])
 	figure_file_name = [parameters.plottitle int2str(iter)];
 	[fig1,fig2] = show_cost_network(figure_file_name, parameters.imagepath, all_angles, all_speeds, network, stats);
@@ -228,4 +235,20 @@ function stats = netstats(network)
 	stats.max = max(values);
 	stats.min = min(values);
 	stats.std = std(values);
+end
+
+function nnetwork = convertNetwork(network)
+	sz = size(network);
+	nnetwork = zeros(prod(sz),3);
+	for i = 1:sz(1)
+		for j = 1:sz(2)
+			if isempty(network{i,j}.optimal_policy)
+				continue;
+			end
+			if isnan(network{i,j}.optimal_policy)
+				continue;
+			end
+			nnetwork((i-1)*sz(2)+j,:) = [ network{i,j}.ID network{i,j}.connections{network{i,j}.optimal_policy}(4)];
+		end
+	end
 end
