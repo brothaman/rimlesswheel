@@ -130,14 +130,17 @@ load(parameters.filename)
 % ---------------------- Evaluate Connections --------------------------- %
 disp('Evaluating Network Connections')
 
+if ~exist(parameters.imagepath,'dir')
+    mkdir(parameters.imagepath)
+end
+if ~exist(parameters.path,'dir')
+    mkdir(parameters.path)
+end 
 % timer
 evaltime = tic;
 % timer
 
 N = sum(any(~cellfun('isempty',connections),2));
-if ~exist(parameters.imagepath,'dir')
-    mkdir(parameters.imagepath)
-end
 save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
 for iter = 1:N
 	disp(['completed iteration ' num2str(iter)])
@@ -147,6 +150,7 @@ for iter = 1:N
 	after = convertNetwork(network);
 	
 	% stopping criteria
+	sum(sum(before - after))
 	if sum(sum(before - after)) == 0
 		break;
 	end
