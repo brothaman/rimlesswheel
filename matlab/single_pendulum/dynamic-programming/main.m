@@ -91,7 +91,7 @@ switch ptype
 		exit();
 end
 
-parameters.maxNumCompThreads = 32;
+parameters.maxNumCompThreads = 2;
 parameters.xd  = [pi 0];
 
 save(parameters.filename,...
@@ -150,8 +150,8 @@ for iter = 1:N
 	after = convertNetwork(network);
 	
 	% stopping criteria
-	sum(sum(before - after))
-	if sum(sum(before - after)) == 0
+	sum(sum(abs(before - after)))
+	if sum(sum(abs(before - after))) == 0
 		break;
 	end
 end
