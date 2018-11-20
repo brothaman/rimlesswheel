@@ -91,7 +91,7 @@ switch ptype
 		exit();
 end
 
-parameters.maxNumCompThreads = 2;
+parameters.maxNumCompThreads = 32;
 parameters.xd  = [pi 0];
 
 save(parameters.filename,...
