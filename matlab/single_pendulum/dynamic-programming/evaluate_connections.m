@@ -1,4 +1,4 @@
-function evaluate_connections(parameters,input_filename,output_filename)
+function network = evaluate_connections(parameters,output_filename, network)
 	% connection_data = load('cost_network_v1.1.mat');
 	% data = load('../lib/cost_network_v2.0.mat');
 	% network = data.network;
@@ -9,8 +9,6 @@ function evaluate_connections(parameters,input_filename,output_filename)
 	% % set the goal node 
 	data = load(parameters.filename,'connections');
 	connections = data.connections;
-	data = load(input_filename,'network');
-	network = data.network;
 	network{parameters.goal(1),parameters.goal(2)}.optimal_value = 0;
 	network{parameters.goal(1),parameters.goal(2)}.optimal_policy = nan;
 	%[filename,i,network,connection_network,connections, t, ids,previous_ids,maxconns] = weak_actuation_init();
@@ -39,7 +37,6 @@ function evaluate_connections(parameters,input_filename,output_filename)
 			len = size(connections{i}{j},1);
 			node = cell(1,parameters.maxconns);
 			for k = 1:len
-
 				node(k)  = evaluate_connection(...
 					network,...
 					network{connections{i}{j}(k,1),connections{i}{j}(k,2)},...
@@ -57,7 +54,7 @@ function evaluate_connections(parameters,input_filename,output_filename)
 		teval(i) = seconds(toc);
 	end
 	teval.Format = 'hh:mm:ss';
-	save(output_filename,'network');
+	save(output_filename,'network','teval');
 end
 
 %% functions

@@ -139,15 +139,10 @@ if ~exist(parameters.imagepath,'dir')
     mkdir(parameters.imagepath)
 end
 save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
-input_filename = parameters.filename;
 for iter = 1:N
 	disp(['completed iteration ' num2str(iter)])
 	output_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
-	evaluate_connections(parameters,input_filename,output_filename)
-	input_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
-
-	load( output_filename)
-	save( output_filename, 'network')
+	network = evaluate_connections(parameters,output_filename,network);
 end
 save(parameters.filename,'network','ids','previous_ids','-append');
 disp('Finished Evaluating Network Connections')
@@ -156,7 +151,7 @@ total_time = seconds(toc(total_time));
 % timer
 evaltime = seconds(toc(evaltime));
 evaltime.Format = 'hh:mm:ss';
-disp(['Finished Generating Network Connections After ' char(evaltime)])
+disp(['Finished Evaluating Network Connections After ' char(evaltime)])
 % timer
 
 disp('Generating plots')
