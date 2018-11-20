@@ -31,12 +31,18 @@ function network = evaluate_connections(parameters,output_filename, network)
 		m = find(~cellfun('isempty',connections{i}))';
 		nodes = cell(length(m),parameters.maxconns);
 
-	% 	for each connection in the stage
+	% 	for each connection in the stage check and see if it is a better
+	% 	solution than the current
 		for l = 1:length(m)
 			j = m(l);
 			len = size(connections{i}{j},1);
+			
+			% get the current node
 			node = cell(1,parameters.maxconns);
 			for k = 1:len
+				% connections (the cell array) has connections to evaluate
+				% stored in it.
+				% pass the current node,
 				node(k)  = evaluate_connection(...
 					network,...
 					network{connections{i}{j}(k,1),connections{i}{j}(k,2)},...
@@ -71,6 +77,8 @@ function conn = evaluate_connection(network,node, connection)
         if  isempty(node.optimal_value) || isnan(node.optimal_value)
 %             optimal_policy = connection(5);
 %             optimal_value = value;
+%				return the nodeid the optimal next step and the optimal
+%				value
 %             conn = [node.ID optimal_policy optimal_value];
             conn = {[node.ID connection(5) value]};
         else

@@ -1,19 +1,19 @@
-function [fig1,fig2] = show_cost_network(figure_file_name,path,all_angles,all_speeds,network, stats)
+function [fig1,fig2] = show_cost_network(fig1,fig2,figure_file_name,path,all_angles,all_speeds,network, stats)
 statenvalues = get_state_n_value(network);
 rdisk = 20;
 rcyl = stats.max;
 k = 1;
 kcost = 1;
 
-fig1 = figure;
-fig2 = figure;
-
 % plot network on a disk
 [x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
 visualize_cost_network_on_disk(fig1,x,y,z,stats,figure_file_name);
 view(0, 45)
-saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
+% ----------------------------------------------------------------------- %
+% #DEPRECATED - 11-18-2018 now adding to video stream in main script
+% saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
+% ----------------------------------------------------------------------- %
 
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rcyl,all_angles,all_speeds,statenvalues);
@@ -54,7 +54,7 @@ function J = get_value_at_state(state,network)
 end
 
 function plot_circle(fig, radius,center,linename)
-    figure(fig);
+	set(0,'CurrentFigure',fig);
     N = ceil(pi*2*radius/.1);
     theta = 0:2*pi/ceil(pi*2*radius/.1):2*pi;
     x = center(1) + radius*cos(theta');
@@ -76,7 +76,7 @@ function [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues
 end
 
 function fig = visualize_cost_network_on_cylinder(fig,x,y,z,varargin)
-    figure(fig)
+    set(0,'CurrentFigure',fig)
     plot_every_thing = false;
     if length(varargin) ~= 4
         disp('no data for actual plot given or wrong size')
@@ -116,8 +116,8 @@ function z = get_disk_cost_height(k,all_angles, all_speeds, statenvalues)
 end
 
 function fig = visualize_cost_network_on_disk(fig,x,y,z,stats,varargin)
-    figure(fig)
-    plot_every_thing = false;
+	set(0, 'CurrentFigure', fig)
+	plot_every_thing = false;
     if length(varargin) ~= 4
         disp('no data for actual plot given or wrong size')
         titl = varargin{1};

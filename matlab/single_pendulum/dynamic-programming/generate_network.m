@@ -33,7 +33,7 @@ function generate_network(parameters)
 		for j = 1:length(all_speeds)
 			node{j} = nodes{i,j};
 			for torque = all_torques
-				node{j} = generate_new_state(node{j},xd,torque,time,all_angles,all_speeds);
+				node{j} = generate_new_state(node{j},xd,torque,time,all_angles,all_speeds,length(all_torques));
 			end
 		end
 		new_nodes(i,:) = node;
@@ -55,7 +55,7 @@ function nodes = initialize_nodes(angles,speeds)
     end
 end
 
-function node = generate_new_state(node,xd,torque,time,angles,speeds)
+function node = generate_new_state(node,xd,torque,time,angles,speeds,number_of_torques)
     x = [angles(node.ID(1)) speeds(node.ID(2))];
     upper_angle = max(angles);
     upper_speed = max(speeds);
@@ -74,16 +74,27 @@ function node = generate_new_state(node,xd,torque,time,angles,speeds)
     end
     [xx(1), n] = nearest2(xx(1), angles);
     [xx(2), m] = nearest2(xx(2), speeds);
+	if node.ID == [n m]
+		return
+	end
     J = getcost(xx, xd, torque,time);
+	% if the connections container is empty fill it
     if isempty(node.connections)
         node.connections{1} = [n m torque J];
         return
-    end
-    for i = 1:22
-        if i > length(node.connections)
+	end
+	
+	% if the container isnt empty check to make sure the the connection
+	% doesnt already exist
+    for i = 1:number_of_torques
+		% if you havent found a match then add the connection to the
+		% container
+		if i > length(node.connections)
             node.connections{i} = [n m torque J];
             return
-        end
+		end
+		% if the connection in the container keep the one with the lowest
+		% cost
         if node.connections{i}(1:2) == [n m]
             if node.connections{i}(4) > J
                 node.connections{i} = [n m torque J];
