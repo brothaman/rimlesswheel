@@ -137,13 +137,13 @@ end
 % 
 % % ---------------------- Evaluate Connections --------------------------- %
 % disp('Evaluating Network Connections')
-% 
-% if ~exist(parameters.imagepath,'dir')
-%     mkdir(parameters.imagepath)
-% end
-% if ~exist(parameters.path,'dir')
-%     mkdir(parameters.path)
-% end 
+
+if ~exist(parameters.imagepath,'dir')
+    mkdir(parameters.imagepath)
+end
+if ~exist(parameters.path,'dir')
+    mkdir(parameters.path)
+end 
 % % timer
 % evaltime = tic;
 % % timer
