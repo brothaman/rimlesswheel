@@ -91,7 +91,7 @@ switch ptype
 		exit();
 end
 parameters.plottitle = 'Iteration ';
-parameters.maxNumCompThreads = 10;
+parameters.maxNumCompThreads = 28;
 parameters.xd  = [pi 0];
 
 save(parameters.filename,...
@@ -161,7 +161,7 @@ for iter = 1:N
 	end
 end
 iteration_error = iteration_error(~isnan(iteration_error));
-save(parameters.filename,'network','ids','previous_ids','iteration_error','-append');
+save(parameters.filename,'network','ids','previous_ids','iteration_error','iter','-append');
 disp('Finished Evaluating Network Connections')
 total_time = seconds(toc(total_time));
 
