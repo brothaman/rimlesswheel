@@ -90,8 +90,8 @@ switch ptype
 		ptype
 		exit();
 end
-
-parameters.maxNumCompThreads = 2;
+parameters.plottitle = 'Iteration ';
+parameters.maxNumCompThreads = 28;
 parameters.xd  = [pi 0];
 
 save(parameters.filename,...
@@ -140,22 +140,28 @@ end
 evaltime = tic;
 % timer
 
-N = sum(any(~cellfun('isempty',connections),2));
+% stop after 100 iterations if convergence does not occur
+N = 100;%sum(any(~cellfun('isempty',connections),2));
 save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
+iteration_error = nan(N,1);
 for iter = 1:N
 	disp(['completed iteration ' num2str(iter)])
 	before = convertNetwork(network);
 	output_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
 	network = evaluate_connections(parameters,output_filename,network);
+	if iter == 1
+		stats = netstats(network);
+	end
 	after = convertNetwork(network);
 	
 	% stopping criteria
-	sum(sum(abs(before - after)))
-	if sum(sum(abs(before - after))) == 0
+	iteration_error(iter) = sum(sum(abs(before - after)));
+	if iteration_error(iter) == 0
 		break;
 	end
 end
-save(parameters.filename,'network','ids','previous_ids','-append');
+iteration_error = iteration_error(~isnan(iteration_error));
+save(parameters.filename,'network','ids','previous_ids','iteration_error','iter','-append');
 disp('Finished Evaluating Network Connections')
 total_time = seconds(toc(total_time));
 
@@ -165,10 +171,8 @@ evaltime.Format = 'hh:mm:ss';
 disp(['Finished Evaluating Network Connections After ' char(evaltime)])
 % timer
 
-disp('Generating plots')
-stats = netstats(network);
 % --------------------- Network Growth Movie ---------------------------- %
-
+disp('Generating plots')
 
 % timer
 evaltime = tic;
@@ -191,14 +195,18 @@ myPathVid = [parameters.imagepath 'CylindricalNetworkGrowth240.avi'];
 CylVidObj240 = VideoWriter(myPathVid,'Uncompressed AVI');
 open(CylVidObj240);
 % ----------------------------------------------------------------------- %
-
+fig1 = figure;
+fig2 = figure;
+set(fig1,'Visible','off')
+set(fig2,'Visible','off')
 for iter = 1:iter
 	load([parameters.path parameters.evalfname int2str(iter) '.mat'])
 	figure_file_name = [parameters.plottitle int2str(iter)];
-	[fig1,fig2] = show_cost_network(figure_file_name, parameters.imagepath, all_angles, all_speeds, network, stats);
+	[fig1,fig2] = show_cost_network(fig1,fig2,figure_file_name, parameters.imagepath, all_angles, all_speeds, network, stats);
 	% ------------------------------------------------------------------- %
 	writeVideo(DiskVidObj,getframe(fig1));
 	
+% 	set(0,'CurrentFigure',fig2)
 	figure(fig2)
 	view(0,30)
 	writeVideo(CylVidObj,getframe(fig2));
@@ -207,7 +215,6 @@ for iter = 1:iter
 	view(240,30)
 	writeVideo(CylVidObj240,getframe(fig2));
 	% ------------------------------------------------------------------- %
-	close all
 	disp(['completed plot ' num2str(iter)])
 end
 close(DiskVidObj);
