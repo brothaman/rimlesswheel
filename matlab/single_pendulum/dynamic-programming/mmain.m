@@ -24,6 +24,8 @@ switch ptype
 	case 1
 		clearvars
 		load('../lib/strong_cost_network.mat');
+		data = load('../lib/strong_pend/strong_network_1.mat');
+		stats = netstats(data.network);
 % 		parameters.path = '../lib/strong_pend/';
 % 		parameters.evalfname = 'strong_network_';
 % 		parameters.plottitle = 'strong cost network iteration ';
@@ -40,7 +42,8 @@ switch ptype
 	case 2
 		clearvars
 		load('../lib/moderately_weak_cost_network.mat');
-        iter = 66;
+		data = load('../lib/strong_pend/strong_network_1.mat');
+		stats = netstats(data.network);
 % 		parameters.path = '../lib/moderately_weak_pend/';
 % 		parameters.evalfname = 'moderately_weak_network_';
 % 		parameters.plottitle = 'moderately weak cost network iteration ';
@@ -57,7 +60,8 @@ switch ptype
 	case 3
 		clearvars
 		load('../lib/weak_cost_network.mat');
-        iter=76;
+		data = load('../lib/strong_pend/strong_network_1.mat');
+		stats = netstats(data.network);
 % 		parameters.path = '../lib/weak_pend/';
 % 		parameters.evalfname = 'weak_network_';
 % 		parameters.plottitle = 'weak cost network iteration ';
@@ -73,7 +77,8 @@ switch ptype
 % 		parameters.goal = [151,151];
 	case 4
 		load('../lib/very_weak_cost_network.mat');
-        iter = 61;
+		data = load('../lib/strong_pend/strong_network_1.mat');
+		stats = netstats(data.network);
 % 		parameters.path = '../lib/very_weak_pend/';
 % 		parameters.evalfname = 'very_weak_network_';
 % 		parameters.plottitle = 'very weak cost network iteration ';
