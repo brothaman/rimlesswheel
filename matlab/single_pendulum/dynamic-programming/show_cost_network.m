@@ -10,6 +10,7 @@ kcost = 1;
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
 visualize_cost_network_on_disk(fig1,x,y,z,stats,figure_file_name);
 view(0, 45)
+colorbar
 % ----------------------------------------------------------------------- %
 % #DEPRECATED - 11-18-2018 now adding to video stream in main script
 % saveas(fig1, [path 'discoidal_' figure_file_name '.jpg'],'jpeg')
@@ -20,6 +21,7 @@ view(0, 45)
 fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,figure_file_name);
 shading interp
 axis([(-rcyl-stats.max-stats.std) (rcyl+stats.max+stats.std) (-rcyl-stats.max-stats.std) (rcyl+stats.max+stats.std) min(all_speeds) max(all_speeds)]);
+colorbar
 % ----------------------------------------------------------------------- %
 % #DEPRECATED - 11-18-2018 now adding to video stream in main script
 % view(0,30)
@@ -53,13 +55,13 @@ function J = get_value_at_state(state,network)
     end
 end
 
-function plot_circle(fig, radius,center,linename)
+function plot_circle(fig, radius,center,options)
 	set(0,'CurrentFigure',fig);
     N = ceil(pi*2*radius/.1);
     theta = 0:2*pi/ceil(pi*2*radius/.1):2*pi;
     x = center(1) + radius*cos(theta');
     y = center(2) + radius*sin(theta');
-    plot(x,y,'LineWidth',5, 'DisplayName',linename)
+    plot(x,y,options{:})
 end
 
 %% Functions for Plotting Cylinder
@@ -94,10 +96,10 @@ function fig = visualize_cost_network_on_cylinder(fig,x,y,z,varargin)
         hold off
     end
     
-    title(titl)
-    zlabel('Cost to Navigate to the Goal')
-    ylabel('y-position of Pendulum - Radius Indicates Cost')
-    xlabel('x-position of Pendulum - Radius Indicates Cost')
+    title(titl,'FontSize',36)
+%     zlabel('Cost to Navigate to the Goal','FontSize',18)
+%     ylabel('y-position of Pendulum - Radius Indicates Cost','FontSize',12)
+%     xlabel('x-position of Pendulum - Radius Indicates Cost','FontSize',12)
 end
 %% Functions for Plotting Disk
 function [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds)
@@ -130,8 +132,8 @@ function fig = visualize_cost_network_on_disk(fig,x,y,z,stats,varargin)
     rmin = min(x(1,:));
     hold on
     surf(x,y,z, 'DisplayName', 'Cost Network')
-    plot_circle(fig, rmax, [0 0],'Max Velocity')
-    plot_circle(fig, rmin, [0 0],'Min Velocity')
+    plot_circle(fig, rmax, [0 0],{'LineWidth',5,'DisplayName','Max Velocity','Color','b'})
+    plot_circle(fig, rmin, [0 0],{'LineWidth',5,'DisplayName','Min Velocity','Color','r'})
     hold off
     
     shading interp
@@ -142,9 +144,9 @@ function fig = visualize_cost_network_on_disk(fig,x,y,z,stats,varargin)
     end
 %     title('Discoidal Representation of Cost Network')
     title(titl)
-    zlabel('Cost to Navigate to the Goal')
-    ylabel('y-position of Pendulum')
-    xlabel('x-position of Pendulum')
+%     zlabel('Cost to Navigate to the Goal')
+%     ylabel('y-position of Pendulum')
+%     xlabel('x-position of Pendulum')
 	maxx = max(max(x));
 	minx = min(min(x));
 	maxy = max(max(y));

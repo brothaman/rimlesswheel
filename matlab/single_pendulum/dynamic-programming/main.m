@@ -90,8 +90,8 @@ switch ptype
 		ptype
 		exit();
 end
-
-parameters.maxNumCompThreads = 28;
+parameters.plottitle = 'Iteration ';
+parameters.maxNumCompThreads = 10;
 parameters.xd  = [pi 0];
 
 save(parameters.filename,...
@@ -140,22 +140,28 @@ end
 evaltime = tic;
 % timer
 
-N = sum(any(~cellfun('isempty',connections),2));
+% stop after 100 iterations if convergence does not occur
+N = 100;%sum(any(~cellfun('isempty',connections),2));
 save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
+iteration_error = nan(N,1);
 for iter = 1:N
 	disp(['completed iteration ' num2str(iter)])
 	before = convertNetwork(network);
 	output_filename = [parameters.path parameters.evalfname int2str(iter) '.mat'];
 	network = evaluate_connections(parameters,output_filename,network);
+	if iter == 1
+		stats = netstats(network);
+	end
 	after = convertNetwork(network);
 	
 	% stopping criteria
-	sum(sum(abs(before - after)))
-	if sum(sum(abs(before - after))) == 0
+	iteration_error(iter) = sum(sum(abs(before - after)));
+	if iteration_error(iter) == 0
 		break;
 	end
 end
-save(parameters.filename,'network','ids','previous_ids','-append');
+iteration_error = iteration_error(~isnan(iteration_error));
+save(parameters.filename,'network','ids','previous_ids','iteration_error','-append');
 disp('Finished Evaluating Network Connections')
 total_time = seconds(toc(total_time));
 
@@ -165,10 +171,8 @@ evaltime.Format = 'hh:mm:ss';
 disp(['Finished Evaluating Network Connections After ' char(evaltime)])
 % timer
 
-disp('Generating plots')
-stats = netstats(network);
 % --------------------- Network Growth Movie ---------------------------- %
-
+disp('Generating plots')
 
 % timer
 evaltime = tic;
