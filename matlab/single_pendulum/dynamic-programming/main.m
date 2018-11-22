@@ -123,7 +123,6 @@ generate_network_connections(parameters);
 evaltime = seconds(toc(evaltime));
 evaltime.Format = 'hh:mm:ss';
 disp(['Finished Generating Network Connections After ' char(evaltime)])
-
 clearvars -except parameters total_time
 load(parameters.filename)
 
@@ -141,7 +140,7 @@ evaltime = tic;
 % timer
 
 % stop after 100 iterations if convergence does not occur
-N = 100;%sum(any(~cellfun('isempty',connections),2));
+N = 150;%sum(any(~cellfun('isempty',connections),2));
 save([parameters.path parameters.evalfname int2str(0) '.mat'],'network')
 iteration_error = nan(N,1);
 for iter = 1:N
@@ -170,7 +169,7 @@ evaltime = seconds(toc(evaltime));
 evaltime.Format = 'hh:mm:ss';
 disp(['Finished Evaluating Network Connections After ' char(evaltime)])
 % timer
-
+exit()
 % --------------------- Network Growth Movie ---------------------------- %
 disp('Generating plots')
 
