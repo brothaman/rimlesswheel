@@ -1,8 +1,12 @@
 %% Visualize the cost network
 close all
 addpath ../lib
-pendulum_type = 3;
+pendulum_type = 0;
 switch pendulum_type
+	case 0
+		load jnk/test_cost_network.mat;
+		pendulum_type = 'Test Pendulum';
+		path = 'jnk/plots/';
 	case 1
 		load ../lib/strong_cost_network.mat
 		pendulum_type = 'Strong Pendulum';
@@ -52,12 +56,12 @@ end
 %%%%%%%%%%%%%%%%%%%%%%% plot network on a disk %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
-plot_low_density_scatter(fig1,x,y,[4,20]);
-saveas(fig1, [path pendulum_type ' cost network scatter on flat disk-isometric.pdf'],'pdf'); %pause;
+plot_low_density_scatter(fig1,x,y,[3,3]);
+saveas(fig1, [path pendulum_type 'Template Cost Network on a Disk Scatter.pdf'],'pdf'); %pause;
 clf(fig1)
 
-plot_low_density_surf(fig1,x,y,[4,20]);
-saveas(fig1, [path pendulum_type ' cost network surface on flat disk-isometric.pdf'],'pdf'); %pause;
+plot_low_density_surf(fig1,x,y,[3,3]);
+saveas(fig1, [path pendulum_type 'Template Cost Network on a Disk.pdf'],'pdf'); %pause;
 clf(fig1)
 
 
@@ -77,12 +81,14 @@ stdx = std(max(x));
 stdy = std(max(y));
 axis([(minx-stdx) (maxx+stdx) (miny-stdy) (maxy+stdy) (stats.min-stats.std) (stats.max+stats.std)])
 view(0, 45)
-saveas(fig1, [path pendulum_type ' cost network on disk-isometric.jpg'],'jpeg')
+saveas(fig1, [path pendulum_type 'Discoidal Cost Network.jpg'],'jpeg')
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%% plot network on a cylinder %%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % plot the network on a cylinder
+plot_low_density_cylinder(fig,rcyl,all_angles,all_speeds,[3,3])
+saveas(fig, [path pendulum_type 'Cylindrical Network Template.pdf'],'pdf'); %pause;
 [x,y,z] = get_CN_cylinder_data(rcyl,all_angles,all_speeds,statenvalues);
 switch flag
 	case 1
@@ -228,6 +234,29 @@ function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,ro
 	end
 	close(vidObj);
 end
+
+function plot_low_density_cylinder(fig,r,all_angles,all_speeds,res)
+    figure(fig)
+	x = zeros(length(all_angles),length(all_speeds));
+    y = zeros(length(all_angles),length(all_speeds));
+    for i = 1:length(all_angles)
+        for j = 1:length(all_speeds)
+            x(i,j) = r * cos(all_angles(i));
+            y(i,j) = r * sin(all_angles(i));
+        end
+    end
+	z = ones(size(x)).*all_speeds;
+	
+	% reduce resolution of the network
+	x = x(1:res(1):end,1:res(2):end);
+    y = y(1:res(1):end,1:res(2):end);
+	z = z(1:res(1):end,1:res(2):end);
+	
+    C = x.^2 +y.^2;
+    surf(x,y,z,C,'DisplayName','Cost Network');
+    
+    title('Template Cost Network on a Cylinder','FontSize',18)
+end
 %% Functions for Plotting Disk
 function [x,y] = get_CN_disk_data(rmean,k,all_angles,all_speeds)
     r = rmean + k*all_speeds;
@@ -293,10 +322,10 @@ function plot_low_density_scatter(fig, x, y, res)
     rmin = min(x(1,:));
     figure(fig)
     hold on
-    scatter(x(:),y(:),'b','DisplayName','States')  
+	title('Template Cost Network on a Disk Scatter','FontSize',18)
+    scatter(x(:),y(:),'b','filled','DisplayName','States')  
     plot_circle(fig, rmax, [0 0],'Max Velocity')
     plot_circle(fig, rmin, [0 0],'Min Velocity')
-    legend('show')
     hold off
 end
 
@@ -307,10 +336,10 @@ function plot_low_density_surf(fig, x, y, res)
     rmin = min(x(1,:));
     figure(fig)
     hold on
+	title('Template Cost Network on a Disk','FontSize',18)
     surf(x,y,zeros(size(x)),'DisplayName','States')  
     plot_circle(fig, rmax, [0 0],'Max Velocity')
     plot_circle(fig, rmin, [0 0],'Min Velocity')
-    legend('show')
     hold off
 end
 
