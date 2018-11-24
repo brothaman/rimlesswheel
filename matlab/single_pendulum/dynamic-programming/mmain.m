@@ -42,7 +42,7 @@ switch ptype
 	case 2
 		clearvars
 		load('../lib/moderately_weak_cost_network.mat');
-		data = load('../lib/strong_pend/strong_network_1.mat');
+        data = load('../lib/moderately_weak_pend/moderately_weak_network_1.mat');
 		stats = netstats(data.network);
 % 		parameters.path = '../lib/moderately_weak_pend/';
 % 		parameters.evalfname = 'moderately_weak_network_';
@@ -60,7 +60,7 @@ switch ptype
 	case 3
 		clearvars
 		load('../lib/weak_cost_network.mat');
-		data = load('../lib/strong_pend/strong_network_1.mat');
+        data = load('../lib/weak_pend/weak_network_1.mat');
 		stats = netstats(data.network);
 % 		parameters.path = '../lib/weak_pend/';
 % 		parameters.evalfname = 'weak_network_';
@@ -77,7 +77,7 @@ switch ptype
 % 		parameters.goal = [151,151];
 	case 4
 		load('../lib/very_weak_cost_network.mat');
-		data = load('../lib/strong_pend/strong_network_1.mat');
+		data = load('../lib/very_weak_pend/very_weak_network_1.mat');
 		stats = netstats(data.network);
 % 		parameters.path = '../lib/very_weak_pend/';
 % 		parameters.evalfname = 'very_weak_network_';
