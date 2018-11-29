@@ -2,12 +2,23 @@ format long
 close all
 clc
 clear all
-addpath ../../lib/ ../data/ ../model/
-load ../data/network.mat
+addpath ../../lib/ ../data/ ../model/ ../../single_pendulum/lib/
+val = 1;
+switch val
+	case 1
+		network_data_dir = '../network/junk/data/';
+		load([network_data_dir '../network.mat'])
+		network_path = [network_data_dir 'evaluated_network/'];
+	case 2
+		network_data_dir = '../data/';
+		load([network_data_dir 'network.mat'])
+		network_path = [network_data_dir 'evaluated_network/'];
+end
 
-network = convertAllNetworks(parameters.velocities);
+network = convertAllNetworks(parameters.velocities,network_path);
 fixed_filename = '../plots/fixed_angle.avi';
 dynamic_filename = '../plots/dynamics_accurate.avi';
+
 
 
 %% Fix Angle Rimless Wheel Robot Control
@@ -20,12 +31,12 @@ zs = data_fixed{2};
 alphas = data_fixed{3};
 parms = data_fixed{4};
 
-% fps = 30;
-% farview = 0; %=1 to have a farview of the animation
-% disp('Animating...');
-% %disp('NOTE: Animation speed can be changed using fps defined in the code');
-% figure(1)
-% animater_fixed(ts,zs,parms,steps,fps,farview,alphas,fixed_filename);
+fps = 30;
+farview = 0; %=1 to have a farview of the animation
+disp('Animating...');
+%disp('NOTE: Animation speed can be changed using fps defined in the code');
+figure(1)
+animater_fixed(ts,zs,parms,steps,fps,farview,alphas,fixed_filename);
 
 figure('Position',[0 0 1200 300])
 subplot(2,1,1)
@@ -49,33 +60,33 @@ zs = data_dynamic{2};
 alphas = data_dynamic{3};
 parms = data_dynamic{4};
 
-% fps = 30;
-% farview = 0; %=1 to have a farview of the animation
-% disp('Animating...');
-% %disp('NOTE: Animation speed can be changed using fps defined in the code');
-% figure(1)
-% animater_dynamics(ts,zs,parms,steps,fps,farview,myPathVid);
+fps = 30;
+farview = 0; %=1 to have a farview of the animation
+disp('Animating...');
+%disp('NOTE: Animation speed can be changed using fps defined in the code');
+figure(1)
+animater_dynamics(ts,zs,parms,steps,fps,farview,dynamic_filename);
 
 figure('Position',[0 0 1200 300])
-subplot(4,1,1)
+subplot(2,1,1)
 plot(ts,zs(:,1),'r','LineWidth',3);
 title('Angle Between Stance Leg and Ground')
 xlabel('t - time')
 
-subplot(4,1,2)
+subplot(2,1,2)
 plot(ts,zs(:,2),'b','LineWidth',3);
 title('Translational Velocity of Hip in +x - direction')
 xlabel('t - time')
 
-subplot(4,1,3)
-plot(ts,zs(:,3),'r','LineWidth',3);
-title('Angle Between Torso and Ground')
-xlabel('t - time')
-
-subplot(4,1,4)
-plot(ts,alphas,'b','LineWidth',3);
-title('Desired Angle Between Torso and Ground')
-xlabel('t - time','LineWidth',3)
+% subplot(4,1,3)
+% plot(ts,zs(:,3),'r','LineWidth',3);
+% title('Angle Between Torso and Ground')
+% xlabel('t - time')
+% 
+% subplot(4,1,4)
+% plot(ts,alphas,'b','LineWidth',3);
+% title('Desired Angle Between Torso and Ground')
+% xlabel('t - time','LineWidth',3)
 saveas(gcf,'../plots/control_of_dynamic_rimlesswheel.jpg')
 	
 %% Plot Both 
@@ -90,8 +101,7 @@ legend('show')
 title('Velocity of Hip when Walking')
 saveas(gcf,'../plots/Ideal vs Real.jpg')
 %% Functions
-function nnetwork = convertAllNetworks(velocities)
-	path = '../data/evaluated_network/';
+function nnetwork = convertAllNetworks(velocities,path)
 	nnetwork{1} = [];
 	i = 1;
 	for xd = velocities
