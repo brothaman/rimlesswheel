@@ -8,7 +8,7 @@ function data = generate_data(fixed, steps,network,speeds)
 		z = zeros(1,4);
 		zs = [];
 		for i = 1:steps
-			if i > 10
+			if i > ceil(.6*steps)
 				parms.control.alpha = getControlSignal(z(end,2),network{2});
 			else
 				parms.control.alpha = getControlSignal(z(end,2),network{end-10});
@@ -32,7 +32,7 @@ function data = generate_data(fixed, steps,network,speeds)
 		z = zeros(1,6);
 		zs = [];
 		for i = 1:steps
-			if i > 10
+			if i > ceil(.6*steps)
 	% 			parms.control.alpha = getControlSignal(z(end,2),network{ceil(.1*length(network))});
 	% 			parms.control.q2 = getControlSignal(z(end,2),network{10});
 				parms.control.alpha = getControlSignal(z(end,2),network{2});
