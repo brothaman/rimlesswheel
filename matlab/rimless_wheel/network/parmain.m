@@ -82,22 +82,44 @@ for i = 1:length(vels)
 	output_filenames(i,2) = {['../data/connected_network/network_desired_speed_' num2str(vels(i)) '.mat']};
 	output_filenames(i,3) = {['../data/evaluated_network/network_desired_speed_' num2str(vels(i)) '.mat']};
 end
+
+% timer
+evaltime = tic;
+% timer
+
 parfor i = 1:length(vels)
 	GenerateCostNetwork(output_filenames{i,1},parameters);
 end
-for i = 1:length(vels)
+% timer
+evaltime = seconds(toc(evaltime));
+evaltime.Format = 'hh:mm:ss';
+disp(['Complete network generation after: ' char(evaltime)])
+% timer
+
+% timer
+evaltime = tic;
+% timer
+
+data = load(output_filenames{1,3},'network');
+network = data.network;
+after = zeros(150,2);
+before = after;
+parfor i = 1:length(vels)
 	GenerateNetworkConnections(output_filenames{i,1}, output_filenames{i,2});
 	disp('Finished generating connections now evaluating connected network')
 
 	EvaluateConnectedNetwork(output_filenames{i,2}, output_filenames{i,3});
 
-	load(output_filenames{i,3});
+	data = load(output_filenames{i,3},'network');
+	network = data.network;
+	before = convertNetwork(network);
 	for j = 1:100
-		before = convertNetwork(network);
 		EvaluateConnectedNetwork(output_filenames{i,3},output_filenames{i,3});
-		load(output_filenames{i,3});
+		data = load(output_filenames{i,3},'network');
+		network = data.network;
 		after = convertNetwork(network);
 		sum(sum((before - after).^2))
+		before = after;
 		if sum(sum(before - after)) == 0
 			break;
 		end
@@ -107,6 +129,12 @@ for i = 1:length(vels)
 	end
 	disp(['Finished evaluating connections on:	' output_filenames{i,3}])
 end
+
+% timer
+evaltime = seconds(toc(evaltime));
+evaltime.Format = 'hh:mm:ss';
+disp(['Complete network evaluation after: ' char(evaltime)])
+% timer
 
 %% Functions
 function nnetwork = convertNetwork(network)
