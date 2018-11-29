@@ -25,8 +25,8 @@ switch val
 end
 
 % if directories arent there then make them
-conn_dir = [output_dir '/data/connected_network/'];
-eval_dir = [output_dir '/data/evaluated_network/'];
+conn_dir = [output_dir 'data/connected_network/'];
+eval_dir = [output_dir 'data/evaluated_network/'];
 if ~exist(conn_dir,'dir')
     mkdir(conn_dir)
 end
@@ -79,9 +79,9 @@ disp('Complete network generation now Generating Connections')
 vels = parameters.velocities(any(conns ~=0,1));
 output_filenames = cell(length(vels),3);
 for i = 1:length(vels)
-	output_filenames(i,1) = {['../data/network_desired_speed_' num2str(vels(i)) '.mat']};
-	output_filenames(i,2) = {['../data/connected_network/network_desired_speed_' num2str(vels(i)) '.mat']};
-	output_filenames(i,3) = {['../data/evaluated_network/network_desired_speed_' num2str(vels(i)) '.mat']};
+	output_filenames(i,1) = {[output_dir '/network_desired_speed_' num2str(vels(i)) '.mat']};
+	output_filenames(i,2) = {[conn_dir '/network_desired_speed_' num2str(vels(i)) '.mat']};
+	output_filenames(i,3) = {[eval_dir '/network_desired_speed_' num2str(vels(i)) '.mat']};
 end
 
 % timer
