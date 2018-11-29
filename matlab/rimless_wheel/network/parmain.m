@@ -16,17 +16,39 @@ M = 90;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ------------------------ Set Output Paths ---------------------------- %
-val = 1;
-switch val
-	case 1
-		output_dir = 'junk/';
-	case 2
-		output_dir = '../';
-end
+
+% set beta in the cost function normthetadoterr + normtorsoangle
+beta = 1;
+ddir = ['beta_' beta '/'];
+network_data_dir = ['../data/' ddir];
+load([network_data_dir '../network.mat'])
+network_path = [network_data_dir 'evaluated_network/'];
+% switch beta
+% 	case 1e-5
+% 		ddir = ['beta_' beta '/'];
+% 		network_data_dir = ['../data/' ddir];
+% 		load([network_data_dir '../network.mat'])
+% 		network_path = [network_data_dir 'evaluated_network/'];
+% 	case 0.1
+% 		ddir = ['beta_' beta '/'];
+% 		network_data_dir = ['../data/' ddir];
+% 		load([network_data_dir '../network.mat'])
+% 		network_path = [network_data_dir 'evaluated_network/'];
+% 	case 1
+% 		ddir = ['beta_' beta '/'];
+% 		network_data_dir = ['../data/' ddir];
+% 		load([network_data_dir '../network.mat'])
+% 		network_path = [network_data_dir 'evaluated_network/'];
+% 	case 10
+% 		ddir = ['beta_' beta '/'];
+% 		network_data_dir = ['../data/' ddir];
+% 		load([network_data_dir '../network.mat'])
+% 		network_path = [network_data_dir 'evaluated_network/'];
+% end
 
 % if directories arent there then make them
-conn_dir = [output_dir 'data/connected_network/'];
-eval_dir = [output_dir 'data/evaluated_network/'];
+conn_dir = [network_data_dir '/connected_network/'];
+eval_dir = [network_data_dir '/evaluated_network/'];
 if ~exist(conn_dir,'dir')
     mkdir(conn_dir)
 end
@@ -64,11 +86,11 @@ parameters.amax = amax;
 parameters.amin = amin;
 parameters.velocities = velocities;
 parameters.actions = actions;
-parameters.desired_speed = velocities(ceil(N/2));
+parameters.beta = beta;
 
 % generate the network 
 output_filename = ['../data/network.mat'];
-GenerateCostNetwork(output_filename,parameters);
+GenerateCostNetwork(output_filename,parameters,velocities(ceil(N/2)));
 [connectivity,~,~,conns] = testNetworkConnectivity(output_filename);
 if connectivity < 0.1*length(parameters.actions)
 	disp('something is wrong. connectivity too low to continue')
@@ -79,7 +101,7 @@ disp('Complete network generation now Generating Connections')
 vels = parameters.velocities(any(conns ~=0,1));
 output_filenames = cell(length(vels),3);
 for i = 1:length(vels)
-	output_filenames(i,1) = {[output_dir '/network_desired_speed_' num2str(vels(i)) '.mat']};
+	output_filenames(i,1) = {[network_data_dir '/network_desired_speed_' num2str(vels(i)) '.mat']};
 	output_filenames(i,2) = {[conn_dir '/network_desired_speed_' num2str(vels(i)) '.mat']};
 	output_filenames(i,3) = {[eval_dir '/network_desired_speed_' num2str(vels(i)) '.mat']};
 end
@@ -89,7 +111,8 @@ evaltime = tic;
 % timer
 
 parfor i = 1:length(vels)
-	GenerateCostNetwork(output_filenames{i,1},parameters);
+	xd = vels(i)
+	GenerateCostNetwork(output_filenames{i,1},parameters,xd);
 end
 % timer
 evaltime = seconds(toc(evaltime));

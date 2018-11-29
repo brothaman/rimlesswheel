@@ -3,8 +3,8 @@
 % return the new state and the cost associated with the transition. the top
 % level should add the path to the model and integrator.
 
-function GenerateCostNetwork(output_filename,parameters)
-
+function GenerateCostNetwork(output_filename,parameters,xd)
+	parameters.desired_speed = xd;
 	network = blank_network(parameters.velocities);
 	network = BuildNetwork(network, parameters);
 
@@ -17,7 +17,6 @@ end
 %% Functions
 function network = BuildNetwork(network, parameters)
 	N = size(network,2);
-	flag = 0;
 	steps = 1;
 	warning('off','all')
 	for i = 1:N
@@ -39,7 +38,7 @@ function network = BuildNetwork(network, parameters)
 			
 			% otherwise evaluate the new state, action, and time required
 			% to determine the transitional cost
-			J = cost(z(2),parameters.desired_speed,action,t(end));
+			J = cost(z(2),parameters.desired_speed,action,t(end),parameters.beta);
 			
 			% quick check to see if the state ID and value are set
 			if isempty(network{i}.state)
@@ -93,7 +92,7 @@ function [val, n] = nearest2(val,arr)
 	val = arr(val == vec);
 end
 
-function [J] = cost(x,xd,a,t)
+function [J] = cost(x,xd,a,t,beta)
 	% accept the time, state and action and treturn the cost for that motion
 	% set the gain parameters for the action cost and state error cost
 	% deltaX = (xd-x).^2 - (xd - xminus1).^2;
@@ -102,9 +101,9 @@ function [J] = cost(x,xd,a,t)
 	xmax = 7.6;
 	tmax = 2.81;
 	% gain parameters for each type of cost
-	velocity_cost_scaling_factor = 8.9/xmax;
-	timescalingfactor = 1/tmax;
-	input_cost_scaling_factor = 0.1/amax;
+	velocity_cost_scaling_factor = 1/xmax;%8.9/xmax;
+	timescalingfactor = 0;%1/tmax;
+	input_cost_scaling_factor = beta/amax;
 
 	% calculate the cost
 	midstance_velocity_cost = (xd-x)*velocity_cost_scaling_factor*(xd-x)';
