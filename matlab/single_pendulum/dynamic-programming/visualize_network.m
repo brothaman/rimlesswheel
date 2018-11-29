@@ -81,7 +81,7 @@ stdx = std(max(x));
 stdy = std(max(y));
 axis([(minx-stdx) (maxx+stdx) (miny-stdy) (maxy+stdy) (stats.min-stats.std) (stats.max+stats.std)])
 view(0, 45)
-saveas(fig1, [path pendulum_type 'Discoidal Cost Network.jpg'],'jpeg')
+saveas(fig1, [path pendulum_type 'Discoidal Cost Network.pdf'],'pdf')
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%% plot network on a cylinder %%%%%%%%%%%%%%%%%%%%%%%%
@@ -90,15 +90,17 @@ saveas(fig1, [path pendulum_type 'Discoidal Cost Network.jpg'],'jpeg')
 plot_low_density_cylinder(fig,rcyl,all_angles,all_speeds,[3,3])
 saveas(fig, [path pendulum_type 'Cylindrical Network Template.pdf'],'pdf'); %pause;
 [x,y,z] = get_CN_cylinder_data(rcyl,all_angles,all_speeds,statenvalues);
+optimal_policy_cost = 0;
 switch flag
 	case 1
-		[xx,yy,zz] = get_actual_data_for_cylinder(rcyl,qactual,statenvalues);
+		[xx,yy,zz,optimal_policy_cost] = get_actual_data_for_cylinder(rcyl,qactual,statenvalues);
 		fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,xx,yy,zz,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 	case 0
 		fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 end
-shading interp
-% saveas(fig1, [path pendulum_type ' cost network on cylinder-isometric.jpg'],'jpeg')
+
+% shading interp
+saveas(fig2, [path pendulum_type ' cost network on cylinder-isometric.pdf'],'pdf')
 [az,el] = view;
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -110,6 +112,9 @@ roty = 180/pi*(atan(qactual(2:end,2))/6)';
 if flag
     rotating_the_cylindrical_cost_network(fig3,x,y,z,'Cylindrical Representation of Cost Network',1,[az,15-5],rotx,roty,path,xx,yy,zz)    
 end
+
+disp('Optimal Policy Cost is: ')
+disp(optimal_policy_cost)
 
 %% functions
 function [val, n] = nearest2(val,arr)                                                                                                                                                                       
@@ -164,10 +169,12 @@ function [x,y,z] = get_CN_cylinder_data(rmean,all_angles,all_speeds,statenvalues
     z = ones(size(x)).*all_speeds;
 end
 
-function [x,y,z] = get_actual_data_for_cylinder(rmean,qactual,statenvalues)
+function [x,y,z,J] = get_actual_data_for_cylinder(rmean,qactual,statenvalues)
     ractual = zeros(size(qactual(:,1)));
+	J = 0;
     for i = 1: length(qactual(:,1))
         ractual(i) = (rmean + get_value_at_state(qactual(i,:), statenvalues));
+		J = J+get_value_at_state(qactual(i,:), statenvalues);
     end
     x = ractual.*cos(qactual(:,1));
     y = ractual.*sin(qactual(:,1));
