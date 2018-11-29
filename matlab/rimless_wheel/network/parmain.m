@@ -13,6 +13,31 @@ N = 150;
 M = 90;
 % ------------------------ discretizations ----------------------------- %
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ------------------------ Set Output Paths ---------------------------- %
+switch val
+	case 1
+		output_dir = 'junk/';
+	case 2
+		output_dir = '../';
+end
+
+% if directories arent there then make them
+conn_dir = [output_dir '/data/connected_network/'];
+eval_dir = [output_dir '/data/evaluated_network/'];
+if ~exist(conn_dir,'dir')
+    mkdir(conn_dir)
+end
+
+if ~exist(eval_dir,'dir')
+    mkdir(eval_dir)
+end
+% ------------------------ Set Output Paths ---------------------------- %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 % define the feasible region space
 vmax =  0.67;
 vmin = -5.6;
@@ -60,20 +85,19 @@ end
 parfor i = 1:length(vels)
 	GenerateCostNetwork(output_filenames{i,1},parameters);
 end
-for i = parameters.velocities(any(conns ~=0,1))
-	parameters.desired_speed = xd;
-	
+for i = 1:length(vels)
 	GenerateNetworkConnections(output_filenames{i,1}, output_filenames{i,2});
 	disp('Finished generating connections now evaluating connected network')
 
 	EvaluateConnectedNetwork(output_filenames{i,2}, output_filenames{i,3});
 
 	load(output_filenames{i,3});
-	for j = 1:20
+	for j = 1:100
 		before = convertNetwork(network);
 		EvaluateConnectedNetwork(output_filenames{i,3},output_filenames{i,3});
 		load(output_filenames{i,3});
 		after = convertNetwork(network);
+		sum(sum((before - after).^2))
 		if sum(sum(before - after)) == 0
 			break;
 		end
@@ -84,7 +108,7 @@ for i = parameters.velocities(any(conns ~=0,1))
 	disp(['Finished evaluating connections on:	' output_filenames{i,3}])
 end
 
-exit();
+%% Functions
 function nnetwork = convertNetwork(network)
 	nnetwork = [];
 	for i = 1:length(network)
