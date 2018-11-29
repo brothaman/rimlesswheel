@@ -18,7 +18,6 @@ M = 90;
 % ------------------------ Set Output Paths ---------------------------- %
 
 % set beta in the cost function normthetadoterr + normtorsoangle
-beta = 1;
 ddir = ['beta_' beta '/'];
 network_data_dir = ['../data/' ddir];
 load([network_data_dir '../network.mat'])
