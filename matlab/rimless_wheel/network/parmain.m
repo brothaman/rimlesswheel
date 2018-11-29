@@ -1,6 +1,6 @@
-clear
-close all
-clc
+% clear
+% close all
+% clc
 
 
 % ------------------------- Add Model Path ----------------------------- %
@@ -18,10 +18,8 @@ M = 90;
 % ------------------------ Set Output Paths ---------------------------- %
 
 % set beta in the cost function normthetadoterr + normtorsoangle
-ddir = ['beta_' beta '/'];
+ddir = ['beta_' num2str(beta) '/'];
 network_data_dir = ['../data/' ddir];
-load([network_data_dir '../network.mat'])
-network_path = [network_data_dir 'evaluated_network/'];
 % switch beta
 % 	case 1e-5
 % 		ddir = ['beta_' beta '/'];
@@ -88,7 +86,7 @@ parameters.actions = actions;
 parameters.beta = beta;
 
 % generate the network 
-output_filename = ['../data/network.mat'];
+output_filename = [network_data_dir '/network.mat'];
 GenerateCostNetwork(output_filename,parameters,velocities(ceil(N/2)));
 [connectivity,~,~,conns] = testNetworkConnectivity(output_filename);
 if connectivity < 0.1*length(parameters.actions)
