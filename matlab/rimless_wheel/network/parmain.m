@@ -119,12 +119,12 @@ disp(['Complete network generation after: ' char(evaltime)])
 
 % timer
 evaltime = tic;
-% timer
+timer
 
-data = load(output_filenames{1,3},'network');
-network = data.network;
-after = zeros(150,2);
-before = after;
+% data = load(output_filenames{1,3},'network');
+% network = data.network;
+% after = zeros(150,2);
+% before = after;
 parfor i = 1:length(vels)
 	GenerateNetworkConnections(output_filenames{i,1}, output_filenames{i,2});
 	disp('Finished generating connections now evaluating connected network')
