@@ -3,17 +3,34 @@ close all
 clc
 clear all
 addpath ../../lib/ ../data/ ../model/ ../../single_pendulum/lib/
-val = 1;
-switch val
-	case 1
-		network_data_dir = '../network/junk/data/';
-		load([network_data_dir '../network.mat'])
-		network_path = [network_data_dir 'evaluated_network/'];
-	case 2
-		network_data_dir = '../data/';
-		load([network_data_dir 'network.mat'])
-		network_path = [network_data_dir 'evaluated_network/'];
-end
+beta = 1e4;
+ddir = ['beta_' num2str(beta) '/'];
+network_data_dir = ['../data/' ddir];
+load([network_data_dir '/network.mat'])
+network_path = [network_data_dir 'evaluated_network/'];
+steps = 20;
+
+% switch beta
+% 	case 1e-5
+% 		network_data_dir = '../network/junk/data/';
+% 		load([network_data_dir '../network.mat'])
+% 		network_path = [network_data_dir 'evaluated_network/'];
+% 	case 0.1
+% 		ddir = 'beta_0.1/';
+% 		network_data_dir = ['../data/' ddir];
+% 		load([network_data_dir '../network.mat'])
+% 		network_path = [network_data_dir 'evaluated_network/'];
+% 	case 1
+% 		ddir = 'beta_1/';
+% 		network_data_dir = ['../data/' ddir];
+% 		load([network_data_dir '../network.mat'])
+% 		network_path = [network_data_dir 'evaluated_network/'];
+% 	case 10
+% 		ddir = 'beta_10/';
+% 		network_data_dir = ['../data/' ddir];
+% 		load([network_data_dir '../network.mat'])
+% 		network_path = [network_data_dir 'evaluated_network/'];
+% end
 
 network = convertAllNetworks(parameters.velocities,network_path);
 fixed_filename = '../plots/fixed_angle.avi';
@@ -23,20 +40,19 @@ dynamic_filename = '../plots/dynamics_accurate.avi';
 
 %% Fix Angle Rimless Wheel Robot Control
 fixed = 1;
-steps = 20;
-data_fixed = generate_data(fixed,steps,network);
+data_fixed = generate_data(fixed,steps,network,0.3);
 
 ts = data_fixed{1};
 zs = data_fixed{2};
 alphas = data_fixed{3};
 parms = data_fixed{4};
 
-fps = 30;
-farview = 0; %=1 to have a farview of the animation
-disp('Animating...');
-%disp('NOTE: Animation speed can be changed using fps defined in the code');
-figure(1)
-animater_fixed(ts,zs,parms,steps,fps,farview,alphas,fixed_filename);
+% fps = 30;
+% farview = 0; %=1 to have a farview of the animation
+% disp('Animating...');
+% %disp('NOTE: Animation speed can be changed using fps defined in the code');
+% figure(1)
+% animater_fixed(ts,zs,parms,steps,fps,farview,alphas,fixed_filename);
 
 figure('Position',[0 0 1200 300])
 subplot(2,1,1)
@@ -52,20 +68,19 @@ saveas(gcf,'../plots/control_of_fixed_rimlesswheel.jpg')
 
 %% Dynamically (more)Accurate Rimless Wheel Robot
 fixed = 0;
-steps = 20;
-data_dynamic = generate_data(fixed,steps,network);
-
+data_dynamic = generate_data(fixed,steps,network,0.2);
+data_dynamic{1} = reshape(data_dynamic{1}',[numel(data_dynamic{1}),1]);
 ts = data_dynamic{1};
 zs = data_dynamic{2};
 alphas = data_dynamic{3};
 parms = data_dynamic{4};
 
-fps = 30;
-farview = 0; %=1 to have a farview of the animation
-disp('Animating...');
-%disp('NOTE: Animation speed can be changed using fps defined in the code');
-figure(1)
-animater_dynamics(ts,zs,parms,steps,fps,farview,dynamic_filename);
+% fps = 30;
+% farview = 0; %=1 to have a farview of the animation
+% disp('Animating...');
+% %disp('NOTE: Animation speed can be changed using fps defined in the code');
+% figure(1)
+% animater_dynamics(ts,zs,parms,steps,fps,farview,dynamic_filename);
 
 figure('Position',[0 0 1200 300])
 subplot(2,1,1)
@@ -78,24 +93,24 @@ plot(ts,zs(:,2),'b','LineWidth',3);
 title('Translational Velocity of Hip in +x - direction')
 xlabel('t - time')
 
-% subplot(4,1,3)
-% plot(ts,zs(:,3),'r','LineWidth',3);
-% title('Angle Between Torso and Ground')
-% xlabel('t - time')
-% 
-% subplot(4,1,4)
-% plot(ts,alphas,'b','LineWidth',3);
-% title('Desired Angle Between Torso and Ground')
-% xlabel('t - time','LineWidth',3)
+% % subplot(4,1,3)
+% % plot(ts,zs(:,3),'r','LineWidth',3);
+% % title('Angle Between Torso and Ground')
+% % xlabel('t - time')
+% % 
+% % subplot(4,1,4)
+% % plot(ts,alphas,'b','LineWidth',3);
+% % title('Desired Angle Between Torso and Ground')
+% % xlabel('t - time','LineWidth',3)
 saveas(gcf,'../plots/control_of_dynamic_rimlesswheel.jpg')
 	
 %% Plot Both 
 h = figure('Position',[0 0 1200 300]);
 hold on
-plot(data_dynamic{1},data_dynamic{2}(:,2),'b.','DisplayName','Fixed Angle','LineWidth',.5)
-plot(data_fixed{1},moving_average(data_fixed{2}(:,2),100),'r-','DisplayName','Average of Dynamically Accurate','LineWidth',5)
-plot(data_fixed{1},data_fixed{2}(:,2),'r.','DisplayName','Dynamically Accurate','LineWidth',.5)
-plot(data_dynamic{1},moving_average(data_dynamic{2}(:,2),100),'b-','DisplayName','Average of Fixed Angle','LineWidth',5)
+plot(data_fixed{1},moving_average(data_fixed{2}(:,2),100),'b-','DisplayName','Average of Dynamically Accurate','LineWidth',5)
+plot(data_fixed{1},data_fixed{2}(:,2),'b-','DisplayName','Dynamically Accurate','LineWidth',.5)
+plot(data_dynamic{1},moving_average(data_dynamic{2}(:,2),100),'r-','DisplayName','Average of Fixed Angle','LineWidth',5)
+plot(data_dynamic{1},data_dynamic{2}(:,2),'r-','DisplayName','Fixed Angle','LineWidth',.5)
 legend('show')
 
 title('Velocity of Hip when Walking')

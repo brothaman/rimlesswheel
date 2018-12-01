@@ -1,7 +1,7 @@
 %% Visualize the cost network
 close all
 addpath ../lib
-pendulum_type = 0;
+pendulum_type = 3;
 switch pendulum_type
 	case 0
 		load jnk/test_cost_network.mat;
@@ -99,7 +99,7 @@ switch flag
 		fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 end
 
-% shading interp
+shading interp
 saveas(fig2, [path pendulum_type ' cost network on cylinder-isometric.pdf'],'pdf')
 [az,el] = view;
 

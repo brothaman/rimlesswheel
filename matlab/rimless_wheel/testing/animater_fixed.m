@@ -1,15 +1,15 @@
-%===================================================================
+%% ===================================================================
 function animater_fixed(t_all,z_all,parms,steps,fps,farview,alphas,myPathVid)
 %===================================================================
 
 % stuff i added %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-h = gcf;
+h = gcf;%figure('Position');
 % myPathVid = '../plots/fixed_angle.mp4';
 vidObj = VideoWriter(myPathVid,'Uncompressed AVI');
 open(vidObj);
 movegui(h, 'onscreen');
-rect = get(h,'Position'); 
-rect(1:2) = [0 0];
+% rect = get(h,'Position'); 
+% rect(1:2) = [0 0];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if (nargin<6)
@@ -18,24 +18,31 @@ end
 
 l = parms.l; L = parms.L;
 
-%%%% First, get the unique values of states %%%%
-[t_unique,index] = unique(t_all,'first');
-
-z_unique = [];
-for i = 1:length(index)
-   z_unique = [z_unique; z_all(index(i),1), alphas(i), z_all(index(i),3),  z_all(index(i),4)];
-end
-
-%%%% Second, interpolate linearly using fps %%%%%
-[m,n] = size(z_unique);
-t = linspace(0,t_unique(end),fps*steps);
-for i=1:n
-    z(:,i) = interp1(t_unique,z_unique(:,i),t);
-end
+% %%%% First, get the unique values of states %%%%
+% [t_unique,index] = unique(t_all,'first');
+% 
+% z_unique = [];
+% for i = 1:length(index)
+%    z_unique = [z_unique; z_all(index(i),1), alphas(i), z_all(index(i),3),  z_all(index(i),4)];
+% end
+% input_vec = z_unique(:,3);
+% n = 50;
+% output_vec = moving_average(input_vec, n);
+% z_unique(:,3) = output_vec';
+% %%%% Second, interpolate linearly using fps %%%%%
+% [m,n] = size(z_unique);
+% t = linspace(0,t_unique(end),fps*steps);
+% for i=1:n
+%     z(:,i) = interp1(t_unique,z_unique(:,i),t);
+% end
 
 %%%% Lastly, animate the results
 clf
    
+z_unique = [z_all(:,1) alphas z_all(:,3) z_all(:,4)];
+
+z = z_unique;
+
 dth = 2*pi/parms.n; %spokes spacing in radians. n = number of spokes.
 [m,n]=size(z);
 
@@ -52,9 +59,9 @@ else
 %     window_xmin = -1.0; window_xmax = 2.0;
       window_xmin = -4*l; window_xmax = 4*l;
 end
-axis('equal')
+% axis('equal')
 axis([window_xmin window_xmax window_ymin window_ymax])
-axis off
+%axis off
 set(gcf,'Color',[1,1,1])
 
 %%% creat object for center of rimles wheel %%%%%
@@ -123,26 +130,62 @@ for i=1:m
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%%%%%%%%%%%%%%%% attempting annotation%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	annotation('textbox',...
-    [0.70 0.68 0.285 0.125],...
-    'String',{['Distance = ', num2str(z_unique(i,3),3)],['Velocity =' num2str(z_unique(i,4),3)]},...
-    'FontSize',18,...
-    'FontName','Arial',...
-    'LineStyle','-',...
-    'EdgeColor',[0 0 0],...
-    'LineWidth',3,...
-    'BackgroundColor',[0.4  0.4 0.4],...
-    'Color',[0.84 0.16 0]);
+% 	annotation('textbox',...
+%     [0.60 0.55 0.285 0.125],...
+%     'String',{['Distance = ', num2str(z_unique(i,3),3)],['Velocity =' num2str(z_unique(i,4),3)]},...
+%     'FontSize',18,...
+%     'FontName','Arial',...
+%     'LineStyle','-',...
+%     'EdgeColor',[0 0 0],...
+%     'LineWidth',3,...
+%     'BackgroundColor',[0.4  0.4 0.4],...
+%     'Color',[0 0 0]);
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     drawnow  
 	%%%%%%%%%%%%%%%%%%%%%% more stuff i added %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	writeVideo(vidObj,getframe(gcf,rect));
+	writeVideo(vidObj,getframe(gcf));
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 close(vidObj);
+
+end
+
 %===================================================================
 function rotation = R(A)
 %===================================================================
 rotation = [cos(A) -sin(A); sin(A) cos(A)];
+end
 
+
+%===================================================================
+function output_vec = moving_average(input_vec, n)
+	if min(size(input_vec)) ~=1
+		% throw error
+	else
+		if size(input_vec,2) == length(input_vec)
+		else
+			% reshape
+			input_vec = reshape(input_vec,[1,length(input_vec)]);
+		end
+		
+	end
+	mat = zeros(2*n+1,length(input_vec));
+	mat(n+1,:) = input_vec;
+	for i=1:n
+		% left side position as a function of i
+		% k_left = middle - i
+		kl = (n+1) - i;
+		temp = [input_vec(i+1:end) input_vec(end)*ones(1,i)];
+		mat(kl,:) = temp;
+		
+		% right side position as a function of i
+		% k_right = middle + i
+		kr = (n+1) + i;
+		temp = [input_vec(end)*ones(1,i) input_vec(1:end-i)];
+		mat(kr,:) = temp;	
+	end
+	
+	% now squish the matrix to a vector
+	output_vec = sum(mat,1)/(2*n+1);
+end

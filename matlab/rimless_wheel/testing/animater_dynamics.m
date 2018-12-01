@@ -1,4 +1,4 @@
-%===================================================================
+%% ===================================================================
 function animater_dynamics(t_all,z_all,parms,steps,fps,farview,myPathVid)
 %===================================================================
 % stuff i added %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -8,8 +8,8 @@ vidObj = VideoWriter(myPathVid);
 vidObj.Quality = 100;
 open(vidObj);
 movegui(h, 'onscreen');
-rect = get(h,'Position'); 
-rect(1:2) = [0 0];
+% rect = get(h,'Position'); 
+% rect(1:2) = [0 0];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if (nargin<6)
     farview = 0;
@@ -17,24 +17,29 @@ end
 
 l = parms.l; c = parms.c;
 
-%%%% First, get the unique values of states %%%%
-[t_unique,index] = unique(t_all,'first');
-
-z_unique = [];
-for i = 1:length(index)
-   z_unique = [z_unique; z_all(index(i),1), z_all(index(i),3),  z_all(index(i),5),  z_all(index(i),6)];
-end
+% %%%% First, get the unique values of states %%%%
+% [t_unique,index] = unique(t_all,'first');
+% 
+% z_unique = [];
+% for i = 1:length(index)
+%    z_unique = [z_unique; z_all(index(i),1), z_all(index(i),3),  z_all(index(i),5),  z_all(index(i),6)];
+% end
+% t_unique = t_all;
+% z_unique = z_all;
 
 %%%% Second, interpolate linearly using fps %%%%%
-[m,n] = size(z_unique);
-t = linspace(0,t_unique(end),fps*steps);
-for i=1:n
-    z(:,i) = interp1(t_unique,z_unique(:,i),t);
-end
+% [m,n] = size(z_all);
+% t = linspace(0,t_all(end),fps*steps);
+% for i=1:n
+%     z(:,i) = interp1(t_all,z_all(:,i),t);
+% end
 
 %%%% Lastly, animate the results
 clf
    
+z_unique = [z_all(:,1) z_all(:,3) z_all(:,5) z_all(:,6)];
+
+z = z_unique;
 dth = 2*pi/parms.n; %spokes spacing in radians. n = number of spokes.
 [m,n]=size(z);
 
@@ -51,9 +56,9 @@ else
 %     window_xmin = -1.0; window_xmax = 2.0;
       window_xmin = -4*l; window_xmax = 4*l;
 end
-axis('equal')
+% axis('equal')
 axis([window_xmin window_xmax window_ymin window_ymax])
-axis off
+% axis off
 set(gcf,'Color',[1,1,1])
 
 %%% creat object for center of rimles wheel %%%%%
@@ -122,22 +127,22 @@ for i=1:m
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%%%%%%%%%%%%%%%% attempting annotation%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	annotation('textbox',...
-    [0.70 0.75 0.285 0.125],...
-    'String',{['Distance = ', num2str(z_unique(i,3),3)],['Velocity =' num2str(z_unique(i,4),3)]},...
-    'FontSize',18,...
-    'FontName','Arial',...
-    'LineStyle','-',...
-    'EdgeColor',[0 0 0],...
-    'LineWidth',3,...
-    'BackgroundColor',[0.4  0.4 0.4],...
-    'Color',[0.84 0.16 0]);
+% 	annotation('textbox',...
+%     [0.60 0.55 0.285 0.125],...
+%     'String',{['Distance = ', num2str(z_unique(i,3),3)],['Velocity =' num2str(z_unique(i,4),3)]},...
+%     'FontSize',18,...
+%     'FontName','Arial',...
+%     'LineStyle','-',...
+%     'EdgeColor',[0 0 0],...
+%     'LineWidth',3,...
+%     'BackgroundColor',[0.4  0.4 0.4],...
+%     'Color',[0 0 0]);
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     drawnow  
 	
 	%%%%%%%%%%%%%%%%%%%%%% more stuff i added %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	writeVideo(vidObj,getframe(gcf,rect));
+	writeVideo(vidObj,getframe(gcf));
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 close(vidObj);

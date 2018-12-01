@@ -8,7 +8,7 @@ parms = get_parms;
 q = 0;%angle should always be zero
 u = -0.5;%mid-stance velocity 
 fps = 30;
-farview = 0; %=1 to have a farview of the animation
+farview = 1; %=1 to have a farview of the animation
 steps = 20;
 
 if (parms.fixed==1)
