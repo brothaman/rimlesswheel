@@ -103,6 +103,13 @@ shading interp
 saveas(fig2, [path pendulum_type ' cost network on cylinder-isometric.pdf'],'pdf')
 [az,el] = view;
 
+view(0,30)
+saveas(fig2, [path pendulum_type ' cost network on cylinder 0deg.pdf'],'pdf')
+view(120,30)
+saveas(fig2, [path pendulum_type ' cost network on cylinder 120deg.pdf'],'pdf')
+view(240,30)
+saveas(fig2, [path pendulum_type ' cost network on cylinder 240deg.pdf'],'pdf')
+
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%% rotating network plot  %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -200,10 +207,11 @@ function fig = visualize_cost_network_on_cylinder(fig,x,y,z,varargin)
         hold off
     end
     
-    title(titl)
-    zlabel('Cost to Navigate to the Goal')
-    ylabel('y-position of Pendulum - Radius Indicates Cost')
-    xlabel('x-position of Pendulum - Radius Indicates Cost')
+    title(titl,'FontSize',14)
+    zlabel('Angular Velocity of Pendulum','FontSize',14)
+	colorbar;
+%     ylabel('y-position of Pendulum - Radius Indicates Cost')
+%     xlabel('x-position of Pendulum - Radius Indicates Cost')
 end
 
 function fig = rotating_the_cylindrical_cost_network(fig,x,y,z,titl,flag,desc,rotx,roty,path,varargin)

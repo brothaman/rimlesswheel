@@ -11,6 +11,7 @@ addpath('../model/')
 % ------------------------ discretizations ----------------------------- %
 N = 150;
 M = 90;
+maxiter = 100;
 % ------------------------ discretizations ----------------------------- %
 
 
@@ -85,19 +86,20 @@ parameters.velocities = velocities;
 parameters.actions = actions;
 parameters.beta = beta;
 
+[~,n1] = nearest2(-1,parameters.velocities);
 % generate the network 
-% output_filename = [network_data_dir '/network.mat'];
-% GenerateCostNetwork(output_filename,parameters,velocities(ceil(N/2)));
-% [connectivity,~,~,conns] = testNetworkConnectivity(output_filename);
-% if connectivity < 0.1*length(parameters.actions)
-% 	disp('something is wrong. connectivity too low to continue')
-% 	exit();
-% end
-% disp('Complete network generation now Generating Connections')
+output_filename = [network_data_dir '/network.mat'];
+GenerateCostNetwork(output_filename,parameters,velocities(ceil(N/2)));
+[connectivity,~,~,conns] = testNetworkConnectivity(output_filename);
+if connectivity < 0.1*length(parameters.actions)
+	disp('something is wrong. connectivity too low to continue')
+	exit();
+end
+disp('Complete network generation now Generating Connections')
 
 vels = parameters.velocities(any(conns ~=0,1));
-[~,n1] = nearest2(-1,vels);
-[~,n2] = nearest2(-4,vels);
+[~,n1] = nearest2(-2,vels);
+[~,n2] = nearest2(-3.5,vels);
 vels = vels([n1 n2]);
 output_filenames = cell(length(vels),3);
 for i = 1:length(vels)
@@ -137,7 +139,7 @@ for i = 1:length(vels)
 	data = load(output_filenames{i,3},'network');
 	network = data.network;
 	before = convertNetwork(network);
-	for j = 1:100
+	for j = 1:maxiter
 		EvaluateConnectedNetwork(output_filenames{i,3},output_filenames{i,3});
 		data = load(output_filenames{i,3},'network');
 		network = data.network;
@@ -148,7 +150,7 @@ for i = 1:length(vels)
 			break;
 		end
 	end
-	if j == 20
+	if j == maxiter
 		disp('global minima may not have been found')
 	end
 	disp(['Finished evaluating connections on:	' output_filenames{i,3}])

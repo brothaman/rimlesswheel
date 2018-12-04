@@ -1,5 +1,5 @@
 function data = generate_data(fixed,network,desired_states)
-steps = sum(desired_states(:,2));
+	steps = sum(desired_states(:,2));
 	for i = 1:length(desired_states(:,2))
 		desired_states(i,2) = sum(desired_states(1:i,2));
 	end
@@ -7,6 +7,8 @@ steps = sum(desired_states(:,2));
 	ts = [];
 
 	alphas = [];
+	step_alphas = zeros(steps,1);
+	t_steps = step_alphas;
 
 % 	desired_states = [100 50 100 50 10 100];
 	j=1;
@@ -31,6 +33,7 @@ steps = sum(desired_states(:,2));
 % 			end
 			[z,t,~,~,error_flag] = onestep_fixed(z(end,1:2),parms,1);
 			poincare_map_data(iterp,:) = z(end,[1 2]);
+			step_alphas(iterp) = parms.control.alpha;
 			iterp = iterp+1;
 			alphas = [alphas; parms.control.alpha*ones(size(t))];
 			if (error_flag) %%0 no failure, 1 = ground penetration, 2 = ground reaction force < 0 
@@ -43,6 +46,7 @@ steps = sum(desired_states(:,2));
 				ts = [ts; t];
 				zs = [zs; z];
 			end
+			t_steps(i) = ts(end);
  		end
 	else
 		poincare_map_data = zeros(steps,4);
@@ -67,6 +71,7 @@ steps = sum(desired_states(:,2));
 % 			end
 			[z,t,~,~,error_flag] = onestep_dynamics(z(end,[1 2 5 6]),parms,1);
 			poincare_map_data(iterp,:) = z(end,[1 2 5 6]);
+			step_alphas(iterp) = parms.control.alpha;
 			iterp = iterp+1;
 			alphas = [alphas; parms.control.alpha*ones(size(t))];
 			if (error_flag) %%0 no failure, 1 = ground penetration, 2 = ground reaction force < 0 
@@ -93,6 +98,7 @@ steps = sum(desired_states(:,2));
 				ts = [ts; t];
 				zs = [zs; z];
 			end
+			t_steps(i) = ts(end);
 		end
 	end
-	data = {ts,zs,alphas,parms,poincare_map_data};
+	data = {ts,zs,alphas,parms,poincare_map_data,step_alphas,t_steps};

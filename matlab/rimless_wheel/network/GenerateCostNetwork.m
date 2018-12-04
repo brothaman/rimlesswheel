@@ -29,10 +29,12 @@ function network = BuildNetwork(network, parameters)
 			z = z(end,1:2);
 			t = t(end);
 			[z(2), n] = map(z(2),[parameters.vmin parameters.vmax],N);
-			
+
+			% if state doesnt change this means limit cycle! 
+			% edited 12-1-18
 			% if the state hasnt changed or system has exited the 
 			% feasibility space then i dont want to record this data
-			if (z(2) == z0(2) || error_flag)
+			if (error_flag)
 				continue;
 			end
 			

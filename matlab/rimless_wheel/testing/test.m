@@ -3,13 +3,12 @@ close all
 clc
 clear all
 addpath ../../lib/ ../data/ ../model/ ../../single_pendulum/lib/
-beta = 1e4;
+beta = 0;
 ddir = ['beta_' num2str(beta) '/'];
 network_data_dir = ['../data/' ddir];
 load([network_data_dir '/network.mat'])
 network_path = [network_data_dir 'evaluated_network/'];
-steps = 50;
-
+steps = 20;
 % switch beta
 % 	case 1e-5
 % 		network_data_dir = '../network/junk/data/';
@@ -35,20 +34,33 @@ steps = 50;
 [network,xds] = convertAllNetworks(parameters.velocities,network_path);
 fixed_filename = '../plots/fixed_angle.avi';
 dynamic_filename = '../plots/dynamics_accurate.avi';
-[~,n1] = nearest2(-2,xds);
-[~,n2] = nearest2(-3.5,xds);
+[v1,n1] = nearest2(-2,xds);
+[v2,n2] = nearest2(-3.5,xds);
 
 
 %% Fix Angle Rimless Wheel Robot Control
 fixed = 1;
-data_fixed = generate_data(fixed,network,[n1+1 10;n2+1 10]);
+data_fixed = generate_data(fixed,network,[n1+1 4;n2+1 10]);
 
 ts = data_fixed{1};
 zs = data_fixed{2};
 alphas = data_fixed{3};
 parms = data_fixed{4};
 poincare_map_data = data_fixed{5};
+step_alphas = data_fixed{6};
+t_steps = data_fixed{7};
 
+b0.t=t_steps;
+b0.alpha = step_alphas;
+b0.alpha = step_alphas;
+b0.pmap = poincare_map_data;
+b0.ts = ts;
+b0.zs = zs;
+if exist('stuff.mat','file')
+	save('stuff','b0','-append')
+else
+	save('stuff','b0')
+end
 fps = 30;
 farview = 0; %=1 to have a farview of the animation
 disp('Animating...');
@@ -65,20 +77,20 @@ scatter(poincare_map_data(1:hlen,1),poincare_map_data(1:len/2,2),100,'b*','LineW
 scatter(poincare_map_data(hlen:end,1),poincare_map_data(hlen:end,2),100,'r*','LineWidth',3)
 xlabel('$\mathbf{\theta}$ - leg angle','Interpreter','latex','FontSize',18)
 ylabel('$\mathbf{\dot\theta}$ - leg angle rate','Interpreter','latex','FontSize',18)
-title('Poincare Section of 50 Step Speed Transition','FontSize',18)
+title(['Poincare Section of ', int2str(len), ' Step Speed Transition from $(', num2str(v1), '\frac{rad}{s} to ', num2str(v2), '\frac{rad}{s})$ at beta =' num2str(beta)],'Interpreter','latex','FontSize',18)
 axis([-1 1 -5 0])
-saveas(pmap_fig,'../plots/PoincareSectionof50StepSpeedTransition.pdf')
+saveas(pmap_fig,['../plots/PoincareSectionof', int2str(len), 'StepSpeedTransition(', num2str(v1), ' to ', num2str(v2), ') at beta =' num2str(beta) '.pdf'])
 
 leg_radius = 0.26;
-v2 = -leg_radius*mean(poincare_map_data(hlen+5:end,2));
-v1 = -leg_radius*mean(poincare_map_data(5:hlen,2));
+% v2 = -leg_radius*mean(poincare_map_data(hlen+5:end,2));
+% v1 = -leg_radius*mean(poincare_map_data(5:hlen,2));
 ss_fig = figure;
-plot(poincare_map_data(:,2),'o-','LineWidth',3)
+plot(poincare_map_data(:,2),'*-','LineWidth',3,'MarkerSize',10)
 xlabel('\textbf{Step} - k','Interpreter','latex','FontSize',18)
 ylabel('$\mathbf{\dot\theta}$ - leg angle rate','Interpreter','latex','FontSize',18)
-title(['\textbf{Speed Transition} from $\mathbf{', num2str(v1,2), '} \frac{m}{s}$ to $\mathbf{',num2str(v2,2), '} \frac{m}{s}$ in \textbf{5 Steps}'],'Interpreter','latex','FontSize',18)
+title(['\textbf{Speed Transition} from $\mathbf{', num2str(v1,2), '} \frac{rad}{s}$ to $\mathbf{',num2str(v2,2), '} \frac{rad}{s}$ in \textbf{' int2str(len) ' Steps} at beta =' num2str(beta)],'Interpreter','latex','FontSize',18)
 % xlim([24 40])
-saveas(ss_fig,'../plots/SpeedTransition039-082-6steps.pdf')
+saveas(ss_fig,['../plots/SpeedTransition', num2str(v1), ' to ', num2str(v2) ' over ' int2str(len) ' steps at beta =' num2str(beta) '.pdf'])
 
 limitcycle_fig = figure; hold on;
 plot(zs(:,1),zs(:,2))
@@ -87,11 +99,22 @@ scatter(poincare_map_data(1:hlen,1),poincare_map_data(1:len/2,2),100,'b','LineWi
 scatter(poincare_map_data(hlen:end,1),poincare_map_data(hlen:end,2),100,'r','LineWidth',3)
 ylabel('$\dot\theta$ - rate leg angle','Interpreter','latex','FontSize',18)
 xlabel('$\theta$ - leg angle','Interpreter','latex','FontSize',18)
-title('\textbf{Periodic Orbit} of Rowdy''s $\{\theta,\dot\theta\}$ States','Interpreter','latex','FontSize',18)
+title(['\textbf{Periodic Orbit} of Rowdy''s $\{\theta,\dot\theta\}$ States  at beta =' num2str(beta)],'Interpreter','latex','FontSize',18)
 annotation('textarrow',[.75 .53],[.8 .92],'String','Start from Here')
-annotation('rectangle',[.49 .23 .05 .36],'FaceColor','blue','FaceAlpha',.2)
+annotation('rectangle',[.49 .33 .05 .36],'FaceColor','blue','FaceAlpha',.2)
 annotation('textarrow',[.6 .53],[.6 .45],'String','\textbf{Poincar\''e Section}','Interpreter','latex','FontSize',18)
-saveas(limitcycle_fig,'../plots/Periodic State Orbit.pdf')
+axis([-0.5 0.5 -5 0])
+saveas(limitcycle_fig,['../plots/Periodic State Orbit at beta =' num2str(beta) '.pdf'])
+
+
+% input signal
+Input_sig_fig = figure;
+plot(step_alphas,'*-','LineWidth',3,'MarkerSize',10)
+title(['Commanded \textbf{Torso Angle} for at beta =' num2str(beta)],'Interpreter','latex','FontSize',18)
+xlabel('\textbf{Step} - k','Interpreter','latex','FontSize',18)
+ylabel('$\tau$ - Commanded Torso Angle','Interpreter','latex','FontSize',18)
+axis([0 20 0 pi/2+.1])
+saveas(Input_sig_fig,['../plots/Commanded Torso Angle at beta =' num2str(beta) '.pdf'])
 
 % % animate limit cycle line
 % vidObj = VideoWriter('../plots/RWR/AnimatedPeriodicOrbit.avi');
@@ -109,19 +132,21 @@ saveas(limitcycle_fig,'../plots/Periodic State Orbit.pdf')
 % end
 % close(vidObj);
 
+figure('Position',[0 0 900 300])
+% title('Angle Between Stance Leg and Ground')
+% subplot(2,1,1)
+% plot(ts,zs(:,1),'r','LineWidth',3);
+% title('Angle Between Stance Leg and Ground')
+% xlabel('t - time')
 
-figure('Position',[0 0 1200 300])
-subplot(2,1,1)
-plot(ts,zs(:,1),'r','LineWidth',3);
-title('Angle Between Stance Leg and Ground')
-xlabel('t - time')
-
-subplot(2,1,2)
+% subplot(2,1,2)
+hold on
 plot(ts,zs(:,2),'b','LineWidth',3);
+scatter(t_steps,poincare_map_data(:,2),200,'*','r','LineWidth',3,'DisplayName','Poincare Section')
 title('Translational Velocity of Hip in +x - direction')
 xlabel('t - time')
-saveas(gcf,'../plots/control_of_fixed_rimlesswheel.jpg')
-
+saveas(gcf,['../plots/control_of_fixed_rimlesswheelatbeta=' num2str(beta) '.jpg'])
+%{
 %% Dynamically (more)Accurate Rimless Wheel Robot
 fixed = 0;
 data_dynamic = generate_data(fixed,network,35);
@@ -171,6 +196,7 @@ legend('show')
 
 title('Velocity of Hip when Walking')
 saveas(gcf,'../plots/Ideal vs Real.jpg')
+%}
 %% Functions
 function [nnetwork,xds] = convertAllNetworks(velocities,path)
 	nnetwork{1} = [];
