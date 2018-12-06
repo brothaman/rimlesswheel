@@ -81,6 +81,7 @@ stdx = std(max(x));
 stdy = std(max(y));
 axis([(minx-stdx) (maxx+stdx) (miny-stdy) (maxy+stdy) (stats.min-stats.std) (stats.max+stats.std)])
 view(0, 45)
+colorbar
 saveas(fig1, [path pendulum_type 'Discoidal Cost Network.pdf'],'pdf')
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -99,6 +100,7 @@ switch flag
 		fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,['Cylindrical Representation of the ' pendulum_type ' Pendulum''s Cost Network']);
 end
 
+colorbar
 shading interp
 saveas(fig2, [path pendulum_type ' cost network on cylinder-isometric.pdf'],'pdf')
 [az,el] = view;
