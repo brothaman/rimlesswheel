@@ -1,4 +1,4 @@
-function [fig1,fig2] = show_cost_network(fig1,fig2,figure_file_name,path,all_angles,all_speeds,network, stats)
+function [fig1,fig2] = show_cost_network(fig1,fig2,figure_file_name,path,all_angles,all_speeds,network, stats, CMAP_network)
 statenvalues = get_state_n_value(network);
 rdisk = 20;
 rcyl = stats.max;
@@ -7,6 +7,7 @@ kcost = 1;
 
 % plot network on a disk
 [x,y] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
+[xx,yy] = get_CN_disk_data(rdisk,k,all_angles,all_speeds);
 z = get_disk_cost_height(kcost,all_angles, all_speeds, statenvalues);
 visualize_cost_network_on_disk(fig1,x,y,z,stats,figure_file_name);
 view(0, 45)
@@ -18,7 +19,7 @@ colorbar
 
 % plot the network on a cylinder
 [x,y,z] = get_CN_cylinder_data(rcyl,all_angles,all_speeds,statenvalues);
-fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,figure_file_name);
+fig2 = visualize_cost_network_on_cylinder(fig2,x,y,z,figure_file_name,xyz_for_map);
 shading interp
 axis([(-rcyl-stats.max-stats.std) (rcyl+stats.max+stats.std) (-rcyl-stats.max-stats.std) (rcyl+stats.max+stats.std) min(all_speeds) max(all_speeds)]);
 colorbar
